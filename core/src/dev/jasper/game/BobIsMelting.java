@@ -21,6 +21,12 @@ public class BobIsMelting extends Game {
 	 * Pixel for meter units to scale the render
 	 */
 	public static final float PPM = 100;
+	public static final short GROUND_BIT = 1;
+	public static final short KID_BIT = 2;
+	public static final short SNOWBALL_BIT = 4;
+	public static final short DESTROYED_BIT = 8;
+	public static final short OBJECT_BIT = 16;
+	public static final short ENEMY_BIT = 32;
 	public SpriteBatch batch;
 
 	@Override

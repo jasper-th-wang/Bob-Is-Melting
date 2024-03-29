@@ -23,13 +23,16 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.jasper.game.BobIsMelting;
 import dev.jasper.game.scenes.Hud;
+import dev.jasper.game.sprites.Bear;
 import dev.jasper.game.sprites.Kid;
 import dev.jasper.game.tools.B2WorldCreator;
+import dev.jasper.game.tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
     private BobIsMelting game;
     private TextureAtlas atlas;
     private Kid player;
+    private Bear tempBear;
     private OrthographicCamera gameCam;
     private Viewport gamePort;
     private Hud hud;
@@ -62,6 +65,7 @@ public class PlayScreen implements Screen {
         world.step(1/60f, 6, 2);
 
         player.update(dt);
+        tempBear.update(dt);
 
         gameCam.position.x = player.b2body.getPosition().x;
         // Update our gameCam with correct coordinates after changes
@@ -85,8 +89,10 @@ public class PlayScreen implements Screen {
         // Initialize Box2d game world
         world = new World(new Vector2(0,-10), true);
         b2dr = new Box2DDebugRenderer();
-        new B2WorldCreator(world, map);
-        this.player = new Kid(world, this);
+        new B2WorldCreator(this);
+        this.player = new Kid(this);
+        world.setContactListener(new WorldContactListener());
+        tempBear = new Bear(this, .32f, .32f);
 
     }
     public TextureAtlas getAtlas() {
@@ -114,6 +120,7 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
         player.draw(game.batch);
+        tempBear.draw(game.batch);
         game.batch.end();
 
         // Set our batch to draw what the HUD camera sees
@@ -124,6 +131,14 @@ public class PlayScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
+    }
+
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public World getWorld() {
+        return world;
     }
 
     @Override

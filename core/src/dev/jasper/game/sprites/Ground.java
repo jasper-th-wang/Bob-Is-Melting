@@ -5,10 +5,12 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import dev.jasper.game.BobIsMelting;
+import dev.jasper.game.screens.PlayScreen;
 
 public class Ground {
     private World world;
@@ -17,9 +19,9 @@ public class Ground {
     private MapObject object;
     private Body body;
 
-    public Ground(World world, TiledMap map, Rectangle bounds){
-        this.world = world;
-        this.map = map;
+    public Ground(PlayScreen screen, Rectangle bounds){
+        this.world = screen.getWorld();
+        this.map = screen.getMap();
         this.bounds = bounds;
 
         BodyDef bdef = new BodyDef();

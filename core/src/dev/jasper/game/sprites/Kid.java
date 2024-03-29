@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -24,9 +25,9 @@ public class Kid extends Sprite {
     // keep track of amount of time for any given state
     private float stateTimer;
     private boolean runningRight;
-    public Kid(World world, PlayScreen screen) {
-        super(screen.getAtlas().findRegion("Idle (32 x 32)"));
-        this.world = world;
+    public Kid(PlayScreen screen) {
+        super(screen.getAtlas().createSprite("Idle (32 x 32)"));
+        this.world = screen.getWorld();
         currentState = State.STANDING;
         previousState = State.STANDING;
         stateTimer = 0;
@@ -104,8 +105,12 @@ public class Kid extends Sprite {
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(7 / BobIsMelting.PPM);
+        fdef.filter.categoryBits = BobIsMelting.KID_BIT;
+        fdef.filter.maskBits = BobIsMelting.GROUND_BIT | BobIsMelting.SNOWBALL_BIT | BobIsMelting.OBJECT_BIT | BobIsMelting.ENEMY_BIT;
 
         fdef.shape = shape;
         b2body.createFixture(fdef);
+
+//        EdgeShape
     }
 }
