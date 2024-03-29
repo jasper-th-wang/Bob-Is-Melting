@@ -17,6 +17,10 @@ public class BobIsMelting extends Game {
 	 * Virtual height of game.
 	 */
 	public static final int V_HEIGHT = 208;
+	/**
+	 * Pixel for meter units to scale the render
+	 */
+	public static final float PPM = 100;
 	public SpriteBatch batch;
 
 	@Override
