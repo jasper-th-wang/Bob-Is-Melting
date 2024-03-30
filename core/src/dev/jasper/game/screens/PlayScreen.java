@@ -31,9 +31,7 @@ public class PlayScreen implements Screen {
     private final OrthographicCamera gameCam;
     private final Viewport gamePort;
     private final Hud hud;
-    // Tiled map variables
-    private TmxMapLoader mapLoader;
-    private TiledMap map;
+    private final TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
     // Box2d variables
     private World world;
@@ -87,7 +85,8 @@ public class PlayScreen implements Screen {
         gamePort = new FitViewport(BobIsMelting.V_WIDTH / BobIsMelting.PPM, BobIsMelting.V_HEIGHT / BobIsMelting.PPM, gameCam);
         hud = new Hud(game.batch);
         // Load the map and set up map renderer
-        mapLoader = new TmxMapLoader();
+        // Tiled map variables
+        TmxMapLoader mapLoader = new TmxMapLoader();
         map = mapLoader.load("mainNew.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / BobIsMelting.PPM);
         // Set up game camera to be centered correctly
