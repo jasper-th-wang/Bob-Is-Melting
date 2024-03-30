@@ -12,6 +12,13 @@ import com.badlogic.gdx.physics.box2d.World;
 import dev.jasper.game.BobIsMelting;
 import dev.jasper.game.screens.PlayScreen;
 
+/**
+ * The Ground class represents the ground in the game.
+ * It defines the physical properties of the ground in the game world.
+ *
+ * @author Jasper Wang
+ * @version 2024
+ */
 public class Ground {
     private World world;
     private TiledMap map;
@@ -19,6 +26,11 @@ public class Ground {
     private MapObject object;
     private Body body;
 
+    /**
+     * Constructs a Ground instance.
+     * @param screen - the game screen
+     * @param bounds - the bounds of the ground
+     */
     public Ground(PlayScreen screen, Rectangle bounds){
         this.world = screen.getWorld();
         this.map = screen.getMap();

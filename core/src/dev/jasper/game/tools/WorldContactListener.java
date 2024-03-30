@@ -9,7 +9,18 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import dev.jasper.game.BobIsMelting;
 import dev.jasper.game.sprites.Enemy;
 
+/**
+ * This class implements the ContactListener interface from the Box2D physics library.
+ * It is used to handle the contact between different game objects in the world.
+ *
+ * @author Jasper Wang
+ * @version 2024
+ */
 public class WorldContactListener implements ContactListener {
+    /**
+     * This method is called when two fixtures start to collide.
+     * @param contact The contact information about the collision.
+     */
     @Override
     public void beginContact(Contact contact) {
         Fixture fixA = contact.getFixtureA();

@@ -23,6 +23,13 @@ import dev.jasper.game.sprites.Kid;
 import dev.jasper.game.tools.B2WorldCreator;
 import dev.jasper.game.tools.WorldContactListener;
 
+/**
+ * The PlayScreen class represents the main game screen where the gameplay happens.
+ * It implements the Screen interface from the libGDX library.
+ *
+ * @author Jasper Wang
+ * @version 2024
+ */
 public class PlayScreen implements Screen {
     private final BobIsMelting game;
     private final TextureAtlas atlas;
@@ -32,11 +39,15 @@ public class PlayScreen implements Screen {
     private final Viewport gamePort;
     private final Hud hud;
     private final TiledMap map;
-    private OrthogonalTiledMapRenderer renderer;
+    private final OrthogonalTiledMapRenderer renderer;
     // Box2d variables
-    private World world;
-    private Box2DDebugRenderer b2dr;
+    private final World world;
+    private final Box2DDebugRenderer b2dr;
 
+    /**
+     * Handles the user input for controlling the player character.
+     * @param dt - delta time
+     */
     public void handleInput(float dt) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.getState() != Kid.State.JUMPING && player.getState() != Kid.State.FALLING) {
             player.getB2body().applyLinearImpulse(new Vector2(0, 4f), player.getB2body().getWorldCenter(), true);
@@ -49,7 +60,7 @@ public class PlayScreen implements Screen {
         }
     }
     /**
-     * Takes in a delta time to update the game world.
+     * Takes in a delta time to update the game world's state.
      * @param dt - delta time
      */
     public void update(float dt) {
@@ -77,13 +88,17 @@ public class PlayScreen implements Screen {
         // Tell the renderer to draw only what our camera can see in our game world.
         renderer.setView(gameCam);
     }
+    /**
+     * Constructs a PlayScreen instance.
+     * @param game - the main game instance
+     */
     public PlayScreen(BobIsMelting game) {
         this.atlas = new TextureAtlas("Characters.atlas");
         this.game = game;
         gameCam = new OrthographicCamera();
         // Create a FitViewport to maintain virtual aspect ratio
         gamePort = new FitViewport(BobIsMelting.V_WIDTH / BobIsMelting.PPM, BobIsMelting.V_HEIGHT / BobIsMelting.PPM, gameCam);
-        hud = new Hud(game.batch);
+        hud = new Hud(game.getBatch());
         // Load the map and set up map renderer
         // Tiled map variables
         TmxMapLoader mapLoader = new TmxMapLoader();
@@ -100,6 +115,10 @@ public class PlayScreen implements Screen {
         tempBear = new Bear(this, .32f, .32f);
 
     }
+    /**
+     * Returns the TextureAtlas instance used in the game.
+     * @return atlas - the TextureAtlas instance
+     */
     public TextureAtlas getAtlas() {
         return atlas;
     }
@@ -108,6 +127,10 @@ public class PlayScreen implements Screen {
 
     }
 
+    /**
+     * Renders the game world and its components.
+     * @param delta - the time difference between the current and the last frame
+     */
     @Override
     public void render(float delta) {
         update(delta);
@@ -122,26 +145,40 @@ public class PlayScreen implements Screen {
         // Render Box2DDebugLines
         b2dr.render(world, gameCam.combined);
 
-        game.batch.setProjectionMatrix(gameCam.combined);
-        game.batch.begin();
-        player.draw(game.batch);
-        tempBear.draw(game.batch);
-        game.batch.end();
+        game.getBatch().setProjectionMatrix(gameCam.combined);
+        game.getBatch().begin();
+        player.draw(game.getBatch());
+        tempBear.draw(game.getBatch());
+        game.getBatch().end();
 
         // Set our batch to draw what the HUD camera sees
-        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-        hud.stage.draw();
+        game.getBatch().setProjectionMatrix(hud.getStage().getCamera().combined);
+        hud.getStage().draw();
     }
 
+
+    /**
+     * Resizes the game viewport based on the new width and height.
+     * @param width - the new width
+     * @param height - the new height
+     */
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
     }
 
+    /**
+     * Returns the TiledMap instance used in the game.
+     * @return map - the TiledMap instance
+     */
     public TiledMap getMap() {
         return map;
     }
 
+    /**
+     * Returns the World instance used in the game.
+     * @return world - the World instance
+     */
     public World getWorld() {
         return world;
     }
@@ -161,6 +198,9 @@ public class PlayScreen implements Screen {
 
     }
 
+    /**
+     * Disposes of all the resources used in the game.
+     */
     @Override
     public void dispose() {
         map.dispose();

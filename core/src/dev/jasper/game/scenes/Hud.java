@@ -13,8 +13,16 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.jasper.game.BobIsMelting;
 
 
+
+/**
+ * The Hud class represents the heads-up display (HUD) in the game.
+ * It implements the Disposable interface from the libGDX library to properly dispose of resources when they are no longer needed.
+ *
+ * @author Jasper Wang
+ * @version 2024
+ */
 public class Hud implements Disposable {
-    public Stage stage;
+    private final Stage stage;
     // Standalone camera and viewport to have the HUD render independently.
     private Viewport viewport;
     private Integer worldTimer;
@@ -25,6 +33,10 @@ public class Hud implements Disposable {
     Label healthTitleLabel;
     Label healthLabel;
 
+    /**
+     * Constructs a Hud instance.
+     * @param sb - the SpriteBatch instance used for drawing
+     */
     public Hud(SpriteBatch sb) {
         worldTimer = 0;
         timeCount = 0;
@@ -45,12 +57,23 @@ public class Hud implements Disposable {
         table.row();
         table.add(healthLabel).expandX();
         table.add(timeLabel).expandX();
-        stage.addActor(table);
+        getStage().addActor(table);
 
     }
 
+    /**
+     * Disposes of all the resources used in the HUD.
+     */
     @Override
     public void dispose() {
-        stage.dispose();
+        getStage().dispose();
+    }
+
+    /**
+     * Returns the Stage instance used in the HUD.
+     * @return stage - the Stage instance
+     */
+    public Stage getStage() {
+        return stage;
     }
 }

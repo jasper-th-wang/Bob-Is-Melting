@@ -12,8 +12,18 @@ import com.badlogic.gdx.utils.Array;
 import dev.jasper.game.BobIsMelting;
 import dev.jasper.game.screens.PlayScreen;
 
-public class Kid extends Sprite {
 
+/**
+ * Represents the Kid character in the game, extending the Sprite class.
+ * It defines the Kid's states, animations, and physical properties in the game world.
+ *
+ * @author Jasper Wang
+ * @version 2024
+ */
+public class Kid extends Sprite {
+    /**
+     * Represents the various movement states that the Kid character can be in during the game.
+     */
     public enum State {FALLING, JUMPING, STANDING, RUNNING};
     private State currentState;
     private State previousState;
@@ -25,7 +35,13 @@ public class Kid extends Sprite {
     // keep track of amount of time for any given state
     private float stateTimer;
     private boolean runningRight;
-    public boolean hitByEnemy;
+    private boolean hitByEnemy;
+
+    /**
+     * Constructs a Kid character for the game.
+     *
+     * @param screen The PlayScreen instance where the Kid character is displayed and interacts.
+     */
     public Kid(PlayScreen screen) {
         super(screen.getAtlas().createSprite("Idle (32 x 32)"));
         this.world = screen.getWorld();
@@ -49,11 +65,16 @@ public class Kid extends Sprite {
         setBounds(0, 0, 32 / BobIsMelting.PPM, 32 / BobIsMelting.PPM);
         setRegion(kidIdle);
     }
+    /**
+     * Updates the position of the Kid character in the game world.
+     *
+     * @param dt a float that represents delta time, the amount of time since the last frame was rendered.
+     */
     public void update(float dt) {
         setPosition(getB2body().getPosition().x - getWidth() / 2, getB2body().getPosition().y - getHeight() / 4 );
         setRegion(getFrame(dt));
     }
-    public TextureRegion getFrame(float dt) {
+    private TextureRegion getFrame(float dt) {
         this.currentState = getState();
         TextureRegion region;
         switch (currentState) {
@@ -87,6 +108,11 @@ public class Kid extends Sprite {
         previousState = currentState;
         return region;
     }
+    /**
+     * Determines the current state of the Kid character based on its linear velocity.
+     *
+     * @return The current state of the Kid character.
+     */
     public State getState() {
         if (getB2body().getLinearVelocity().y > 0) {
             return State.JUMPING;
@@ -98,6 +124,9 @@ public class Kid extends Sprite {
             return State.STANDING;
         }
     }
+    /**
+     * Defines the physical properties of the Kid character in the game world.
+     */
     public void defineKid() {
         BodyDef bdef = new BodyDef();
         bdef.position.set(32 / BobIsMelting.PPM, 32 / BobIsMelting.PPM);
@@ -118,6 +147,7 @@ public class Kid extends Sprite {
     public Body getB2body() {
         return b2body;
     }
+
 
 
 }
