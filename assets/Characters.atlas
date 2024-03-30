@@ -1,0 +1,17 @@
+Characters.png
+size:512,512
+repeat:none
+Hurt (32 x 32)
+bounds:2,2,32,32
+Idle (32 x 32)
+bounds:388,392,64,32
+Jumping (32 x 32)
+bounds:132,68,32,32
+Running (32 x 32)
+bounds:228,134,128,32
+bear_polar
+bounds:2,36,128,64
+chicken
+bounds:2,102,224,64
+snowman
+bounds:2,168,384,256
