@@ -159,7 +159,7 @@ public class Kid extends Sprite {
      */
     public void defineKid() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(32 / BobIsMelting.PPM, 32 / BobIsMelting.PPM);
+        bdef.position.set(16 * 8 / BobIsMelting.PPM, 16*4 / BobIsMelting.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 

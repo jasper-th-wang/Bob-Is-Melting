@@ -50,7 +50,7 @@ public class PlayScreen implements Screen {
      */
     public void handleInput(float dt) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.getState() != Kid.State.JUMPING && player.getState() != Kid.State.FALLING) {
-            final float jumpVelocity = player.getIsInvincibleToEnemy() ? 3f : 3.5f;
+            final float jumpVelocity = player.getIsInvincibleToEnemy() ? 2f : 3.2f;
             player.getB2body().applyLinearImpulse(new Vector2(0, jumpVelocity), player.getB2body().getWorldCenter(), true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.getB2body().getLinearVelocity().x <= 2) {
