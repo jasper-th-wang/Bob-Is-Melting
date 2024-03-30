@@ -109,7 +109,7 @@ public class Kid extends Sprite {
         fdef.filter.maskBits = BobIsMelting.GROUND_BIT | BobIsMelting.SNOWBALL_BIT | BobIsMelting.OBJECT_BIT | BobIsMelting.ENEMY_BIT;
 
         fdef.shape = shape;
-        b2body.createFixture(fdef);
+        b2body.createFixture(fdef).setUserData(this);
 
 //        EdgeShape
     }

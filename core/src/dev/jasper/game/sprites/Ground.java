@@ -28,6 +28,9 @@ public class Ground {
         FixtureDef fdef = new FixtureDef();
         PolygonShape shape = new PolygonShape();
 
+        fdef.filter.categoryBits = BobIsMelting.GROUND_BIT;
+        fdef.filter.maskBits = BobIsMelting.ENEMY_BIT | BobIsMelting.OBJECT_BIT | BobIsMelting.KID_BIT;
+
         bdef.position.set((bounds.getX() + bounds.getWidth() / 2) / BobIsMelting.PPM, (bounds.getY() + bounds.getHeight() / 2) / BobIsMelting.PPM);
         bdef.type = BodyDef.BodyType.StaticBody;
 
@@ -35,6 +38,6 @@ public class Ground {
 
         shape.setAsBox(bounds.getWidth() / 2 / BobIsMelting.PPM, bounds.getHeight() / 2 / BobIsMelting.PPM);
         fdef.shape = shape;
-        body.createFixture(fdef);
+        body.createFixture(fdef).setUserData(this);
     }
 }

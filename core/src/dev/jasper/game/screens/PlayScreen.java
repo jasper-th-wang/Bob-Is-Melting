@@ -7,10 +7,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -45,7 +47,7 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer b2dr;
 
     public void handleInput(float dt) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.getState() != Kid.State.JUMPING && player.getState() != Kid.State.FALLING) {
             player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2) {
@@ -67,7 +69,18 @@ public class PlayScreen implements Screen {
         player.update(dt);
         tempBear.update(dt);
 
+        // Avoid camera go over boundary
+        MapProperties prop = map.getProperties();
+        int mapWidth = prop.get("width", Integer.class);
+        int tilePixelWidth = prop.get("tilewidth", Integer.class);
+        float mapPixelWidth = mapWidth * tilePixelWidth / BobIsMelting.PPM;
+
+        // The right boundary of the map (x + width)
+        float cameraHalfWidth = gamePort.getCamera().viewportWidth * .5f;
+
         gameCam.position.x = player.b2body.getPosition().x;
+        gameCam.position.x = MathUtils.clamp(gameCam.position.x, cameraHalfWidth + tilePixelWidth / BobIsMelting.PPM, mapPixelWidth - cameraHalfWidth - tilePixelWidth / BobIsMelting.PPM);
+
         // Update our gameCam with correct coordinates after changes
         gameCam.update();
         // Tell the renderer to draw only what our camera can see in our game world.
