@@ -26,8 +26,8 @@ public class Bear extends Enemy {
 
     public void update(float dt) {
         stateTime += dt;
-        b2body.setLinearVelocity(velocity);
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 3);
+        getB2body().setLinearVelocity(getVelocity());
+        setPosition(getB2body().getPosition().x - getWidth() / 2, getB2body().getPosition().y - getHeight() / 3);
         setRegion(walkAnimation.getKeyFrame(stateTime, true));
     }
 
@@ -46,6 +46,6 @@ public class Bear extends Enemy {
         fdef.filter.maskBits = BobIsMelting.GROUND_BIT | BobIsMelting.ENEMY_BIT | BobIsMelting.OBJECT_BIT | BobIsMelting.KID_BIT;
 
         fdef.shape = shape;
-        b2body.createFixture(fdef).setUserData(this);
+        getB2body().createFixture(fdef).setUserData(this);
     }
 }

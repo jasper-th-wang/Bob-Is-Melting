@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -14,17 +13,19 @@ import dev.jasper.game.BobIsMelting;
 import dev.jasper.game.screens.PlayScreen;
 
 public class Kid extends Sprite {
+
     public enum State {FALLING, JUMPING, STANDING, RUNNING};
-    public State currentState;
-    public State previousState;
-    public World world;
-    public Body b2body;
-    private TextureRegion kidIdle;
-    private Animation<TextureRegion> kidRun;
-    private TextureRegion kidJump;
+    private State currentState;
+    private State previousState;
+    private final World world;
+    private Body b2body;
+    private final TextureRegion kidIdle;
+    private final Animation<TextureRegion> kidRun;
+    private final TextureRegion kidJump;
     // keep track of amount of time for any given state
     private float stateTimer;
     private boolean runningRight;
+    public boolean hitByEnemy;
     public Kid(PlayScreen screen) {
         super(screen.getAtlas().createSprite("Idle (32 x 32)"));
         this.world = screen.getWorld();
@@ -32,6 +33,7 @@ public class Kid extends Sprite {
         previousState = State.STANDING;
         stateTimer = 0;
         runningRight = true;
+        hitByEnemy = false;
         Array<TextureRegion> frames = new Array<>();
         for (int i = 0; i < 4; i++) {
             frames.add(new TextureRegion(getTexture(), 228 + i * 32, 134, 32, 32));
@@ -48,7 +50,7 @@ public class Kid extends Sprite {
         setRegion(kidIdle);
     }
     public void update(float dt) {
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 4 );
+        setPosition(getB2body().getPosition().x - getWidth() / 2, getB2body().getPosition().y - getHeight() / 4 );
         setRegion(getFrame(dt));
     }
     public TextureRegion getFrame(float dt) {
@@ -69,8 +71,8 @@ public class Kid extends Sprite {
         }
 
         // match jumping, falling and standing sprites to current body direction of running
-        final boolean bodyRunningToLeft = b2body.getLinearVelocity().x < 0 || !runningRight;
-        final boolean bodyRunningToRight = b2body.getLinearVelocity().x > 0 || runningRight;
+        final boolean bodyRunningToLeft = getB2body().getLinearVelocity().x < 0 || !runningRight;
+        final boolean bodyRunningToRight = getB2body().getLinearVelocity().x > 0 || runningRight;
         final boolean spriteFacingRight = !region.isFlipX();
         final boolean spriteFacingLeft = region.isFlipX();
         if (bodyRunningToLeft && spriteFacingRight) {
@@ -86,11 +88,11 @@ public class Kid extends Sprite {
         return region;
     }
     public State getState() {
-        if (b2body.getLinearVelocity().y > 0) {
+        if (getB2body().getLinearVelocity().y > 0) {
             return State.JUMPING;
-        } else if (b2body.getLinearVelocity().y < 0) {
+        } else if (getB2body().getLinearVelocity().y < 0) {
             return State.FALLING;
-        } else if (b2body.getLinearVelocity().x != 0) {
+        } else if (getB2body().getLinearVelocity().x != 0) {
             return State.RUNNING;
         } else {
             return State.STANDING;
@@ -109,8 +111,13 @@ public class Kid extends Sprite {
         fdef.filter.maskBits = BobIsMelting.GROUND_BIT | BobIsMelting.SNOWBALL_BIT | BobIsMelting.OBJECT_BIT | BobIsMelting.ENEMY_BIT;
 
         fdef.shape = shape;
-        b2body.createFixture(fdef).setUserData(this);
+        getB2body().createFixture(fdef).setUserData(this);
 
 //        EdgeShape
     }
+    public Body getB2body() {
+        return b2body;
+    }
+
+
 }

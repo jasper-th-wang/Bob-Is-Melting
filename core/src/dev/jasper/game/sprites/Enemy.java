@@ -9,8 +9,8 @@ import dev.jasper.game.screens.PlayScreen;
 public abstract class Enemy extends Sprite {
     protected World world;
     protected PlayScreen screen;
-    public Body b2body;
-    public Vector2 velocity;
+    protected Body b2body;
+    protected Vector2 velocity;
 
     public Enemy(PlayScreen screen, float x, float y) {
         this.world = screen.getWorld();
@@ -22,10 +22,18 @@ public abstract class Enemy extends Sprite {
     protected abstract void defineEnemy();
     public void reverseVelocity(boolean x, boolean y) {
         if (x) {
-            velocity.x = -velocity.x;
+            getVelocity().x = -getVelocity().x;
         }
         if (y) {
-            velocity.y = -velocity.y;
+            getVelocity().y = -getVelocity().y;
         }
+    }
+
+    public Body getB2body() {
+        return b2body;
+    }
+
+    public Vector2 getVelocity() {
+        return velocity;
     }
 }

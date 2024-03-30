@@ -6,20 +6,13 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -31,13 +24,13 @@ import dev.jasper.game.tools.B2WorldCreator;
 import dev.jasper.game.tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
-    private BobIsMelting game;
-    private TextureAtlas atlas;
-    private Kid player;
-    private Bear tempBear;
-    private OrthographicCamera gameCam;
-    private Viewport gamePort;
-    private Hud hud;
+    private final BobIsMelting game;
+    private final TextureAtlas atlas;
+    private final Kid player;
+    private final Bear tempBear;
+    private final OrthographicCamera gameCam;
+    private final Viewport gamePort;
+    private final Hud hud;
     // Tiled map variables
     private TmxMapLoader mapLoader;
     private TiledMap map;
@@ -48,13 +41,13 @@ public class PlayScreen implements Screen {
 
     public void handleInput(float dt) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.getState() != Kid.State.JUMPING && player.getState() != Kid.State.FALLING) {
-            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
+            player.getB2body().applyLinearImpulse(new Vector2(0, 4f), player.getB2body().getWorldCenter(), true);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2) {
-            player.b2body.applyLinearImpulse(new Vector2(0.1f, 0),player.b2body.getWorldCenter(),true );
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.getB2body().getLinearVelocity().x <= 2) {
+            player.getB2body().applyLinearImpulse(new Vector2(0.1f, 0), player.getB2body().getWorldCenter(),true );
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2) {
-            player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0),player.b2body.getWorldCenter(),true );
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.getB2body().getLinearVelocity().x >= -2) {
+            player.getB2body().applyLinearImpulse(new Vector2(-0.1f, 0), player.getB2body().getWorldCenter(),true );
         }
     }
     /**
@@ -78,7 +71,7 @@ public class PlayScreen implements Screen {
         // The right boundary of the map (x + width)
         float cameraHalfWidth = gamePort.getCamera().viewportWidth * .5f;
 
-        gameCam.position.x = player.b2body.getPosition().x;
+        gameCam.position.x = player.getB2body().getPosition().x;
         gameCam.position.x = MathUtils.clamp(gameCam.position.x, cameraHalfWidth + tilePixelWidth / BobIsMelting.PPM, mapPixelWidth - cameraHalfWidth - tilePixelWidth / BobIsMelting.PPM);
 
         // Update our gameCam with correct coordinates after changes
