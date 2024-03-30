@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -30,14 +32,23 @@ public class Kid extends Sprite {
     private State previousState;
     private final World world;
     private Body b2body;
+    private Fixture fixture;
     private final TextureRegion kidIdle;
     private final Animation<TextureRegion> kidRun;
     private final TextureRegion kidJump;
     // keep track of amount of time for any given state
     private float stateTimer;
-    private boolean runningRight;
-    private boolean hitByEnemy;
+    private boolean isRunningRight;
+    private final float invincibleToEnemyDuration = 4f;
+    private final float flickerInterval = 0.2f;
+    private float invincibleToEnemyTimer;
+    private float flickerTimer;
 
+    public boolean getIsInvincibleToEnemy() {
+        return isInvincibleToEnemy;
+    }
+
+    private boolean isInvincibleToEnemy;
     /**
      * Constructs a Kid character for the game.
      *
@@ -49,8 +60,8 @@ public class Kid extends Sprite {
         currentState = State.STANDING;
         previousState = State.STANDING;
         stateTimer = 0;
-        runningRight = true;
-        hitByEnemy = false;
+        isRunningRight = true;
+        isInvincibleToEnemy = false;
         Array<TextureRegion> frames = new Array<>();
         for (int i = 0; i < 4; i++) {
             frames.add(new TextureRegion(getTexture(), 228 + i * 32, 134, 32, 32));
@@ -74,6 +85,24 @@ public class Kid extends Sprite {
     public void update(float dt) {
         setPosition(getB2body().getPosition().x - getWidth() / 2, getB2body().getPosition().y - getHeight() / 4 );
         setRegion(getFrame(dt));
+        // Add flicker if hit by enemy
+        if (isInvincibleToEnemy) {
+            invincibleToEnemyTimer += dt;
+            flickerTimer -= dt;
+
+            if (flickerTimer <= 0) {
+                final float newAlpha = this.getColor().a == .2f ? 1f : .2f;
+                this.setAlpha(newAlpha);
+                flickerTimer = flickerInterval;
+            }
+
+            if (invincibleToEnemyTimer >= invincibleToEnemyDuration) {
+                isInvincibleToEnemy = false;
+                this.setAlpha(1f);
+                resetCollisionCategory();
+            }
+        }
+
     }
     private TextureRegion getFrame(float dt) {
         this.currentState = getState();
@@ -93,16 +122,16 @@ public class Kid extends Sprite {
         }
 
         // match jumping, falling and standing sprites to current body direction of running
-        final boolean bodyRunningToLeft = getB2body().getLinearVelocity().x < 0 || !runningRight;
-        final boolean bodyRunningToRight = getB2body().getLinearVelocity().x > 0 || runningRight;
+        final boolean bodyRunningToLeft = getB2body().getLinearVelocity().x < 0 || !isRunningRight;
+        final boolean bodyRunningToRight = getB2body().getLinearVelocity().x > 0 || isRunningRight;
         final boolean spriteFacingRight = !region.isFlipX();
         final boolean spriteFacingLeft = region.isFlipX();
         if (bodyRunningToLeft && spriteFacingRight) {
             region.flip(true, false);
-            runningRight = false;
+            isRunningRight = false;
         } else if (bodyRunningToRight && spriteFacingLeft) {
             region.flip(true, false);
-            runningRight = true;
+            isRunningRight = true;
         }
 
         stateTimer = currentState == previousState ? stateTimer + dt : 0;
@@ -141,7 +170,8 @@ public class Kid extends Sprite {
         fdef.filter.maskBits = EntityCollisionCategoy.GROUND_BIT | EntityCollisionCategoy.SNOWBALL_BIT | EntityCollisionCategoy.OBJECT_BIT | EntityCollisionCategoy.ENEMY_BIT;
 
         fdef.shape = shape;
-        getB2body().createFixture(fdef).setUserData(this);
+        fixture = getB2body().createFixture(fdef);
+        fixture.setUserData(this);
 
 //        EdgeShape
     }
@@ -149,6 +179,26 @@ public class Kid extends Sprite {
         return b2body;
     }
 
+    public void onEnemyHit() {
+        setInvincibleToEnemy();
+        isInvincibleToEnemy = true;
+        flickerTimer = flickerInterval;
+        invincibleToEnemyTimer = 0;
+    }
+
+    private void setInvincibleToEnemy() {
+        Filter filter = new Filter();
+        filter.categoryBits = EntityCollisionCategoy.KID_INVINCIBLE_BIT;
+        filter.maskBits = EntityCollisionCategoy.GROUND_BIT;
+        fixture.setFilterData(filter);
+    }
+
+    private void resetCollisionCategory() {
+        Filter filter = new Filter();
+        filter.categoryBits = EntityCollisionCategoy.KID_BIT;
+        filter.maskBits = EntityCollisionCategoy.GROUND_BIT | EntityCollisionCategoy.SNOWBALL_BIT | EntityCollisionCategoy.OBJECT_BIT | EntityCollisionCategoy.ENEMY_BIT;
+        fixture.setFilterData(filter);
+    }
 
 
 }

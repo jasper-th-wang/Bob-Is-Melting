@@ -41,7 +41,7 @@ public class Ground {
         PolygonShape shape = new PolygonShape();
 
         fdef.filter.categoryBits = EntityCollisionCategoy.GROUND_BIT;
-        fdef.filter.maskBits = EntityCollisionCategoy.ENEMY_BIT | EntityCollisionCategoy.OBJECT_BIT | EntityCollisionCategoy.KID_BIT;
+//        fdef.filter.maskBits = EntityCollisionCategoy.ENEMY_BIT | EntityCollisionCategoy.OBJECT_BIT | EntityCollisionCategoy.KID_BIT;
 
         bdef.position.set((bounds.getX() + bounds.getWidth() / 2) / BobIsMelting.PPM, (bounds.getY() + bounds.getHeight() / 2) / BobIsMelting.PPM);
         bdef.type = BodyDef.BodyType.StaticBody;

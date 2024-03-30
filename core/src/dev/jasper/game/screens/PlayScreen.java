@@ -50,13 +50,16 @@ public class PlayScreen implements Screen {
      */
     public void handleInput(float dt) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.getState() != Kid.State.JUMPING && player.getState() != Kid.State.FALLING) {
-            player.getB2body().applyLinearImpulse(new Vector2(0, 4f), player.getB2body().getWorldCenter(), true);
+            final float jumpVelocity = player.getIsInvincibleToEnemy() ? 2f : 3.5f;
+            player.getB2body().applyLinearImpulse(new Vector2(0, jumpVelocity), player.getB2body().getWorldCenter(), true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.getB2body().getLinearVelocity().x <= 2) {
-            player.getB2body().applyLinearImpulse(new Vector2(0.1f, 0), player.getB2body().getWorldCenter(),true );
+            final float speed = player.getIsInvincibleToEnemy() ? 0.04f : 0.1f;
+            player.getB2body().applyLinearImpulse(new Vector2(speed, 0), player.getB2body().getWorldCenter(),true );
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.getB2body().getLinearVelocity().x >= -2) {
-            player.getB2body().applyLinearImpulse(new Vector2(-0.1f, 0), player.getB2body().getWorldCenter(),true );
+            final float speed = player.getIsInvincibleToEnemy() ? 0.04f : 0.1f;
+            player.getB2body().applyLinearImpulse(new Vector2(-speed, 0), player.getB2body().getWorldCenter(),true );
         }
     }
     /**

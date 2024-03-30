@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import dev.jasper.game.EntityCollisionCategoy;
 import dev.jasper.game.sprites.Enemy;
+import dev.jasper.game.sprites.Kid;
 
 /**
  * This class implements the ContactListener interface from the Box2D physics library.
@@ -35,6 +36,9 @@ public class WorldContactListener implements ContactListener {
                 break;
             case EntityCollisionCategoy.KID_BIT | EntityCollisionCategoy.ENEMY_BIT:
                 Gdx.app.log("Kid", "Hit");
+                Object kid = fixA.getFilterData().categoryBits == EntityCollisionCategoy.KID_BIT ?
+                        fixA.getUserData() : fixB.getUserData();
+                ((Kid) kid).onEnemyHit();
                 break;
         }
 
