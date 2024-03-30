@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.Array;
 import dev.jasper.game.BobIsMelting;
+import dev.jasper.game.EntityCollisionCategoy;
 import dev.jasper.game.screens.PlayScreen;
 
 public class Bear extends Enemy {
@@ -42,8 +43,8 @@ public class Bear extends Enemy {
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(7 / BobIsMelting.PPM);
-        fdef.filter.categoryBits = BobIsMelting.ENEMY_BIT;
-        fdef.filter.maskBits = BobIsMelting.GROUND_BIT | BobIsMelting.ENEMY_BIT | BobIsMelting.OBJECT_BIT | BobIsMelting.KID_BIT;
+        fdef.filter.categoryBits = EntityCollisionCategoy.ENEMY_BIT;
+        fdef.filter.maskBits = EntityCollisionCategoy.GROUND_BIT | EntityCollisionCategoy.ENEMY_BIT | EntityCollisionCategoy.OBJECT_BIT | EntityCollisionCategoy.KID_BIT;
 
         fdef.shape = shape;
         getB2body().createFixture(fdef).setUserData(this);

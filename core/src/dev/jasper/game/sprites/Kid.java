@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import dev.jasper.game.BobIsMelting;
+import dev.jasper.game.EntityCollisionCategoy;
 import dev.jasper.game.screens.PlayScreen;
 
 
@@ -136,8 +137,8 @@ public class Kid extends Sprite {
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(7 / BobIsMelting.PPM);
-        fdef.filter.categoryBits = BobIsMelting.KID_BIT;
-        fdef.filter.maskBits = BobIsMelting.GROUND_BIT | BobIsMelting.SNOWBALL_BIT | BobIsMelting.OBJECT_BIT | BobIsMelting.ENEMY_BIT;
+        fdef.filter.categoryBits = EntityCollisionCategoy.KID_BIT;
+        fdef.filter.maskBits = EntityCollisionCategoy.GROUND_BIT | EntityCollisionCategoy.SNOWBALL_BIT | EntityCollisionCategoy.OBJECT_BIT | EntityCollisionCategoy.ENEMY_BIT;
 
         fdef.shape = shape;
         getB2body().createFixture(fdef).setUserData(this);
