@@ -22,8 +22,8 @@ public abstract class Enemy extends Sprite {
     protected PlayScreen screen;
     protected Body b2body;
     protected float decideSpecialMovementTimer;
-    protected Bear.State currentState;
-    protected Bear.State previousState;
+    protected State currentState;
+    protected State previousState;
     protected float stateTime;
     protected boolean isRunningRight;
     protected Vector2 velocity;
@@ -108,4 +108,6 @@ public abstract class Enemy extends Sprite {
     public void setVelocity(Vector2 velocity) {
         this.velocity = velocity;
     }
+
+    public enum State {STANDING, RUNNING}
 }

@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.jasper.game.BobIsMelting;
 import dev.jasper.game.scenes.Hud;
 import dev.jasper.game.sprites.Bear;
+import dev.jasper.game.sprites.Bob;
 import dev.jasper.game.sprites.Kid;
 import dev.jasper.game.tools.B2WorldCreator;
 import dev.jasper.game.tools.WorldContactListener;
@@ -34,6 +35,7 @@ public class PlayScreen implements Screen {
     private final BobIsMelting game;
     private final TextureAtlas atlas;
     private final Kid player;
+    private final Bob bob;
     private final Bear tempBear;
     private final OrthographicCamera gameCam;
     private final Viewport gamePort;
@@ -67,6 +69,7 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
         new B2WorldCreator(this);
         this.player = new Kid(this);
+        this.bob = new Bob(this);
         world.setContactListener(new WorldContactListener());
         tempBear = new Bear(this, .32f, .32f);
 
@@ -101,6 +104,7 @@ public class PlayScreen implements Screen {
         world.step(1/60f, 6, 2);
 
         player.update(dt);
+        bob.update(dt);
         tempBear.update(dt);
 
         // Avoid camera go over boundary
@@ -154,6 +158,7 @@ public class PlayScreen implements Screen {
         game.getBatch().setProjectionMatrix(gameCam.combined);
         game.getBatch().begin();
         player.draw(game.getBatch());
+        bob.draw(game.getBatch());
         tempBear.draw(game.getBatch());
         game.getBatch().end();
 

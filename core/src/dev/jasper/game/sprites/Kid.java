@@ -24,7 +24,7 @@ import dev.jasper.game.screens.PlayScreen;
  * @version 2024
  */
 public class Kid extends Sprite {
-        private final World world;;
+    private final World world;
     private final TextureRegion kidIdle;
     private final Animation<TextureRegion> kidRun;
     private final TextureRegion kidJump;
@@ -82,11 +82,15 @@ public class Kid extends Sprite {
     public void update(float dt) {
         setPosition(getB2body().getPosition().x - getWidth() / 2, getB2body().getPosition().y - getHeight() / 4 );
         setRegion(getFrame(dt));
-        // Add flicker if hit by enemy
+        updateCollisionState(dt);
+    }
+
+    private void updateCollisionState(float dt) {
         if (isInvincibleToEnemy) {
             invincibleToEnemyTimer += dt;
             flickerTimer -= dt;
 
+            // Add flicker if hit by enemy
             if (flickerTimer <= 0) {
                 final float newAlpha = this.getColor().a == .2f ? 1f : .2f;
                 this.setAlpha(newAlpha);
@@ -99,7 +103,6 @@ public class Kid extends Sprite {
                 resetCollisionCategory();
             }
         }
-
     }
 
     private TextureRegion getFrame(float dt) {
@@ -201,7 +204,7 @@ public class Kid extends Sprite {
         fixture.setFilterData(filter);
     }
 
-/**
+    /**
      * Represents the various movement states that the Kid character can be in during the game.
      */
     public enum State {FALLING, JUMPING, STANDING, RUNNING}

@@ -11,7 +11,6 @@ import dev.jasper.game.EntityCollisionCategory;
 import dev.jasper.game.screens.PlayScreen;
 
 public class Bear extends Enemy {
-    public enum State {STANDING, RUNNING};
     private Animation<TextureRegion> idleAnimation;
     private Animation<TextureRegion> walkAnimation;
     private final float idleDuration = 3f;

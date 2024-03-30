@@ -34,4 +34,5 @@ public class EntityCollisionCategory {
      */
     public static final short ENEMY_BIT = 32;
     public static final short KID_INVINCIBLE_BIT = 64;
+    public static final short BOB_BIT = 128;
 }
