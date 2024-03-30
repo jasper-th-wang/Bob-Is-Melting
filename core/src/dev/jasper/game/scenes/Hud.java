@@ -23,15 +23,15 @@ import dev.jasper.game.BobIsMelting;
  */
 public class Hud implements Disposable {
     private final Stage stage;
+    Label timeTitleLabel;
+    Label timeLabel;
+    Label healthTitleLabel;
+    Label healthLabel;
     // Standalone camera and viewport to have the HUD render independently.
     private Viewport viewport;
     private Integer worldTimer;
     private float timeCount;
     private Integer health;
-    Label timeTitleLabel;
-    Label timeLabel;
-    Label healthTitleLabel;
-    Label healthLabel;
 
     /**
      * Constructs a Hud instance.

@@ -21,17 +21,12 @@ public abstract class Enemy extends Sprite {
     protected World world;
     protected PlayScreen screen;
     protected Body b2body;
-    protected float decideSpeicalMovementTimer;
+    protected float decideSpecialMovementTimer;
     protected Bear.State currentState;
     protected Bear.State previousState;
     protected float stateTime;
     protected boolean isRunningRight;
-
-    public void setVelocity(Vector2 velocity) {
-        this.velocity = velocity;
-    }
     protected Vector2 velocity;
-
     /**
      * Constructs an Enemy instance.
      * @param screen - the game screen
@@ -44,7 +39,7 @@ public abstract class Enemy extends Sprite {
         setPosition(x, y);
         defineEnemy();
         velocity = new Vector2(0.05f, 0);
-        decideSpeicalMovementTimer = 0;
+        decideSpecialMovementTimer = 0;
     }
 
     private void jump() {
@@ -64,14 +59,14 @@ public abstract class Enemy extends Sprite {
     }
 
     protected void applySpecialMovement() {
-        if (decideSpeicalMovementTimer >= decideSpecialMovementDuration) {
+        if (decideSpecialMovementTimer >= decideSpecialMovementDuration) {
             if (MathUtils.randomBoolean(0.5F)) {
                 jump();
                 setVelocity(DEFAULT_VELOCITY);
             } else {
                 idle();
             }
-            decideSpeicalMovementTimer = 0;
+            decideSpecialMovementTimer = 0;
         }
     }
 
@@ -79,6 +74,7 @@ public abstract class Enemy extends Sprite {
      * Defines the physical properties of the Enemy character in the game world.
      */
     protected abstract void defineEnemy();
+
     /**
      * Reverses the enemy's velocity in the x and/or y direction.
      * @param x - if true, reverse the x-component of the velocity
@@ -107,5 +103,9 @@ public abstract class Enemy extends Sprite {
      */
     public Vector2 getVelocity() {
         return velocity;
+    }
+
+    public void setVelocity(Vector2 velocity) {
+        this.velocity = velocity;
     }
 }

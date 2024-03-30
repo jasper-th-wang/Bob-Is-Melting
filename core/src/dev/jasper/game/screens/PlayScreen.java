@@ -45,12 +45,40 @@ public class PlayScreen implements Screen {
     private final Box2DDebugRenderer b2dr;
 
     /**
+     * Constructs a PlayScreen instance.
+     * @param game - the main game instance
+     */
+    public PlayScreen(BobIsMelting game) {
+        this.atlas = new TextureAtlas("Characters.atlas");
+        this.game = game;
+        gameCam = new OrthographicCamera();
+        // Create a FitViewport to maintain virtual aspect ratio
+        gamePort = new FitViewport(BobIsMelting.V_WIDTH / BobIsMelting.PPM, BobIsMelting.V_HEIGHT / BobIsMelting.PPM, gameCam);
+        hud = new Hud(game.getBatch());
+        // Load the map and set up map renderer
+        // Tiled map variables
+        TmxMapLoader mapLoader = new TmxMapLoader();
+        map = mapLoader.load("mainNew.tmx");
+        renderer = new OrthogonalTiledMapRenderer(map, 1 / BobIsMelting.PPM);
+        // Set up game camera to be centered correctly
+        gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
+        // Initialize Box2d game world
+        world = new World(new Vector2(0,-10), true);
+        b2dr = new Box2DDebugRenderer();
+        new B2WorldCreator(this);
+        this.player = new Kid(this);
+        world.setContactListener(new WorldContactListener());
+        tempBear = new Bear(this, .32f, .32f);
+
+    }
+
+    /**
      * Handles the user input for controlling the player character.
      * @param dt - delta time
      */
     public void handleInput(float dt) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.getState() != Kid.State.JUMPING && player.getState() != Kid.State.FALLING) {
-            final float jumpVelocity = player.getIsInvincibleToEnemy() ? 2f : 3.2f;
+            final float jumpVelocity = player.getIsInvincibleToEnemy() ? 2.2f : 3.2f;
             player.getB2body().applyLinearImpulse(new Vector2(0, jumpVelocity), player.getB2body().getWorldCenter(), true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.getB2body().getLinearVelocity().x <= 2) {
@@ -62,6 +90,7 @@ public class PlayScreen implements Screen {
             player.getB2body().applyLinearImpulse(new Vector2(-speed, 0), player.getB2body().getWorldCenter(),true );
         }
     }
+
     /**
      * Takes in a delta time to update the game world's state.
      * @param dt - delta time
@@ -91,33 +120,7 @@ public class PlayScreen implements Screen {
         // Tell the renderer to draw only what our camera can see in our game world.
         renderer.setView(gameCam);
     }
-    /**
-     * Constructs a PlayScreen instance.
-     * @param game - the main game instance
-     */
-    public PlayScreen(BobIsMelting game) {
-        this.atlas = new TextureAtlas("Characters.atlas");
-        this.game = game;
-        gameCam = new OrthographicCamera();
-        // Create a FitViewport to maintain virtual aspect ratio
-        gamePort = new FitViewport(BobIsMelting.V_WIDTH / BobIsMelting.PPM, BobIsMelting.V_HEIGHT / BobIsMelting.PPM, gameCam);
-        hud = new Hud(game.getBatch());
-        // Load the map and set up map renderer
-        // Tiled map variables
-        TmxMapLoader mapLoader = new TmxMapLoader();
-        map = mapLoader.load("mainNew.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map, 1 / BobIsMelting.PPM);
-        // Set up game camera to be centered correctly
-        gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
-        // Initialize Box2d game world
-        world = new World(new Vector2(0,-10), true);
-        b2dr = new Box2DDebugRenderer();
-        new B2WorldCreator(this);
-        this.player = new Kid(this);
-        world.setContactListener(new WorldContactListener());
-        tempBear = new Bear(this, .32f, .32f);
 
-    }
     /**
      * Returns the TextureAtlas instance used in the game.
      * @return atlas - the TextureAtlas instance

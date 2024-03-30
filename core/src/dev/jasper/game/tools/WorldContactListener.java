@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import dev.jasper.game.EntityCollisionCategoy;
+import dev.jasper.game.EntityCollisionCategory;
 import dev.jasper.game.sprites.Enemy;
 import dev.jasper.game.sprites.Kid;
 
@@ -32,15 +32,15 @@ public class WorldContactListener implements ContactListener {
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
 
         switch (cDef) {
-            case EntityCollisionCategoy.ENEMY_BIT | EntityCollisionCategoy.GROUND_BIT:
-                Object enemy = fixA.getFilterData().categoryBits == EntityCollisionCategoy.ENEMY_BIT ?
+            case EntityCollisionCategory.ENEMY_BIT | EntityCollisionCategory.GROUND_BIT:
+                Object enemy = fixA.getFilterData().categoryBits == EntityCollisionCategory.ENEMY_BIT ?
                         fixA.getUserData() : fixB.getUserData();
                 final boolean toReverseVelocity = MathUtils.randomBoolean(0.8F);
                 ((Enemy) enemy).reverseVelocity(toReverseVelocity, false);
                 break;
-            case EntityCollisionCategoy.KID_BIT | EntityCollisionCategoy.ENEMY_BIT:
+            case EntityCollisionCategory.KID_BIT | EntityCollisionCategory.ENEMY_BIT:
                 Gdx.app.log("Kid", "Hit");
-                Object kid = fixA.getFilterData().categoryBits == EntityCollisionCategoy.KID_BIT ?
+                Object kid = fixA.getFilterData().categoryBits == EntityCollisionCategory.KID_BIT ?
                         fixA.getUserData() : fixB.getUserData();
                 ((Kid) kid).onEnemyHit();
                 break;

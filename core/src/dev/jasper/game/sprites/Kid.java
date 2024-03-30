@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import dev.jasper.game.BobIsMelting;
-import dev.jasper.game.EntityCollisionCategoy;
+import dev.jasper.game.EntityCollisionCategory;
 import dev.jasper.game.screens.PlayScreen;
 
 
@@ -24,31 +24,23 @@ import dev.jasper.game.screens.PlayScreen;
  * @version 2024
  */
 public class Kid extends Sprite {
-    /**
-     * Represents the various movement states that the Kid character can be in during the game.
-     */
-    public enum State {FALLING, JUMPING, STANDING, RUNNING};
-    private State currentState;
-    private State previousState;
-    private final World world;
-    private Body b2body;
-    private Fixture fixture;
+        private final World world;;
     private final TextureRegion kidIdle;
     private final Animation<TextureRegion> kidRun;
     private final TextureRegion kidJump;
+    private final float invincibleToEnemyDuration = 4f;
+    private final float flickerInterval = 0.2f;
+    private State currentState;
+    private State previousState;
+    private Body b2body;
+    private Fixture fixture;
     // keep track of amount of time for any given state
     private float stateTimer;
     private boolean isRunningRight;
-    private final float invincibleToEnemyDuration = 4f;
-    private final float flickerInterval = 0.2f;
     private float invincibleToEnemyTimer;
     private float flickerTimer;
-
-    public boolean getIsInvincibleToEnemy() {
-        return isInvincibleToEnemy;
-    }
-
     private boolean isInvincibleToEnemy;
+
     /**
      * Constructs a Kid character for the game.
      *
@@ -77,6 +69,11 @@ public class Kid extends Sprite {
         setBounds(0, 0, 32 / BobIsMelting.PPM, 32 / BobIsMelting.PPM);
         setRegion(kidIdle);
     }
+
+    public boolean getIsInvincibleToEnemy() {
+        return isInvincibleToEnemy;
+    }
+
     /**
      * Updates the position of the Kid character in the game world.
      *
@@ -104,6 +101,7 @@ public class Kid extends Sprite {
         }
 
     }
+
     private TextureRegion getFrame(float dt) {
         this.currentState = getState();
         TextureRegion region;
@@ -138,6 +136,7 @@ public class Kid extends Sprite {
         previousState = currentState;
         return region;
     }
+
     /**
      * Determines the current state of the Kid character based on its linear velocity.
      *
@@ -154,6 +153,7 @@ public class Kid extends Sprite {
             return State.STANDING;
         }
     }
+
     /**
      * Defines the physical properties of the Kid character in the game world.
      */
@@ -166,8 +166,8 @@ public class Kid extends Sprite {
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(7 / BobIsMelting.PPM);
-        fdef.filter.categoryBits = EntityCollisionCategoy.KID_BIT;
-        fdef.filter.maskBits = EntityCollisionCategoy.GROUND_BIT | EntityCollisionCategoy.SNOWBALL_BIT | EntityCollisionCategoy.OBJECT_BIT | EntityCollisionCategoy.ENEMY_BIT;
+        fdef.filter.categoryBits = EntityCollisionCategory.KID_BIT;
+        fdef.filter.maskBits = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.SNOWBALL_BIT | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.ENEMY_BIT;
 
         fdef.shape = shape;
         fixture = getB2body().createFixture(fdef);
@@ -175,6 +175,7 @@ public class Kid extends Sprite {
 
 //        EdgeShape
     }
+
     public Body getB2body() {
         return b2body;
     }
@@ -188,17 +189,22 @@ public class Kid extends Sprite {
 
     private void setInvincibleToEnemy() {
         Filter filter = new Filter();
-        filter.categoryBits = EntityCollisionCategoy.KID_INVINCIBLE_BIT;
-        filter.maskBits = EntityCollisionCategoy.GROUND_BIT;
+        filter.categoryBits = EntityCollisionCategory.KID_INVINCIBLE_BIT;
+        filter.maskBits = EntityCollisionCategory.GROUND_BIT;
         fixture.setFilterData(filter);
     }
 
     private void resetCollisionCategory() {
         Filter filter = new Filter();
-        filter.categoryBits = EntityCollisionCategoy.KID_BIT;
-        filter.maskBits = EntityCollisionCategoy.GROUND_BIT | EntityCollisionCategoy.SNOWBALL_BIT | EntityCollisionCategoy.OBJECT_BIT | EntityCollisionCategoy.ENEMY_BIT;
+        filter.categoryBits = EntityCollisionCategory.KID_BIT;
+        filter.maskBits = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.SNOWBALL_BIT | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.ENEMY_BIT;
         fixture.setFilterData(filter);
     }
+
+/**
+     * Represents the various movement states that the Kid character can be in during the game.
+     */
+    public enum State {FALLING, JUMPING, STANDING, RUNNING}
 
 
 }

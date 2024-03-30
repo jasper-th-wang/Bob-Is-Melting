@@ -1,6 +1,14 @@
 package dev.jasper.game;
 
-public class EntityCollisionCategoy {
+/**
+ * This class represents the different categories of entities that can collide in the game.
+ * Each category is represented by a bit value. These bit values are used in the game's physics engine
+ * to handle collisions between different types of entities.
+ *
+ * @author Jasper Wang
+ * @version 2024
+ */
+public class EntityCollisionCategory {
     /**
      * Bit value representing the ground in the game's physics engine.
      */
