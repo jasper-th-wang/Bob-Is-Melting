@@ -55,7 +55,7 @@ public class Kid extends Sprite {
      * @param screen The PlayScreen instance where the Kid character is displayed and interacts.
      */
     public Kid(PlayScreen screen) {
-        super(screen.getAtlas().createSprite("Idle (32 x 32)"));
+        super(screen.getAtlas().findRegion("Idle (32 x 32)"));
         this.world = screen.getWorld();
         currentState = State.STANDING;
         previousState = State.STANDING;
@@ -64,16 +64,16 @@ public class Kid extends Sprite {
         isInvincibleToEnemy = false;
         Array<TextureRegion> frames = new Array<>();
         for (int i = 0; i < 4; i++) {
-            frames.add(new TextureRegion(getTexture(), 228 + i * 32, 134, 32, 32));
+            frames.add(new TextureRegion(screen.getAtlas().findRegion("Running (32 x 32)"), i * 32, 0, 32, 32));
 //            228,134,128,32
         }
         kidRun = new Animation<TextureRegion>(0.1f, frames);
         frames.clear();
 
-        kidJump = new TextureRegion(getTexture(), 132, 68, 32, 32);
+        kidJump = new TextureRegion(screen.getAtlas().findRegion("Jumping (32 x 32)"), 0, 0, 32, 32);
 
         defineKid();
-        kidIdle = new TextureRegion(getTexture(), 388, 392, 32, 32);
+        kidIdle = new TextureRegion(screen.getAtlas().findRegion("Idle (32 x 32)"), 0, 0, 32, 32);
         setBounds(0, 0, 32 / BobIsMelting.PPM, 32 / BobIsMelting.PPM);
         setRegion(kidIdle);
     }
