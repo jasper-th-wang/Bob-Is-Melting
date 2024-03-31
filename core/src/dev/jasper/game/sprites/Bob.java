@@ -31,6 +31,7 @@ public class Bob extends Sprite {
         // TODO: add other textures
         defineBob();
         setBounds(0, 0, 16 / BobIsMelting.PPM, 24 / BobIsMelting.PPM);
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2 + 0.02f);
         setRegion(fullHealth);
     }
     /**
@@ -39,7 +40,6 @@ public class Bob extends Sprite {
      * @param dt a float that represents delta time, the amount of time since the last frame was rendered.
      */
     public void update(float dt) {
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2 + 0.02f);
         setRegion(getFrame());
     }
     private TextureRegion getFrame() {

@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.jasper.game.BobIsMelting;
@@ -21,6 +22,7 @@ import dev.jasper.game.scenes.Hud;
 import dev.jasper.game.sprites.Bear;
 import dev.jasper.game.sprites.Bob;
 import dev.jasper.game.sprites.Kid;
+import dev.jasper.game.sprites.Snowball;
 import dev.jasper.game.tools.B2WorldCreator;
 import dev.jasper.game.tools.WorldContactListener;
 
@@ -33,10 +35,14 @@ import dev.jasper.game.tools.WorldContactListener;
  */
 public class PlayScreen implements Screen {
     private final BobIsMelting game;
+    // list of snowball spawn spots
+    private final Array<Vector2> snowballSpawnSpots;
     private final TextureAtlas atlas;
     private final Kid player;
     private final Bob bob;
+    // TODO: temp
     private final Bear tempBear;
+    private final Snowball tempSnow;
     private final OrthographicCamera gameCam;
     private final Viewport gamePort;
     private final Hud hud;
@@ -45,6 +51,7 @@ public class PlayScreen implements Screen {
     // Box2d variables
     private final World world;
     private final Box2DDebugRenderer b2dr;
+    // method to randomly spawn snowballs
 
     /**
      * Constructs a PlayScreen instance.
@@ -67,11 +74,14 @@ public class PlayScreen implements Screen {
         // Initialize Box2d game world
         world = new World(new Vector2(0,-10), true);
         b2dr = new Box2DDebugRenderer();
-        new B2WorldCreator(this);
+        final B2WorldCreator b2WorldCreator =  new B2WorldCreator(this);
+        this.snowballSpawnSpots = b2WorldCreator.getSnowballSpawnSpots();
         this.player = new Kid(this);
         this.bob = new Bob(this);
         world.setContactListener(new WorldContactListener());
         tempBear = new Bear(this, .32f, .32f);
+        tempSnow = new Snowball(this, snowballSpawnSpots.peek());
+
 
     }
 
@@ -160,6 +170,7 @@ public class PlayScreen implements Screen {
         player.draw(game.getBatch());
         bob.draw(game.getBatch());
         tempBear.draw(game.getBatch());
+        tempSnow.draw(game.getBatch());
         game.getBatch().end();
 
         // Set our batch to draw what the HUD camera sees
