@@ -16,7 +16,10 @@ import dev.jasper.game.screens.PlayScreen;
  * @version 2024
  */
 public abstract class Enemy extends Sprite {
-    protected static final Vector2 DEFAULT_VELOCITY = new Vector2(0.05f, 0);
+    protected final float defaultRunVelocity = 0.05f;
+    protected final Vector2 defaultVelocity = new Vector2(defaultRunVelocity, 0);
+    protected final float defaultJumpVelocity = 3f;
+    protected final float chanceToJump = 0.5F;
     protected final float decideSpecialMovementDuration = 3f;
     protected World world;
     protected PlayScreen screen;
@@ -29,21 +32,21 @@ public abstract class Enemy extends Sprite {
     protected Vector2 velocity;
     /**
      * Constructs an Enemy instance.
-     * @param screen - the game screen
+     * @param screenInstance - the game screen
      * @param x - the x-coordinate of the enemy's position
      * @param y - the y-coordinate of the enemy's position
      */
-    public Enemy(final PlayScreen screen, final float x, final float y) {
-        this.world = screen.getWorld();
-        this.screen = screen;
+    public Enemy(final PlayScreen screenInstance, final float x, final float y) {
+        this.world = screenInstance.getWorld();
+        this.screen = screenInstance;
         setPosition(x, y);
         defineEnemy();
-        velocity = new Vector2(0.05f, 0);
+        velocity = new Vector2(defaultRunVelocity, 0);
         decideSpecialMovementTimer = 0;
     }
 
     private void jump() {
-        b2body.applyLinearImpulse(new Vector2(0, 3f), b2body.getWorldCenter(), true);
+        b2body.applyLinearImpulse(new Vector2(0, defaultJumpVelocity), b2body.getWorldCenter(), true);
         Gdx.app.log("Enemy", "jump!");
     }
 
@@ -51,18 +54,18 @@ public abstract class Enemy extends Sprite {
         setVelocity(new Vector2(0, 0));
     }
 
-    protected void run() {
+    protected final void run() {
         if (Math.abs(getB2body().getLinearVelocity().x) <= 2) {
             getB2body().applyLinearImpulse(getVelocity(), getB2body().getWorldCenter(), true);
         }
 
     }
 
-    protected void applySpecialMovement() {
+    protected final void applySpecialMovement() {
         if (decideSpecialMovementTimer >= decideSpecialMovementDuration) {
-            if (MathUtils.randomBoolean(0.5F)) {
+            if (MathUtils.randomBoolean(chanceToJump)) {
                 jump();
-                setVelocity(DEFAULT_VELOCITY);
+                setVelocity(defaultVelocity);
             } else {
                 idle();
             }
@@ -105,9 +108,14 @@ public abstract class Enemy extends Sprite {
         return velocity;
     }
 
-    public void setVelocity(final Vector2 velocity) {
-        this.velocity = velocity;
+    public void setVelocity(final Vector2 newVelocity) {
+        this.velocity = newVelocity;
     }
 
+    /**
+     * The State enum represents the possible states of an Enemy.
+     * STANDING: The enemy is standing still.
+     * RUNNING: The enemy is running.
+     */
     public enum State {STANDING, RUNNING}
 }

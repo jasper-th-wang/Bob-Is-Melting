@@ -13,48 +13,75 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.jasper.game.BobIsMelting;
 
 
-
 /**
  * The Hud class represents the heads-up display (HUD) in the game.
- * It implements the Disposable interface from the libGDX library to properly dispose of resources when they are no longer needed.
+ * It implements the Disposable interface from the libGDX library
+ * to properly dispose of resources when they are no longer needed.
  *
  * @author Jasper Wang
  * @version 2024
  */
 public class Hud implements Disposable {
-    private final Stage stage;
-    Label timeTitleLabel;
-    Label timeLabel;
-    Label healthTitleLabel;
-    Label healthLabel;
-    // Standalone camera and viewport to have the HUD render independently.
-    private Viewport viewport;
-    private Integer worldTimer;
-    private float timeCount;
+    /**
+     * The health increase when a snowball is added.
+     */
+    private static final int SNOWBALL_HEALTH_INCREASE = 10;
+    /**
+     * The maximum health that the HUD can have.
+     */
+    private static final int MAX_HEALTH = 100;
 
-    public static Integer getHealth() {
-        return health;
-    }
-
-    public static void setHealth(final Integer health) {
-        Hud.health = health;
-    }
-    public static void addSnowball() {
-        setHealth(getHealth() + snowballHealthIncrease);
-    }
-
-
+    /**
+     * The padding at the top of the table in the HUD.
+     */
+    private static final int TABLE_PAD_TOP = 10;
+    /**
+     * The health of the HUD in integer format.
+     */
     private static Integer health;
-    private static final int snowballHealthIncrease = 10;
+    /**
+     * The Stage instance used for the HUD.
+     */
+    private final Stage stage;
+    /**
+     * The Label instance used for displaying the title of the time elapsed.
+     */
+    private final Label timeTitleLabel;
+    /**
+     * The Label instance used for displaying the time elapsed.
+     */
+    private final Label timeLabel;
+    /**
+     * The Label instance used for displaying the title of the health.
+     */
+    private final Label healthTitleLabel;
+    /**
+     * The Label instance used for displaying the health.
+     */
+    private final Label healthLabel;
+    /**
+     * The Viewport instance used for the HUD.
+     * This is a standalone camera and viewport to have the HUD render independently.
+     */
+    private final Viewport viewport;
+    /**
+     * The world timer in integer format.
+     */
+    private Integer worldTimer;
+    /**
+     * The time count in float format.
+     */
+    private float timeCount;
 
     /**
      * Constructs a Hud instance.
+     *
      * @param sb - the SpriteBatch instance used for drawing
      */
     public Hud(final SpriteBatch sb) {
         worldTimer = 0;
         timeCount = 0;
-        health  = 100;
+        health = MAX_HEALTH;
         viewport = new FitViewport(BobIsMelting.V_WIDTH, BobIsMelting.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
@@ -63,16 +90,45 @@ public class Hud implements Disposable {
         table.setFillParent(true);
         timeTitleLabel = new Label("TIME ELAPSED", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         timeLabel = new Label(String.format("%03d", worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+
         // Health as a temp name for now
         healthTitleLabel = new Label("HEALTH", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         healthLabel = new Label(String.format("%02d", health), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        table.add(healthTitleLabel).expandX().padTop(10);
-        table.add(timeTitleLabel).expandX().padTop(10);
+
+        table.add(healthTitleLabel).expandX().padTop(TABLE_PAD_TOP);
+        table.add(timeTitleLabel).expandX().padTop(TABLE_PAD_TOP);
         table.row();
+
         table.add(healthLabel).expandX();
         table.add(timeLabel).expandX();
         getStage().addActor(table);
 
+    }
+
+    /**
+     * Returns the health of the HUD.
+     *
+     * @return health - the health of the HUD
+     */
+    public static Integer getHealth() {
+        return health;
+    }
+
+    /**
+     * Sets the health of the HUD.
+     *
+     * @param newHealth - the health to be set
+     */
+    public static void setHealth(final Integer newHealth) {
+        Hud.health = newHealth;
+    }
+
+    /**
+     * Adds a snowball to the HUD.
+     * This increases the health by the value of snowballHealthIncrease.
+     */
+    public static void addSnowball() {
+        setHealth(getHealth() + SNOWBALL_HEALTH_INCREASE);
     }
 
     /**
@@ -85,6 +141,7 @@ public class Hud implements Disposable {
 
     /**
      * Returns the Stage instance used in the HUD.
+     *
      * @return stage - the Stage instance
      */
     public Stage getStage() {
