@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import dev.jasper.game.EntityCollisionCategory;
 import dev.jasper.game.sprites.Enemy;
 import dev.jasper.game.sprites.Kid;
+import dev.jasper.game.sprites.Snowball;
 
 import static com.badlogic.gdx.math.MathUtils.randomBoolean;
 
@@ -44,6 +45,18 @@ public class WorldContactListener implements ContactListener {
                         fixA.getUserData() : fixB.getUserData();
                 ((Kid) kid).onEnemyHit();
                 break;
+            case EntityCollisionCategory.KID_BIT | EntityCollisionCategory.SNOWBALL_BIT:
+            case EntityCollisionCategory.KID_INVINCIBLE_BIT | EntityCollisionCategory.SNOWBALL_BIT:
+                Object snowball = fixA.getFilterData().categoryBits == EntityCollisionCategory.SNOWBALL_BIT ?
+                        fixA.getUserData() : fixB.getUserData();
+                Object theKid = fixA.getFilterData().categoryBits == EntityCollisionCategory.SNOWBALL_BIT ?
+                        fixB.getUserData() : fixA.getUserData();
+
+                ((Snowball) snowball).collect((Kid) theKid);
+                Gdx.app.log("Kid", "got snow!");
+
+                break;
+
         }
 
 

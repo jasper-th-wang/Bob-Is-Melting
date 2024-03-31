@@ -116,6 +116,7 @@ public class PlayScreen implements Screen {
         player.update(dt);
         bob.update(dt);
         tempBear.update(dt);
+        tempSnow.update(dt);
 
         // Avoid camera go over boundary
         MapProperties prop = map.getProperties();

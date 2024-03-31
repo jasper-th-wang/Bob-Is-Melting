@@ -1,5 +1,6 @@
 package dev.jasper.game.sprites;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
@@ -22,6 +23,8 @@ public class Snowball extends Sprite {
     private MapObject object;
     private Body b2body;
     private TextureRegion snowballSprite;
+    private boolean collected;
+    private boolean toCollect;
 
     /**
      * Constructs a Snowball instance.
@@ -33,6 +36,8 @@ public class Snowball extends Sprite {
         this.world = screen.getWorld();
         this.map = screen.getMap();
         this.position = position;
+        toCollect = false;
+        collected = false;
 
         defineSnowball();
 
@@ -49,16 +54,32 @@ public class Snowball extends Sprite {
 
 
         fdef.filter.categoryBits = EntityCollisionCategory.SNOWBALL_BIT;
-        fdef.filter.maskBits = EntityCollisionCategory.GROUND_BIT;
+        fdef.filter.maskBits = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.KID_BIT | EntityCollisionCategory.KID_INVINCIBLE_BIT;
 
         bdef.position.set((this.position.x + 8) / BobIsMelting.PPM, (this.position.y + 8) / BobIsMelting.PPM);
         bdef.type = BodyDef.BodyType.StaticBody;
 
         this.b2body = world.createBody(bdef);
 
-        shape.setAsBox(8 / BobIsMelting.PPM, 8 / BobIsMelting.PPM);
+        shape.setAsBox(6 / BobIsMelting.PPM, 6 / BobIsMelting.PPM);
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
+    }
+    public void collect(Kid kid) {
+        toCollect = true;
+//        kid.collectSnow();
+    }
+
+    public void update(float dt) {
+        if (toCollect && !collected) {
+            world.destroyBody(b2body);
+            collected = true;
+        }
+    }
+    public void draw(Batch batch){
+        if (!collected) {
+            super.draw(batch);
+        }
     }
 }
 
