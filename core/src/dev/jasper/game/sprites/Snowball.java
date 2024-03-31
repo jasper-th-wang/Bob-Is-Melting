@@ -34,7 +34,7 @@ public class Snowball extends Sprite {
      * @param screen - the game screen
      * @param position - the position of the snowball
      */
-    public Snowball(PlayScreen screen, Vector2 position, Array<Snowball> snowballsRef, int snowballsRefIndex){
+    public Snowball(final PlayScreen screen, final Vector2 position, final Array<Snowball> snowballsRef, final int snowballsRefIndex){
         super(screen.getAtlas().findRegion("snowballs"));
         this.world = screen.getWorld();
         this.map = screen.getMap();
@@ -70,19 +70,20 @@ public class Snowball extends Sprite {
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
     }
-    public void collect(Kid kid) {
+    public void collect(final Kid kid) {
         toCollect = true;
-//        kid.collectSnow();
+        kid.collectSnowball();
     }
 
-    public void update(float dt) {
+    public void update(final float dt) {
         if (toCollect && !collected) {
             world.destroyBody(b2body);
             snowballsRef.set(snowballsRefIndex, null);
             collected = true;
         }
     }
-    public void draw(Batch batch){
+    @Override
+    public void draw(final Batch batch){
         if (!collected) {
             super.draw(batch);
         }

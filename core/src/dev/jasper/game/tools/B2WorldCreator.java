@@ -1,6 +1,5 @@
 package dev.jasper.game.tools;
 
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
@@ -17,35 +16,57 @@ import dev.jasper.game.sprites.Ground;
  * @author Jasper Wang
  * @version 2024
  */
-public class B2WorldCreator {
+public final class B2WorldCreator {
 
-    public Array<Vector2> getSnowballSpawnSpots() {
-        return snowballSpawnSpots;
-    }
-
+    /**
+     * The constant SNOWBALL_SPAWN_LAYER represents the index of the snowball spawn layer in the game map.
+     * This constant is used when iterating over the map layers to create the snowball spawn spots in the game world.
+     * The value is set to 6, which corresponds to the snowball spawn layer in the TiledMap object used in the game.
+     */
+    private static final int SNOWBALL_SPAWN_LAYER = 6;
+    /**
+     * The constant GROUND_LAYER represents the index of the ground layer in the game map.
+     * This constant is used when iterating over the map layers to create the ground bodies and fixtures.
+     * The value is set to 5, which corresponds to the ground layer in the TiledMap object used in the game.
+     */
+    private static final int GROUND_LAYER = 5;
+    /**
+     * Stores the spawn spots for snowballs in the game.
+     */
     private final Array<Vector2> snowballSpawnSpots;
+
     /**
      * Constructs a B2WorldCreator instance.
      * It creates the non-character bodies and fixtures in the game world.
      * @param screen - the game screen
      */
-    public B2WorldCreator(PlayScreen screen) {
+    public B2WorldCreator(final PlayScreen screen) {
         World world = screen.getWorld();
         TiledMap map = screen.getMap();
         // Create ground bodies and fixtures
-        for (RectangleMapObject object: map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
+        for (RectangleMapObject object: map.getLayers().get(GROUND_LAYER)
+                .getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
             new Ground(screen, rect);
         }
 
         snowballSpawnSpots = new Array<>();
         // Create snowball spawn spots, store it as instance variables
-        for (RectangleMapObject object: map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)) {
+        for (RectangleMapObject object: map.getLayers().get(SNOWBALL_SPAWN_LAYER)
+                .getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
-//            snowballSpawnSpots.add(new SnowballSpawnTile(screen, rect).getTil);
             snowballSpawnSpots.add(new Vector2(rect.getX(), rect.getY()));
         }
 
+    }
+
+    /**
+     * Returns the array of snowball spawn spots in the game.
+     *
+     * @return Array of Vector2 objects representing the snowball spawn spots.
+     */
+    public Array<Vector2> getSnowballSpawnSpots() {
+        return snowballSpawnSpots;
     }
 
 }

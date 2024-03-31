@@ -34,65 +34,171 @@ import dev.jasper.game.tools.WorldContactListener;
  * @version 2024
  */
 public class PlayScreen implements Screen {
+    /**
+     * The jump velocity for the player character when it is invincible.
+     * This value is used when handling the player's jump input.
+     */
+    protected static final float INVINCIBLE_JUMP_VELOCITY = 2.2f;
+
+    /**
+     * The normal jump velocity for the player character.
+     * This value is used when handling the player's jump input.
+     */
+    protected static final float NORMAL_JUMP_VELOCITY = 3.2f;
+
+    /**
+     * The run velocity for the player character when it is invincible.
+     * This value is used when handling the player's run input.
+     */
+    protected static final float INVINCIBLE_RUN_VELOCITY = 0.04f;
+
+    /**
+     * The normal run velocity for the player character.
+     * This value is used when handling the player's run input.
+     */
+    protected static final float NORMAL_RUN_VELOCITY = 0.1f;
+
+    /**
+     * The time step for the Box2D world's physics simulation.
+     * This value is used when updating the Box2D world's state.
+     */
+    protected static final float TIME_STEP = 1 / 60f;
+
+    /**
+     * The velocity iterations for the Box2D world's physics simulation.
+     * This value is used when updating the Box2D world's state.
+     */
+    protected static final int VELOCITY_ITERATIONS = 6;
+
+    /**
+     * The position iterations for the Box2D world's physics simulation.
+     * This value is used when updating the Box2D world's state.
+     */
+    protected static final int POSITION_ITERATIONS = 2;
+    /**
+     * The interval at which snowballs spawn in the game.
+     * This value is used when spawning snowballs in the game world.
+     */
+    protected static final float SNOWBALL_SPAWN_INTERVAL = 3f;
+    /**
+     * The gravity value for the game world in the Y-axis.
+     * This value is used when creating the Box2D world for physics simulation.
+     */
+    private static final int GRAVITY_Y = -10;
+    /**
+     * The maximum number of snowballs that can exist in the game at any given time.
+     * This value is used when initializing the snowballs in the game.
+     */
+    private static final int MAX_SNOWBALL_COUNT = 5;
+    /**
+     * The main game instance.
+     */
     private final BobIsMelting game;
-    // list of snowball spawn spots
+
+    /**
+     * List of snowball spawn spots.
+     */
     private final Array<Vector2> snowballSpawnSpots;
+
+    /**
+     * List of snowballs in the game.
+     */
     private final Array<Snowball> snowballs;
-    private float snowballSpawnTimer;
+    /**
+     * TextureAtlas instance for loading textures for the game.
+     */
     private final TextureAtlas atlas;
+    /**
+     * The player character in the game.
+     */
     private final Kid player;
+    /**
+     * The Bob character in the game.
+     */
     private final Bob bob;
-    // TODO: temp
+    /**
+     * Temporary Bear character in the game.
+     * TODO: This is temporary and needs to be replaced.
+     */
     private final Bear tempBear;
-//    private final Snowball tempSnow;
+    /**
+     * The main camera used in the game.
+     */
     private final OrthographicCamera gameCam;
+    /**
+     * The viewport of the game, used for handling screen sizes.
+     */
     private final Viewport gamePort;
+    /**
+     * The HUD (Heads-Up Display) used in the game.
+     */
     private final Hud hud;
+    /**
+     * The TiledMap instance used for the game map.
+     */
     private final TiledMap map;
+    /**
+     * The renderer used for rendering the TiledMap.
+     */
     private final OrthogonalTiledMapRenderer renderer;
-    // Box2d variables
+    /**
+     * The Box2D world used for physics simulation in the game.
+     */
     private final World world;
+    /**
+     * The Box2DDebugRenderer used for rendering debug information of the Box2D world.
+     */
     private final Box2DDebugRenderer b2dr;
-    // method to randomly spawn snowballs
+    /**
+     * Timer for spawning snowballs.
+     */
+    private float snowballSpawnTimer;
 
     /**
      * Constructs a PlayScreen instance.
-     * @param game - the main game instance
+     * @param gameInstance - the main game instance
      */
-    public PlayScreen(BobIsMelting game) {
+    public PlayScreen(final BobIsMelting gameInstance) {
         this.atlas = new TextureAtlas("Characters.atlas");
-        this.game = game;
+        this.game = gameInstance;
+
+        // Set up game camera
         gameCam = new OrthographicCamera();
         // Create a FitViewport to maintain virtual aspect ratio
-        gamePort = new FitViewport(BobIsMelting.V_WIDTH / BobIsMelting.PPM, BobIsMelting.V_HEIGHT / BobIsMelting.PPM, gameCam);
-        hud = new Hud(game.getBatch());
+        gamePort = new FitViewport(BobIsMelting.V_WIDTH / BobIsMelting.PPM,
+                BobIsMelting.V_HEIGHT / BobIsMelting.PPM, gameCam);
+        // Set up game camera to be centered correctly
+        gameCam.position.set(gamePort.getWorldWidth() / POSITION_ITERATIONS,
+                gamePort.getWorldHeight() / POSITION_ITERATIONS, 0);
+
+        hud = new Hud(gameInstance.getBatch());
+
         // Load the map and set up map renderer
         // Tiled map variables
         TmxMapLoader mapLoader = new TmxMapLoader();
         map = mapLoader.load("mainNew.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / BobIsMelting.PPM);
-        // Set up game camera to be centered correctly
-        gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
+
         // Initialize Box2d game world
-        world = new World(new Vector2(0,-10), true);
+        world = new World(new Vector2(0, GRAVITY_Y), true);
         b2dr = new Box2DDebugRenderer();
-        final B2WorldCreator b2WorldCreator =  new B2WorldCreator(this);
+        final B2WorldCreator b2WorldCreator = new B2WorldCreator(this);
+
+        // Initialize in game objects
         this.snowballSpawnSpots = b2WorldCreator.getSnowballSpawnSpots();
         this.player = new Kid(this);
         this.bob = new Bob(this);
         world.setContactListener(new WorldContactListener());
         tempBear = new Bear(this, .32f, .32f);
-//        tempSnow = new Snowball(this, snowballSpawnSpots.peek());
         snowballs = new Array<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < MAX_SNOWBALL_COUNT; i++) {
             snowballs.add(new Snowball(this, snowballSpawnSpots.random(), snowballs, i));
-
         }
     }
 
-    private void spawnSnowballs(float dt) {
+    private void spawnSnowballs(final float dt) {
         snowballSpawnTimer += dt;
-        if (snowballSpawnTimer <= 3f) {
+        if (snowballSpawnTimer <= SNOWBALL_SPAWN_INTERVAL) {
             return;
         }
         snowballSpawnTimer = 0;
@@ -110,29 +216,59 @@ public class PlayScreen implements Screen {
      * Handles the user input for controlling the player character.
      * @param dt - delta time
      */
-    public void handleInput(float dt) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.getState() != Kid.State.JUMPING && player.getState() != Kid.State.FALLING) {
-            final float jumpVelocity = player.getIsInvincibleToEnemy() ? 2.2f : 3.2f;
-            player.getB2body().applyLinearImpulse(new Vector2(0, jumpVelocity), player.getB2body().getWorldCenter(), true);
+    public void handleInput(final float dt) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.getState() != Kid.State.JUMPING
+                && player.getState() != Kid.State.FALLING) {
+
+            handlePlayerJump();
+
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.getB2body().getLinearVelocity().x <= 2) {
-            final float speed = player.getIsInvincibleToEnemy() ? 0.04f : 0.1f;
-            player.getB2body().applyLinearImpulse(new Vector2(speed, 0), player.getB2body().getWorldCenter(),true );
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)
+                && player.getB2body().getLinearVelocity().x <= POSITION_ITERATIONS) {
+            handlePlayerRun(true);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.getB2body().getLinearVelocity().x >= -2) {
-            final float speed = player.getIsInvincibleToEnemy() ? 0.04f : 0.1f;
-            player.getB2body().applyLinearImpulse(new Vector2(-speed, 0), player.getB2body().getWorldCenter(),true );
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)
+                && player.getB2body().getLinearVelocity().x >= -POSITION_ITERATIONS) {
+                    handlePlayerRun(false);
         }
+    }
+
+    private void handlePlayerRun(final boolean isRunningRight) {
+        float speed;
+        if (player.getIsInvincibleToEnemy()) {
+            speed = INVINCIBLE_RUN_VELOCITY;
+        } else {
+            speed = NORMAL_RUN_VELOCITY;
+        }
+
+        if (!isRunningRight) {
+            speed = speed * -1;
+        }
+
+        player.getB2body().applyLinearImpulse(new Vector2(speed, 0),
+                player.getB2body().getWorldCenter(), true);
+    }
+
+    private void handlePlayerJump() {
+        final float jumpVelocity;
+        if (player.getIsInvincibleToEnemy()) {
+            jumpVelocity = INVINCIBLE_JUMP_VELOCITY;
+        } else {
+            jumpVelocity = NORMAL_JUMP_VELOCITY;
+        }
+
+        player.getB2body().applyLinearImpulse(new Vector2(0, jumpVelocity),
+                player.getB2body().getWorldCenter(), true);
     }
 
     /**
      * Takes in a delta time to update the game world's state.
      * @param dt - delta time
      */
-    public void update(float dt) {
+    public void update(final float dt) {
         // Handle user input first
         handleInput(dt);
-        world.step(1/60f, 6, 2);
+        world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 
         player.update(dt);
         bob.update(dt);
@@ -153,10 +289,12 @@ public class PlayScreen implements Screen {
         float mapPixelWidth = mapWidth * tilePixelWidth / BobIsMelting.PPM;
 
         // The right boundary of the map (x + width)
-        float cameraHalfWidth = gamePort.getCamera().viewportWidth * .5f;
+        final float cameraHalfWidth = gamePort.getCamera().viewportWidth * .5f;
 
         gameCam.position.x = player.getB2body().getPosition().x;
-        gameCam.position.x = MathUtils.clamp(gameCam.position.x, cameraHalfWidth + tilePixelWidth / BobIsMelting.PPM, mapPixelWidth - cameraHalfWidth - tilePixelWidth / BobIsMelting.PPM);
+        gameCam.position.x = MathUtils.clamp(gameCam.position.x,
+                cameraHalfWidth + tilePixelWidth / BobIsMelting.PPM,
+                mapPixelWidth - cameraHalfWidth - tilePixelWidth / BobIsMelting.PPM);
 
         // Update our gameCam with correct coordinates after changes
         gameCam.update();
@@ -181,12 +319,12 @@ public class PlayScreen implements Screen {
      * @param delta - the time difference between the current and the last frame
      */
     @Override
-    public void render(float delta) {
+    public void render(final float delta) {
         update(delta);
 
         // Clear the screen
-        Gdx.gl.glClearColor (1, 0, 0, 1);
-        Gdx.gl.glClear (GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(1, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Render game map
         renderer.render();
@@ -196,7 +334,6 @@ public class PlayScreen implements Screen {
 
         game.getBatch().setProjectionMatrix(gameCam.combined);
         game.getBatch().begin();
-        player.draw(game.getBatch());
         bob.draw(game.getBatch());
         tempBear.draw(game.getBatch());
 //        tempSnow.draw(game.getBatch());
@@ -206,6 +343,7 @@ public class PlayScreen implements Screen {
             }
             snowball.draw(game.getBatch());
         });
+        player.draw(game.getBatch());
         game.getBatch().end();
 
         // Set our batch to draw what the HUD camera sees
@@ -220,7 +358,7 @@ public class PlayScreen implements Screen {
      * @param height - the new height
      */
     @Override
-    public void resize(int width, int height) {
+    public void resize(final int width, final int height) {
         gamePort.update(width, height);
     }
 

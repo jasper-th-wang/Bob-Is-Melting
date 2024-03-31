@@ -1,3 +1,9 @@
+/**
+ * This package contains tools and utilities for the game.
+ *
+ * @author Jasper Wang
+ * @version 2024
+ */
 package dev.jasper.game.tools;
 
 import com.badlogic.gdx.Gdx;
@@ -8,11 +14,12 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import dev.jasper.game.EntityCollisionCategory;
+import dev.jasper.game.scenes.Hud;
 import dev.jasper.game.sprites.Enemy;
 import dev.jasper.game.sprites.Kid;
 import dev.jasper.game.sprites.Snowball;
 
-import static com.badlogic.gdx.math.MathUtils.randomBoolean;
+import static com.badlogic.gdx.Gdx.app;
 
 /**
  * This class implements the ContactListener interface from the Box2D physics library.
@@ -21,59 +28,107 @@ import static com.badlogic.gdx.math.MathUtils.randomBoolean;
  * @author Jasper Wang
  * @version 2024
  */
-public class WorldContactListener implements ContactListener {
+public final class WorldContactListener implements ContactListener {
     /**
      * This method is called when two fixtures start to collide.
      * @param contact The contact information about the collision.
      */
     @Override
-    public void beginContact(Contact contact) {
+    public void beginContact(final Contact contact) {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
 
         switch (cDef) {
             case EntityCollisionCategory.ENEMY_BIT | EntityCollisionCategory.GROUND_BIT:
-                Object enemy = fixA.getFilterData().categoryBits == EntityCollisionCategory.ENEMY_BIT ?
-                        fixA.getUserData() : fixB.getUserData();
-                final boolean toReverseVelocity = MathUtils.randomBoolean(0.8F);
-                ((Enemy) enemy).reverseVelocity(toReverseVelocity, false);
+                handleEnemyGroundCollision(fixA, fixB);
                 break;
             case EntityCollisionCategory.KID_BIT | EntityCollisionCategory.ENEMY_BIT:
-                Gdx.app.log("Kid", "Hit");
-                Object kid = fixA.getFilterData().categoryBits == EntityCollisionCategory.KID_BIT ?
-                        fixA.getUserData() : fixB.getUserData();
-                ((Kid) kid).onEnemyHit();
+            case EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT | EntityCollisionCategory.ENEMY_BIT:
+                handleKidEnemyCollision(fixA, fixB);
                 break;
             case EntityCollisionCategory.KID_BIT | EntityCollisionCategory.SNOWBALL_BIT:
-            case EntityCollisionCategory.KID_INVINCIBLE_BIT | EntityCollisionCategory.SNOWBALL_BIT:
-                Object snowball = fixA.getFilterData().categoryBits == EntityCollisionCategory.SNOWBALL_BIT ?
-                        fixA.getUserData() : fixB.getUserData();
-                Object theKid = fixA.getFilterData().categoryBits == EntityCollisionCategory.SNOWBALL_BIT ?
-                        fixB.getUserData() : fixA.getUserData();
-
-                ((Snowball) snowball).collect((Kid) theKid);
-                Gdx.app.log("Kid", "got snow!");
-
+                handleKidSnowballCollision(fixA, fixB);
                 break;
-
+            case EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT | EntityCollisionCategory.BOB_BIT:
+                handleKidBobCollision(fixA, fixB);
+                break;
+            default:
+                break;
         }
 
 
     }
 
+    private static void handleKidBobCollision(final Fixture fixA, final Fixture fixB) {
+        Object theKidWithSnowball;
+
+        if (fixA.getFilterData().categoryBits == EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT) {
+            theKidWithSnowball = fixA.getUserData();
+        } else  {
+            theKidWithSnowball = fixB.getUserData();
+        }
+
+        ((Kid) theKidWithSnowball).dropoffSnowball();
+        Hud.addSnowball();
+        app.log("Kid", "drop the snow!");
+    }
+
+    private static void handleKidSnowballCollision(final Fixture fixA, final Fixture fixB) {
+        Snowball snowball;
+        if (fixA.getFilterData().categoryBits == EntityCollisionCategory.SNOWBALL_BIT) {
+            snowball = (Snowball) fixA.getUserData();
+        } else {
+            snowball = (Snowball) fixB.getUserData();
+        }
+        Kid theKid;
+        if (fixA.getFilterData().categoryBits != EntityCollisionCategory.SNOWBALL_BIT) {
+            theKid = (Kid) fixA.getUserData();
+        } else {
+            theKid = (Kid) fixB.getUserData();
+        }
+        // TODO: bug, kid cannot pickup ball when invincible
+
+        snowball.collect(theKid);
+        app.log("Kid", "got snow!");
+    }
+
+    private static void handleKidEnemyCollision(final Fixture fixA, final Fixture fixB) {
+        Kid kid;
+        if (fixA.getFilterData().categoryBits != EntityCollisionCategory.ENEMY_BIT) {
+            kid = (Kid) fixA.getUserData();
+        } else {
+            kid = (Kid) fixB.getUserData();
+        }
+        kid.onEnemyHit();
+
+        kid.setIsCarryingSnowball(false);
+        Gdx.app.log("Kid", "Hit");
+    }
+
+    private static void handleEnemyGroundCollision(final Fixture fixA, final Fixture fixB) {
+        Enemy enemy;
+        if (fixA.getFilterData().categoryBits == EntityCollisionCategory.ENEMY_BIT) {
+            enemy = (Enemy) fixA.getUserData();
+        } else {
+            enemy = (Enemy) fixB.getUserData();
+        }
+        final boolean toReverseVelocity = MathUtils.randomBoolean(0.8F);
+        enemy.reverseVelocity(toReverseVelocity, false);
+    }
+
     @Override
-    public void endContact(Contact contact) {
+    public void endContact(final Contact contact) {
 
     }
 
     @Override
-    public void preSolve(Contact contact, Manifold oldManifold) {
+    public void preSolve(final Contact contact, final Manifold oldManifold) {
 
     }
 
     @Override
-    public void postSolve(Contact contact, ContactImpulse impulse) {
+    public void postSolve(final Contact contact, final ContactImpulse impulse) {
 
     }
 }

@@ -31,7 +31,7 @@ public class Ground {
      * @param screen - the game screen
      * @param bounds - the bounds of the ground
      */
-    public Ground(PlayScreen screen, Rectangle bounds){
+    public Ground(final PlayScreen screen, final Rectangle bounds){
         this.world = screen.getWorld();
         this.map = screen.getMap();
         this.bounds = bounds;

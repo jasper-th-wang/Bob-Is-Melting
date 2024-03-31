@@ -8,7 +8,7 @@ package dev.jasper.game;
  * @author Jasper Wang
  * @version 2024
  */
-public class EntityCollisionCategory {
+public final class EntityCollisionCategory {
     /**
      * Bit value representing the ground in the game's physics engine.
      */
@@ -33,6 +33,19 @@ public class EntityCollisionCategory {
      * Bit value representing enemies in the game's physics engine.
      */
     public static final short ENEMY_BIT = 32;
+    /**
+     * Bit value representing the invincible state of the kid character in the game's physics engine.
+     */
     public static final short KID_INVINCIBLE_BIT = 64;
+    /**
+     * Bit value representing the Bob character in the game's physics engine.
+     */
     public static final short BOB_BIT = 128;
+    /**
+     * Bit value representing the state of the kid character carrying a snowball in the game's physics engine.
+     */
+    public static final short KID_CARRY_SNOWBALL_BIT = 256;
+    private EntityCollisionCategory() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 }

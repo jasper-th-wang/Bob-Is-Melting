@@ -16,7 +16,7 @@ public class Bear extends Enemy {
     private final float idleDuration = 3f;
     private float idleTimer;
 
-    public Bear(PlayScreen screen, float x, float y) {
+    public Bear(final PlayScreen screen, final float x, final float y) {
         super(screen, x, y);
         Array<TextureRegion> frames = new Array<TextureRegion>();
         for(int i = 0; i < 4; i++) {
@@ -36,7 +36,7 @@ public class Bear extends Enemy {
         idleTimer = 0;
     }
 
-    public void update(float dt) {
+    public void update(final float dt) {
 
         stateTime += dt;
         decideSpecialMovementTimer += dt;
@@ -61,7 +61,7 @@ public class Bear extends Enemy {
         CircleShape shape = new CircleShape();
         shape.setRadius(7 / BobIsMelting.PPM);
         fdef.filter.categoryBits = EntityCollisionCategory.ENEMY_BIT;
-        fdef.filter.maskBits = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.ENEMY_BIT | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.KID_BIT;
+        fdef.filter.maskBits = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.KID_BIT | EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT;
 
         fdef.shape = shape;
         getB2body().createFixture(fdef).setUserData(this);
@@ -78,7 +78,7 @@ public class Bear extends Enemy {
             return State.STANDING;
         }
     }
-    private TextureRegion getFrame(float dt) {
+    private TextureRegion getFrame(final float dt) {
         this.currentState = getState();
         TextureRegion region;
         switch (currentState) {

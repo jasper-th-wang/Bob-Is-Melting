@@ -14,7 +14,7 @@ public class IOSLauncher extends IOSApplication.Delegate {
         return new IOSApplication(new BobIsMelting(), config);
     }
 
-    public static void main(String[] argv) {
+    public static void main(final String[] argv) {
         NSAutoreleasePool pool = new NSAutoreleasePool();
         UIApplication.main(argv, null, IOSLauncher.class);
         pool.close();

@@ -33,7 +33,7 @@ public abstract class Enemy extends Sprite {
      * @param x - the x-coordinate of the enemy's position
      * @param y - the y-coordinate of the enemy's position
      */
-    public Enemy(PlayScreen screen, float x, float y) {
+    public Enemy(final PlayScreen screen, final float x, final float y) {
         this.world = screen.getWorld();
         this.screen = screen;
         setPosition(x, y);
@@ -80,7 +80,7 @@ public abstract class Enemy extends Sprite {
      * @param x - if true, reverse the x-component of the velocity
      * @param y - if true, reverse the y-component of the velocity
      */
-    public void reverseVelocity(boolean x, boolean y) {
+    public void reverseVelocity(final boolean x, final boolean y) {
         if (x) {
             getVelocity().x = -getVelocity().x;
         }
@@ -105,7 +105,7 @@ public abstract class Enemy extends Sprite {
         return velocity;
     }
 
-    public void setVelocity(Vector2 velocity) {
+    public void setVelocity(final Vector2 velocity) {
         this.velocity = velocity;
     }
 

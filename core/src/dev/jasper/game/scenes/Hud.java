@@ -31,13 +31,27 @@ public class Hud implements Disposable {
     private Viewport viewport;
     private Integer worldTimer;
     private float timeCount;
-    private Integer health;
+
+    public static Integer getHealth() {
+        return health;
+    }
+
+    public static void setHealth(final Integer health) {
+        Hud.health = health;
+    }
+    public static void addSnowball() {
+        setHealth(getHealth() + snowballHealthIncrease);
+    }
+
+
+    private static Integer health;
+    private static final int snowballHealthIncrease = 10;
 
     /**
      * Constructs a Hud instance.
      * @param sb - the SpriteBatch instance used for drawing
      */
-    public Hud(SpriteBatch sb) {
+    public Hud(final SpriteBatch sb) {
         worldTimer = 0;
         timeCount = 0;
         health  = 100;

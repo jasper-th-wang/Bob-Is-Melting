@@ -24,7 +24,7 @@ public class Bob extends Sprite {
     private TextureRegion dying;
 
 
-    public Bob(PlayScreen screen) {
+    public Bob(final PlayScreen screen) {
         super(screen.getAtlas().findRegion("Snowman-tileset"));
         this.world = screen.getWorld();
         fullHealth = new TextureRegion(screen.getAtlas().findRegion("Snowman-tileset"), 1, -1, 16, 24);
@@ -39,7 +39,7 @@ public class Bob extends Sprite {
      *
      * @param dt a float that represents delta time, the amount of time since the last frame was rendered.
      */
-    public void update(float dt) {
+    public void update(final float dt) {
         setRegion(getFrame());
     }
     private TextureRegion getFrame() {
@@ -60,7 +60,7 @@ public class Bob extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(10 / BobIsMelting.PPM);
         fdef.filter.categoryBits = EntityCollisionCategory.BOB_BIT;
-        fdef.filter.maskBits = EntityCollisionCategory.KID_BIT;
+        fdef.filter.maskBits = EntityCollisionCategory.KID_BIT | EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT;
 
         fdef.shape = shape;
         fixture = b2body.createFixture(fdef);

@@ -1,6 +1,7 @@
 package dev.jasper.game.sprites;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -41,12 +42,24 @@ public class Kid extends Sprite {
     private float flickerTimer;
     private boolean isInvincibleToEnemy;
 
+    public boolean getIsCarryingSnowball() {
+        return isCarryingSnowball;
+    }
+
+    public void setIsCarryingSnowball(final boolean carryingSnowball) {
+        isCarryingSnowball = carryingSnowball;
+    }
+
+    private boolean isCarryingSnowball;
+    // TODO: testing
+    private Sprite snowballSprite;
+
     /**
      * Constructs a Kid character for the game.
      *
      * @param screen The PlayScreen instance where the Kid character is displayed and interacts.
      */
-    public Kid(PlayScreen screen) {
+    public Kid(final PlayScreen screen) {
         super(screen.getAtlas().findRegion("Idle (32 x 32)"));
         this.world = screen.getWorld();
         currentState = State.STANDING;
@@ -54,6 +67,7 @@ public class Kid extends Sprite {
         stateTimer = 0;
         isRunningRight = true;
         isInvincibleToEnemy = false;
+        isCarryingSnowball = false;
         Array<TextureRegion> frames = new Array<>();
         for (int i = 0; i < 4; i++) {
             frames.add(new TextureRegion(screen.getAtlas().findRegion("Running (32 x 32)"), i * 32, 0, 32, 32));
@@ -68,6 +82,11 @@ public class Kid extends Sprite {
         kidIdle = new TextureRegion(screen.getAtlas().findRegion("Idle (32 x 32)"), 0, 0, 32, 32);
         setBounds(0, 0, 32 / BobIsMelting.PPM, 32 / BobIsMelting.PPM);
         setRegion(kidIdle);
+
+
+        snowballSprite = new Sprite(new TextureRegion(screen.getAtlas().findRegion("snowballs"), 0, 0, 16, 16));
+        snowballSprite.setBounds(0, 0, 16 / BobIsMelting.PPM, 14 / BobIsMelting.PPM);
+        snowballSprite.setRegion(snowballSprite);
     }
 
     public boolean getIsInvincibleToEnemy() {
@@ -79,13 +98,18 @@ public class Kid extends Sprite {
      *
      * @param dt a float that represents delta time, the amount of time since the last frame was rendered.
      */
-    public void update(float dt) {
+    public void update(final float dt) {
         setPosition(getB2body().getPosition().x - getWidth() / 2, getB2body().getPosition().y - getHeight() / 4 );
         setRegion(getFrame(dt));
         updateCollisionState(dt);
+
+        if (isCarryingSnowball) {
+            snowballSprite.setPosition(getB2body().getPosition().x - snowballSprite.getWidth() / 2, getB2body().getPosition().y + snowballSprite.getHeight() / 2);
+            snowballSprite.setRegion(snowballSprite);
+        }
     }
 
-    private void updateCollisionState(float dt) {
+    private void updateCollisionState(final float dt) {
         if (isInvincibleToEnemy) {
             invincibleToEnemyTimer += dt;
             flickerTimer -= dt;
@@ -105,7 +129,7 @@ public class Kid extends Sprite {
         }
     }
 
-    private TextureRegion getFrame(float dt) {
+    private TextureRegion getFrame(final float dt) {
         this.currentState = getState();
         TextureRegion region;
         switch (currentState) {
@@ -209,5 +233,29 @@ public class Kid extends Sprite {
      */
     public enum State {FALLING, JUMPING, STANDING, RUNNING}
 
+    public void collectSnowball() {
+        // change collision category
+        Filter filter = new Filter();
+        filter.categoryBits = EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT;
+        filter.maskBits = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.BOB_BIT | EntityCollisionCategory.ENEMY_BIT;
+        fixture.setFilterData(filter);
+        // add snowball sprite on top of Kid
+        setIsCarryingSnowball(true);
+    }
+    public void dropoffSnowball() {
+        // change collision category
+        resetCollisionCategory();
+        // remove snowball sprite on top of Kid
+        setIsCarryingSnowball(false);
+        // TODO: add health to snowman!
+    }
+
+    @Override
+    public void draw(final Batch batch){
+        super.draw(batch);
+        if (getIsCarryingSnowball()) {
+            snowballSprite.draw(batch);
+        }
+    }
 
 }
