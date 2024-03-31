@@ -23,7 +23,7 @@ public class Bear extends Enemy {
 
     public Bear(final PlayScreen screen, final float x, final float y) {
         super(screen, x, y);
-        Array<TextureRegion> frames = new Array<TextureRegion>();
+        Array<TextureRegion> frames = new Array<>();
         for(int i = 0; i < 4; i++) {
             frames.add(new TextureRegion(screen.getAtlas().findRegion("bear_polar"), i * 32, 32, 32, 32));
             walkAnimation = new Animation<TextureRegion>(0.1f, frames);

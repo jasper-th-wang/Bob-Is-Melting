@@ -61,15 +61,15 @@ public final class WorldContactListener implements ContactListener {
     }
 
     private static void handleKidBobCollision(final Fixture fixA, final Fixture fixB) {
-        Object theKidWithSnowball;
+        Kid theKidWithSnowball;
 
         if (fixA.getFilterData().categoryBits == EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT) {
-            theKidWithSnowball = fixA.getUserData();
+            theKidWithSnowball = (Kid) fixA.getUserData();
         } else  {
-            theKidWithSnowball = fixB.getUserData();
+            theKidWithSnowball = (Kid) fixB.getUserData();
         }
 
-        ((Kid) theKidWithSnowball).dropoffSnowball();
+        theKidWithSnowball.dropoffSnowball();
         Hud.addSnowball();
         app.log("Kid", "drop the snow!");
     }

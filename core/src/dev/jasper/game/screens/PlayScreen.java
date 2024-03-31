@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.jasper.game.BobIsMelting;
@@ -98,7 +99,7 @@ public class PlayScreen implements Screen {
     /**
      * List of snowball spawn spots.
      */
-    private final Array<Vector2> snowballSpawnSpots;
+    private final Queue<Vector2> snowballSpawnSpots;
 
     /**
      * List of snowballs in the game.
@@ -192,7 +193,7 @@ public class PlayScreen implements Screen {
         tempBear = new Bear(this, .32f, .32f);
         snowballs = new Array<>();
         for (int i = 0; i < MAX_SNOWBALL_COUNT; i++) {
-            snowballs.add(new Snowball(this, snowballSpawnSpots.random(), snowballs, i));
+            snowballs.add(null);
         }
     }
 
@@ -206,7 +207,9 @@ public class PlayScreen implements Screen {
         // make one snowball
         for (int i = 0; i < snowballs.size; i++) {
             if (snowballs.get(i) == null) {
-                snowballs.set(i, new Snowball(this, snowballSpawnSpots.random(), snowballs, i));
+                final Vector2 spawnSpot = snowballSpawnSpots.removeFirst();
+                snowballs.set(i, new Snowball(this, spawnSpot, snowballs, i));
+                snowballSpawnSpots.addLast(spawnSpot);
                 return;
             }
         }

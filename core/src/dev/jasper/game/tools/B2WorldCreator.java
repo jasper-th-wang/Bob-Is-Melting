@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Queue;
 import dev.jasper.game.screens.PlayScreen;
 import dev.jasper.game.sprites.Ground;
 
@@ -20,20 +21,19 @@ public final class B2WorldCreator {
 
     /**
      * The constant SNOWBALL_SPAWN_LAYER represents the index of the snowball spawn layer in the game map.
-     * This constant is used when iterating over the map layers to create the snowball spawn spots in the game world.
+     * This constant is used when iterating over the map layers to create the ground bodies and fixtures.
      * The value is set to 6, which corresponds to the snowball spawn layer in the TiledMap object used in the game.
      */
     private static final int SNOWBALL_SPAWN_LAYER = 6;
     /**
      * The constant GROUND_LAYER represents the index of the ground layer in the game map.
-     * This constant is used when iterating over the map layers to create the ground bodies and fixtures.
      * The value is set to 5, which corresponds to the ground layer in the TiledMap object used in the game.
      */
     private static final int GROUND_LAYER = 5;
     /**
      * Stores the spawn spots for snowballs in the game.
      */
-    private final Array<Vector2> snowballSpawnSpots;
+    private final Queue<Vector2> snowballSpawnSpots;
 
     /**
      * Constructs a B2WorldCreator instance.
@@ -50,12 +50,12 @@ public final class B2WorldCreator {
             new Ground(screen, rect);
         }
 
-        snowballSpawnSpots = new Array<>();
+        snowballSpawnSpots = new Queue<>();
         // Create snowball spawn spots, store it as instance variables
         for (RectangleMapObject object: map.getLayers().get(SNOWBALL_SPAWN_LAYER)
                 .getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
-            snowballSpawnSpots.add(new Vector2(rect.getX(), rect.getY()));
+            snowballSpawnSpots.addLast(new Vector2(rect.getX(), rect.getY()));
         }
 
     }
@@ -65,7 +65,7 @@ public final class B2WorldCreator {
      *
      * @return Array of Vector2 objects representing the snowball spawn spots.
      */
-    public Array<Vector2> getSnowballSpawnSpots() {
+    public Queue<Vector2> getSnowballSpawnSpots() {
         return snowballSpawnSpots;
     }
 
