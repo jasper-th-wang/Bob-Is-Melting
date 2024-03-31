@@ -37,12 +37,14 @@ public class PlayScreen implements Screen {
     private final BobIsMelting game;
     // list of snowball spawn spots
     private final Array<Vector2> snowballSpawnSpots;
+    private final Array<Snowball> snowballs;
+    private float snowballSpawnTimer;
     private final TextureAtlas atlas;
     private final Kid player;
     private final Bob bob;
     // TODO: temp
     private final Bear tempBear;
-    private final Snowball tempSnow;
+//    private final Snowball tempSnow;
     private final OrthographicCamera gameCam;
     private final Viewport gamePort;
     private final Hud hud;
@@ -80,9 +82,28 @@ public class PlayScreen implements Screen {
         this.bob = new Bob(this);
         world.setContactListener(new WorldContactListener());
         tempBear = new Bear(this, .32f, .32f);
-        tempSnow = new Snowball(this, snowballSpawnSpots.peek());
+//        tempSnow = new Snowball(this, snowballSpawnSpots.peek());
+        snowballs = new Array<>();
+        for (int i = 0; i < 5; i++) {
+            snowballs.add(new Snowball(this, snowballSpawnSpots.random(), snowballs, i));
 
+        }
+    }
 
+    private void spawnSnowballs(float dt) {
+        snowballSpawnTimer += dt;
+        if (snowballSpawnTimer <= 3f) {
+            return;
+        }
+        snowballSpawnTimer = 0;
+
+        // make one snowball
+        for (int i = 0; i < snowballs.size; i++) {
+            if (snowballs.get(i) == null) {
+                snowballs.set(i, new Snowball(this, snowballSpawnSpots.random(), snowballs, i));
+                return;
+            }
+        }
     }
 
     /**
@@ -116,7 +137,14 @@ public class PlayScreen implements Screen {
         player.update(dt);
         bob.update(dt);
         tempBear.update(dt);
-        tempSnow.update(dt);
+//        tempSnow.update(dt);
+        snowballs.forEach(snowball -> {
+            if (snowball == null) {
+                return;
+            }
+            snowball.update(dt);
+        });
+        spawnSnowballs(dt);
 
         // Avoid camera go over boundary
         MapProperties prop = map.getProperties();
@@ -171,7 +199,13 @@ public class PlayScreen implements Screen {
         player.draw(game.getBatch());
         bob.draw(game.getBatch());
         tempBear.draw(game.getBatch());
-        tempSnow.draw(game.getBatch());
+//        tempSnow.draw(game.getBatch());
+        snowballs.forEach(snowball -> {
+            if (snowball == null) {
+                return;
+            }
+            snowball.draw(game.getBatch());
+        });
         game.getBatch().end();
 
         // Set our batch to draw what the HUD camera sees

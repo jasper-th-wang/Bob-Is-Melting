@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import dev.jasper.game.BobIsMelting;
 import dev.jasper.game.EntityCollisionCategory;
 import dev.jasper.game.screens.PlayScreen;
@@ -25,24 +26,28 @@ public class Snowball extends Sprite {
     private TextureRegion snowballSprite;
     private boolean collected;
     private boolean toCollect;
+    private Array<Snowball> snowballsRef;
+    private int snowballsRefIndex;
 
     /**
      * Constructs a Snowball instance.
      * @param screen - the game screen
      * @param position - the position of the snowball
      */
-    public Snowball(PlayScreen screen, Vector2 position){
+    public Snowball(PlayScreen screen, Vector2 position, Array<Snowball> snowballsRef, int snowballsRefIndex){
         super(screen.getAtlas().findRegion("snowballs"));
         this.world = screen.getWorld();
         this.map = screen.getMap();
         this.position = position;
+        this.snowballsRef = snowballsRef;
+        this.snowballsRefIndex = snowballsRefIndex;
         toCollect = false;
         collected = false;
 
         defineSnowball();
 
         snowballSprite = new TextureRegion(screen.getAtlas().findRegion("snowballs"), 0, 0, 16, 16);
-        setBounds(0, 0, 16 / BobIsMelting.PPM, 16 / BobIsMelting.PPM);
+        setBounds(0, 0, 16 / BobIsMelting.PPM, 14 / BobIsMelting.PPM);
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRegion(snowballSprite);
     }
@@ -73,6 +78,7 @@ public class Snowball extends Sprite {
     public void update(float dt) {
         if (toCollect && !collected) {
             world.destroyBody(b2body);
+            snowballsRef.set(snowballsRefIndex, null);
             collected = true;
         }
     }
