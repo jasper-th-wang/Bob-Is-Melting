@@ -11,6 +11,11 @@ import dev.jasper.game.EntityCollisionCategory;
 import dev.jasper.game.screens.PlayScreen;
 
 public class Bear extends Enemy {
+    protected final int maxRunVelocity = 2;
+    protected final float defaultRunVelocity = 0.05f;
+    protected final float defaultJumpVelocity = 3f;
+    protected final float chanceToJump = 0.5F;
+    protected final float decideSpecialMovementDuration = 3f;
     private Animation<TextureRegion> idleAnimation;
     private Animation<TextureRegion> walkAnimation;
     private final float idleDuration = 3f;
@@ -66,6 +71,32 @@ public class Bear extends Enemy {
         fdef.shape = shape;
         getB2body().createFixture(fdef).setUserData(this);
     }
+
+    @Override
+    protected float getDefaultRunVelocity() {
+        return this.defaultRunVelocity;
+    }
+
+    @Override
+    protected float getDefaultJumpVelocity() {
+        return this.defaultJumpVelocity;
+    }
+
+    @Override
+    protected float getChanceToJump() {
+        return this.chanceToJump;
+    }
+
+    @Override
+    protected float getDecideSpecialMovementDuration() {
+        return this.decideSpecialMovementDuration;
+    }
+
+    @Override
+    protected int getMaxRunVelocity() {
+        return this.maxRunVelocity;
+    }
+
     /**
      * Determines the current state of the Kid character based on its linear velocity.
      *
