@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Queue;
 import dev.jasper.game.screens.PlayScreen;
 import dev.jasper.game.sprites.Ground;
 
@@ -33,7 +32,7 @@ public final class B2WorldCreator {
     /**
      * Stores the spawn spots for snowballs in the game.
      */
-    private final Queue<Vector2> snowballSpawnSpots;
+    private final Vector2[] snowballSpawnSpots;
 
     /**
      * Constructs a B2WorldCreator instance.
@@ -50,12 +49,17 @@ public final class B2WorldCreator {
             new Ground(screen, rect);
         }
 
-        snowballSpawnSpots = new Queue<>();
+//        snowballSpawnSpots = new Queue<>();
         // Create snowball spawn spots, store it as instance variables
-        for (RectangleMapObject object: map.getLayers().get(SNOWBALL_SPAWN_LAYER)
-                .getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = object.getRectangle();
-            snowballSpawnSpots.addLast(new Vector2(rect.getX(), rect.getY()));
+        Array<RectangleMapObject> snowballTileObjects = map.getLayers().get(SNOWBALL_SPAWN_LAYER)
+                .getObjects().getByType(RectangleMapObject.class);
+
+        final int spotsCount = snowballTileObjects.size;
+
+        snowballSpawnSpots = new Vector2[spotsCount];
+        for (int i = 0; i < spotsCount; i++) {
+            Rectangle rect = snowballTileObjects.get(i).getRectangle();
+            snowballSpawnSpots[i] = new Vector2(rect.getX(), rect.getY());
         }
 
     }
@@ -65,7 +69,7 @@ public final class B2WorldCreator {
      *
      * @return Array of Vector2 objects representing the snowball spawn spots.
      */
-    public Queue<Vector2> getSnowballSpawnSpots() {
+    public Vector2[] getSnowballSpawnSpots() {
         return snowballSpawnSpots;
     }
 

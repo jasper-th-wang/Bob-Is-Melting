@@ -15,7 +15,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.jasper.game.BobIsMelting;
@@ -99,12 +98,14 @@ public class PlayScreen implements Screen {
     /**
      * List of snowball spawn spots.
      */
-    private final Queue<Vector2> snowballSpawnSpots;
+    private final Vector2[] snowballSpawnSpots;
+
+    private final Array<Vector2> nextSnowballSpawnSpots;
 
     /**
      * List of snowballs in the game.
      */
-    private final Array<Snowball> snowballs;
+    private final Array<Snowball> currentSpawnedSnowballs;
     /**
      * TextureAtlas instance for loading textures for the game.
      */
@@ -186,14 +187,20 @@ public class PlayScreen implements Screen {
         final B2WorldCreator b2WorldCreator = new B2WorldCreator(this);
 
         // Initialize in game objects
-        this.snowballSpawnSpots = b2WorldCreator.getSnowballSpawnSpots();
         this.player = new Kid(this);
         this.bob = new Bob(this);
         world.setContactListener(new WorldContactListener());
         tempBear = new Bear(this, .32f, .32f);
-        snowballs = new Array<>();
+
+        this.snowballSpawnSpots = b2WorldCreator.getSnowballSpawnSpots();
+        this.nextSnowballSpawnSpots = new Array<>();
+        nextSnowballSpawnSpots.addAll(snowballSpawnSpots);
+        nextSnowballSpawnSpots.shuffle();
+        Gdx.app.log("snow", String.valueOf(nextSnowballSpawnSpots.size));
+
+        currentSpawnedSnowballs = new Array<>();
         for (int i = 0; i < MAX_SNOWBALL_COUNT; i++) {
-            snowballs.add(null);
+            currentSpawnedSnowballs.add(null);
         }
     }
 
@@ -205,11 +212,16 @@ public class PlayScreen implements Screen {
         snowballSpawnTimer = 0;
 
         // make one snowball
-        for (int i = 0; i < snowballs.size; i++) {
-            if (snowballs.get(i) == null) {
-                final Vector2 spawnSpot = snowballSpawnSpots.removeFirst();
-                snowballs.set(i, new Snowball(this, spawnSpot, snowballs, i));
-                snowballSpawnSpots.addLast(spawnSpot);
+        for (int i = 0; i < currentSpawnedSnowballs.size; i++) {
+            if (currentSpawnedSnowballs.get(i) == null) {
+                final Vector2 spawnSpot = nextSnowballSpawnSpots.pop();
+                currentSpawnedSnowballs.set(i, new Snowball(this, spawnSpot, currentSpawnedSnowballs, i));
+//                nextSnowballSpawnSpots.addLast(spawnSpot);
+
+                if (nextSnowballSpawnSpots.size == 0) {
+                    nextSnowballSpawnSpots.addAll(snowballSpawnSpots);
+                    nextSnowballSpawnSpots.shuffle();
+                }
                 return;
             }
         }
@@ -277,7 +289,7 @@ public class PlayScreen implements Screen {
         bob.update(dt);
         tempBear.update(dt);
 //        tempSnow.update(dt);
-        snowballs.forEach(snowball -> {
+        currentSpawnedSnowballs.forEach(snowball -> {
             if (snowball == null) {
                 return;
             }
@@ -340,7 +352,7 @@ public class PlayScreen implements Screen {
         bob.draw(game.getBatch());
         tempBear.draw(game.getBatch());
 //        tempSnow.draw(game.getBatch());
-        snowballs.forEach(snowball -> {
+        currentSpawnedSnowballs.forEach(snowball -> {
             if (snowball == null) {
                 return;
             }
