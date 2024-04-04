@@ -95,16 +95,6 @@ public class PlayScreen implements Screen {
      */
     private final BobIsMelting game;
 
-    /**
-     * List of snowball spawn spots.
-     */
-    private final Vector2[] snowballSpawnSpots;
-
-    private final Array<Vector2> nextSnowballSpawnSpots;
-
-    /**
-     * List of snowballs in the game.
-     */
     private final Array<Snowball> currentSpawnedSnowballs;
     /**
      * TextureAtlas instance for loading textures for the game.
@@ -198,11 +188,29 @@ public class PlayScreen implements Screen {
         nextSnowballSpawnSpots.shuffle();
         Gdx.app.log("snow", String.valueOf(nextSnowballSpawnSpots.size));
 
-        currentSpawnedSnowballs = new Array<>();
-        for (int i = 0; i < MAX_SNOWBALL_COUNT; i++) {
-            currentSpawnedSnowballs.add(null);
-        }
+        currentSpawnedSnowballs = initializeSnowballs();
     }
+
+    private Array<Snowball> initializeSnowballs() {
+        final Array<Snowball> snowballs;
+        snowballs = new Array<>();
+        for (int i = 0; i < MAX_SNOWBALL_COUNT; i++) {
+            snowballs.add(null);
+        }
+        return snowballs;
+    }
+
+    /**
+     * List of snowball spawn spots.
+     */
+    private final Vector2[] snowballSpawnSpots;
+
+    private final Array<Vector2> nextSnowballSpawnSpots;
+
+
+    /**
+     * List of snowballs in the game.
+     */
 
     private void spawnSnowballs(final float dt) {
         snowballSpawnTimer += dt;
@@ -285,6 +293,7 @@ public class PlayScreen implements Screen {
         handleInput(dt);
         world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 
+        hud.update(dt);
         player.update(dt);
         bob.update(dt);
         tempBear.update(dt);

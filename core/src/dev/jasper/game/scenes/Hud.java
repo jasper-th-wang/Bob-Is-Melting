@@ -128,7 +128,21 @@ public class Hud implements Disposable {
      * This increases the health by the value of snowballHealthIncrease.
      */
     public static void addSnowball() {
-        setHealth(getHealth() + SNOWBALL_HEALTH_INCREASE);
+        final int newHealth = Math.min(getHealth() + SNOWBALL_HEALTH_INCREASE, MAX_HEALTH);
+        setHealth(newHealth);
+    }
+
+    public void update(float dt){
+        timeCount += dt;
+        // When exactly 1 second has passed, increment and update the world timer and corresponding HUD element
+        if (timeCount >= 1) {
+            worldTimer++;
+            timeLabel.setText(String.format("%03d", worldTimer));
+            setHealth(health - 2);
+
+            timeCount = 0;
+        }
+        healthLabel.setText(String.format("%02d", health));
     }
 
     /**
