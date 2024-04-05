@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 
-public abstract class MovingB2Body extends Sprite implements InitializableB2Body {
+public abstract class DynamicEntitySprite extends Sprite implements InitializableB2Body {
 
     protected Body b2body;
     protected State currentState;
@@ -13,7 +13,7 @@ public abstract class MovingB2Body extends Sprite implements InitializableB2Body
     protected float stateTimer;
     protected boolean isRunningRight;
 
-    public MovingB2Body(final TextureRegion defaultTextureRegion) {
+    public DynamicEntitySprite(final TextureRegion defaultTextureRegion) {
         super(defaultTextureRegion);
         currentState = State.STANDING;
         previousState = State.STANDING;
@@ -85,6 +85,7 @@ public abstract class MovingB2Body extends Sprite implements InitializableB2Body
 
 //    protected abstract TextureRegion getIdleFrame();
     protected abstract TextureRegion getIdleFrame(float stateTime);
+    public abstract void update(float dt);
     /**
      * Represents the various movement states that the Kid character can be in during the game.
      */

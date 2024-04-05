@@ -14,6 +14,7 @@ import dev.jasper.game.sprites.Bear;
 import dev.jasper.game.sprites.Bob;
 import dev.jasper.game.sprites.Ground;
 import dev.jasper.game.sprites.Kid;
+import dev.jasper.game.sprites.Snowball;
 
 /**
  * The B2WorldCreator class is responsible for creating the physical world in the game.
@@ -22,7 +23,7 @@ import dev.jasper.game.sprites.Kid;
  * @author Jasper Wang
  * @version 2024
  */
-public final class B2WorldCreator {
+public final class B2BodyObjectFactory {
     private final World world;
 
     private final TiledMap map;
@@ -39,40 +40,31 @@ public final class B2WorldCreator {
     /**
      * Constructs a B2WorldCreator instance.
      * It creates the non-character bodies and fixtures in the game world.
-     * @param screen - the game screen
      */
-    public B2WorldCreator(final TextureAtlas atlas) {
+    public B2BodyObjectFactory() {
         this.world = new World(new Vector2(0, GRAVITY_Y), true);
-        this.atlas = atlas;
+        this.atlas = new TextureAtlas("Characters.atlas");
         world.setContactListener(new WorldContactListener());
         final TmxMapLoader mapLoader = new TmxMapLoader();
         map = mapLoader.load("mainNew.tmx");
-//        World world = screen.getWorld();
-//        TiledMap map = screen.getMap();
-        // Create ground bodies and fixtures
-//        Ground groundBodies = getGround();
-//        if (groundBodies != null) {
-//            return groundBodies;
-//        }
-
-//        snowballSpawnSpots = new Queue<>();
-        // Create snowball spawn spots, store it as instance variables
-        Array<RectangleMapObject> snowballTileObjects = getMap().getLayers().get(SNOWBALL_SPAWN_LAYER)
-                .getObjects().getByType(RectangleMapObject.class);
-
-        final int spotsCount = snowballTileObjects.size;
-
-        snowballSpawnSpots = new Vector2[spotsCount];
-        for (int i = 0; i < spotsCount; i++) {
-            Rectangle rect = snowballTileObjects.get(i).getRectangle();
-            snowballSpawnSpots[i] = new Vector2(rect.getX(), rect.getY());
+    }
+    public Array<Snowball> initializeSnowballsSpawnSpots(final int snowballCount) {
+        final Array<Snowball> snowballs;
+        snowballs = new Array<>();
+        for (int i = 0; i < snowballCount; i++) {
+            snowballs.add(null);
         }
-
-
-        // Initialize in game objects
-        // TODO: getPlayer, getBob, getBear
-        tempBear = new Bear(this, .32f, .32f);
-
+        return snowballs;
+    }
+    public Snowball getSnowball() {
+        final Snowball snowball = new Snowball(this, spawnSpot, currentSpawnedSnowballs, i);
+        initializeB2Body(snowball);
+        return snowball;
+    }
+    public Bear getBear(final float positionX, final float positionY) {
+        final Bear bear = new Bear(this, positionX, positionY);
+        initializeB2Body(bear);
+        return bear;
     }
     public Bob getBob() {
         final Bob bob = new Bob(atlas);
@@ -85,7 +77,7 @@ public final class B2WorldCreator {
         return kid;
     }
 
-    public Array<Ground> getGround() {
+    public Array<Ground> getGrounds() {
         final Array<Ground> groundBodies = new Array<>();
         for (RectangleMapObject object: getMap().getLayers().get(GROUND_LAYER)
                 .getObjects().getByType(RectangleMapObject.class)) {
@@ -102,6 +94,16 @@ public final class B2WorldCreator {
      * @return Array of Vector2 objects representing the snowball spawn spots.
      */
     public Vector2[] getSnowballSpawnSpots() {
+        Array<RectangleMapObject> snowballTileObjects = getMap().getLayers().get(SNOWBALL_SPAWN_LAYER)
+                .getObjects().getByType(RectangleMapObject.class);
+
+        final int spotsCount = snowballTileObjects.size;
+
+        Vector2[] snowballSpawnSpots = new Vector2[spotsCount];
+        for (int i = 0; i < spotsCount; i++) {
+            Rectangle rect = snowballTileObjects.get(i).getRectangle();
+            snowballSpawnSpots[i] = new Vector2(rect.getX(), rect.getY());
+        }
         return snowballSpawnSpots;
     }
 

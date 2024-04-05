@@ -16,7 +16,7 @@ import dev.jasper.game.screens.PlayScreen;
  * @author Jasper Wang
  * @version 2024
  */
-public abstract class Enemy extends Sprite {
+public abstract class Enemy extends DynamicEntitySprite {
     /**
      * The maximum running velocity of the enemy.
      */

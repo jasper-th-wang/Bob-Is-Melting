@@ -1,7 +1,6 @@
 package dev.jasper.game.sprites;
 
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -17,31 +16,15 @@ import dev.jasper.game.screens.PlayScreen;
  * @author Jasper Wang
  * @version 2024
  */
-public class Ground {
-    private final World world;
+public final class Ground extends TileB2Body {
+    private static final short COLLISION_CATEGORY = EntityCollisionCategory.GROUND_BIT;
 
     /**
      * Constructs a Ground instance.
-     * @param screen - the game screen
      * @param bounds - the bounds of the ground
      */
-    public Ground(final PlayScreen screen, final Rectangle bounds) {
-        this.world = screen.getWorld();
-
-        BodyDef bdef = new BodyDef();
-        FixtureDef fdef = new FixtureDef();
-        PolygonShape shape = new PolygonShape();
-
-        fdef.filter.categoryBits = EntityCollisionCategory.GROUND_BIT;
-
-        bdef.position.set((bounds.getX() + bounds.getWidth() / 2) / BobIsMelting.PPM,
-                (bounds.getY() + bounds.getHeight() / 2) / BobIsMelting.PPM);
-        bdef.type = BodyDef.BodyType.StaticBody;
-
-        Body body = world.createBody(bdef);
-
-        shape.setAsBox(bounds.getWidth() / 2 / BobIsMelting.PPM, bounds.getHeight() / 2 / BobIsMelting.PPM);
-        fdef.shape = shape;
-        body.createFixture(fdef).setUserData(this);
+    public Ground(final Rectangle bounds) {
+        super(bounds, COLLISION_CATEGORY);
     }
+
 }
