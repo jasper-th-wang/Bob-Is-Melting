@@ -4,13 +4,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 import dev.jasper.game.BobIsMelting;
 import dev.jasper.game.EntityCollisionCategory;
-import dev.jasper.game.sprites.dynamicSprites.Kid;
 
 public class Snowball extends InteractiveEnviromentSprite {
 

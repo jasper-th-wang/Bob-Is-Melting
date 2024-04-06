@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.utils.Array;
 import dev.jasper.game.BobIsMelting;
 
-public class Bear extends Enemy {
+public class Bear extends AbstractEnemy {
     private static final int MAX_RUN_VELOCITY = 2;
     private static final float DEFAULT_RUN_VELOCITY = 0.05f;
     private static final float DEFAULT_JUMP_VELOCITY = 3f;

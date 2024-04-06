@@ -10,11 +10,11 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import dev.jasper.game.sprites.Ground;
 import dev.jasper.game.sprites.InitializableB2Body;
 import dev.jasper.game.sprites.dynamicSprites.Bear;
-import dev.jasper.game.sprites.enviromentSprites.Bob;
-import dev.jasper.game.sprites.Ground;
 import dev.jasper.game.sprites.dynamicSprites.Kid;
+import dev.jasper.game.sprites.enviromentSprites.Bob;
 import dev.jasper.game.sprites.enviromentSprites.Snowball;
 
 /**

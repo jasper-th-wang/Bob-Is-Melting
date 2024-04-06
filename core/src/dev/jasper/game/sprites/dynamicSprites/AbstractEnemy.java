@@ -1,6 +1,5 @@
 package dev.jasper.game.sprites.dynamicSprites;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import dev.jasper.game.EntityCollisionCategory;
@@ -13,7 +12,7 @@ import dev.jasper.game.EntityCollisionCategory;
  * @author Jasper Wang
  * @version 2024
  */
-public abstract class Enemy extends DynamicEntitySprite {
+public abstract class AbstractEnemy extends DynamicEntitySprite {
     private static final short COLLISION_CATEGORY = EntityCollisionCategory.ENEMY_BIT;
     private static final short MASK_BITS = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.KID_BIT | EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT;
     private final int maxRunVelocity;
@@ -35,7 +34,7 @@ public abstract class Enemy extends DynamicEntitySprite {
      * @param decideSpecialMovementDuration
      * @param maxRunVelocity
      */
-    public Enemy(float defaultRunVelocity, Vector2 currentVelocity, float defaultJumpVelocity, float chanceToJump, float decideSpecialMovementDuration, int maxRunVelocity) {
+    public AbstractEnemy(float defaultRunVelocity, Vector2 currentVelocity, float defaultJumpVelocity, float chanceToJump, float decideSpecialMovementDuration, int maxRunVelocity) {
         super(COLLISION_CATEGORY, MASK_BITS);
 
         this.defaultRunVelocity = defaultRunVelocity;

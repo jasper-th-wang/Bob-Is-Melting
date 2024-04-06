@@ -15,7 +15,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import dev.jasper.game.EntityCollisionCategory;
 import dev.jasper.game.scenes.Hud;
-import dev.jasper.game.sprites.dynamicSprites.Enemy;
+import dev.jasper.game.sprites.dynamicSprites.AbstractEnemy;
 import dev.jasper.game.sprites.dynamicSprites.Kid;
 import dev.jasper.game.sprites.enviromentSprites.Snowball;
 
@@ -108,11 +108,11 @@ public final class WorldContactListener implements ContactListener {
     }
 
     private static void handleEnemyGroundCollision(final Fixture fixA, final Fixture fixB) {
-        Enemy enemy;
+        AbstractEnemy enemy;
         if (fixA.getFilterData().categoryBits == EntityCollisionCategory.ENEMY_BIT) {
-            enemy = (Enemy) fixA.getUserData();
+            enemy = (AbstractEnemy) fixA.getUserData();
         } else {
-            enemy = (Enemy) fixB.getUserData();
+            enemy = (AbstractEnemy) fixB.getUserData();
         }
         final boolean toReverseVelocity = MathUtils.randomBoolean(0.8F);
         enemy.reverseVelocity(toReverseVelocity, false);

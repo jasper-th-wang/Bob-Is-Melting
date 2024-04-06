@@ -6,10 +6,10 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import dev.jasper.game.sprites.enviromentSprites.Bob;
-import dev.jasper.game.sprites.dynamicSprites.Enemy;
 import dev.jasper.game.sprites.Ground;
+import dev.jasper.game.sprites.dynamicSprites.AbstractEnemy;
 import dev.jasper.game.sprites.dynamicSprites.Kid;
+import dev.jasper.game.sprites.enviromentSprites.Bob;
 import dev.jasper.game.sprites.enviromentSprites.Snowball;
 
 public final class GameStateManager {
@@ -24,7 +24,7 @@ public final class GameStateManager {
     private final Kid kid;
     private final Bob bob;
     private final Array<Ground> grounds;
-    private final Array<Enemy> enemies;
+    private final Array<AbstractEnemy> enemies;
     private final Array<Snowball> currentSpawnedSnowballs;
     private final Vector2[] snowballSpawnSpots;
     private final Array<Vector2> nextSnowballSpawnSpots;

@@ -2,13 +2,10 @@ package dev.jasper.game.sprites.enviromentSprites;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.Shape;
-import dev.jasper.game.BobIsMelting;
 import dev.jasper.game.sprites.InitializableB2Body;
 
 public abstract class InteractiveEnviromentSprite extends Sprite implements InitializableB2Body {
