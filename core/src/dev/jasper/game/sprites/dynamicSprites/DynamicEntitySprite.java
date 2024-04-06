@@ -9,6 +9,15 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import dev.jasper.game.sprites.InitializableB2Body;
 
+/**
+ * This abstract class represents a dynamic (cna move around in the world) entity sprite in the game.
+ * It extends the Sprite class and implements the InitializableB2Body interface.
+ * It contains methods for getting and setting the body and fixture of the sprite,
+ * as well as methods for getting the current state of the sprite and updating it.
+ *
+ * @author Jasper Wang
+ * @version 2024
+ */
 public abstract class DynamicEntitySprite extends Sprite implements InitializableB2Body {
 
     private final BodyDef bodyDef;
@@ -17,9 +26,15 @@ public abstract class DynamicEntitySprite extends Sprite implements Initializabl
     private Fixture fixture;
     private State currentState;
     private State previousState;
-    // keep track of amount of time for any given state
     private float stateTimer;
     private boolean isRunningRight;
+    /**
+     * Constructor for the DynamicEntitySprite class.
+     * Initializes the body and fixture definitions, and sets the initial state to STANDING.
+     *
+     * @param collisionCategory The category of the collision.
+     * @param collisionMaskBits The mask bits of the collision.
+     */
     public DynamicEntitySprite(final short collisionCategory, final short collisionMaskBits) {
         super();
         currentState = State.STANDING;
@@ -37,34 +52,34 @@ public abstract class DynamicEntitySprite extends Sprite implements Initializabl
     }
 
     @Override
-    public BodyDef getBodyDef() {
+    public final BodyDef getBodyDef() {
         return bodyDef;
     }
 
     @Override
-    public FixtureDef getFixtureDef() {
+    public final FixtureDef getFixtureDef() {
         return fixtureDef;
     }
 
     @Override
-    public Body getB2body() {
+    public final Body getB2body() {
         return b2body;
     }
 
     @Override
-    public Fixture getFixture() { return fixture; }
+    public final Fixture getFixture() { return fixture; }
 
     @Override
-    public void setFixture(Fixture fixture) {
+    public final void setFixture(Fixture fixture) {
         this.fixture = fixture;
     }
 
     @Override
-    public void setB2body(final Body b2body) {
+    public final void setB2body(final Body b2body) {
         this.b2body = b2body;
     }
 
-    protected TextureRegion getFrame(final float dt) {
+    protected final TextureRegion getFrame(final float dt) {
         this.currentState = getState();
         TextureRegion region;
         switch (currentState) {
@@ -81,18 +96,7 @@ public abstract class DynamicEntitySprite extends Sprite implements Initializabl
                 break;
         }
 
-        // match jumping, falling and standing sprites to current body direction of running
-        final boolean bodyRunningToLeft = getB2body().getLinearVelocity().x < 0 || !isRunningRight;
-        final boolean bodyRunningToRight = getB2body().getLinearVelocity().x > 0 || isRunningRight;
-        final boolean spriteFacingRight = !region.isFlipX();
-        final boolean spriteFacingLeft = region.isFlipX();
-        if (bodyRunningToLeft && spriteFacingRight) {
-            region.flip(true, false);
-            isRunningRight = false;
-        } else if (bodyRunningToRight && spriteFacingLeft) {
-            region.flip(true, false);
-            isRunningRight = true;
-        }
+        matchSpriteRegionToBodyDirection(region);
 
         stateTimer = currentState == previousState ? getStateTimer() + dt : 0;
         previousState = currentState;
@@ -116,20 +120,31 @@ public abstract class DynamicEntitySprite extends Sprite implements Initializabl
         }
     }
 
-    //    protected abstract TextureRegion getJumpFrame();
     protected abstract TextureRegion getJumpFrame(float stateTime);
 
-    //    protected abstract TextureRegion getRunFrame();
     protected abstract TextureRegion getRunFrame(float stateTime);
 
-    //    protected abstract TextureRegion getIdleFrame();
     protected abstract TextureRegion getIdleFrame(float stateTime);
 
-    protected float getStateTimer() {
+    private void matchSpriteRegionToBodyDirection(final TextureRegion region) {
+        final boolean bodyRunningToLeft = getB2body().getLinearVelocity().x < 0 || !isRunningRight;
+        final boolean bodyRunningToRight = getB2body().getLinearVelocity().x > 0 || isRunningRight;
+        final boolean spriteFacingRight = !region.isFlipX();
+        final boolean spriteFacingLeft = region.isFlipX();
+        if (bodyRunningToLeft && spriteFacingRight) {
+            region.flip(true, false);
+            isRunningRight = false;
+        } else if (bodyRunningToRight && spriteFacingLeft) {
+            region.flip(true, false);
+            isRunningRight = true;
+        }
+    }
+
+    protected final float getStateTimer() {
         return stateTimer;
     }
 
-    protected void setStateTimer(final float stateTimer) {
+    protected final void setStateTimer(final float stateTimer) {
         this.stateTimer = stateTimer;
     }
 
@@ -139,10 +154,18 @@ public abstract class DynamicEntitySprite extends Sprite implements Initializabl
 
     protected abstract void defineBodyDefPosition();
 
+    /**
+     * Updates the state of the dynamic entity sprite.
+     * This method should be overridden in subclasses to provide specific update logic.
+     * It is typically used to update the position, velocity,
+     * or other properties of the sprite based on the elapsed time.
+     *
+     * @param dt The amount of time that has passed since the last update, typically the time between frames.
+     */
     public abstract void update(float dt);
 
     /**
-     * Represents the various movement states that the Kid character can be in during the game.
+     * Represents the various movement states that a Dynamic Entity can be in during the game.
      */
-    public enum State {FALLING, JUMPING, STANDING, RUNNING}
+    public enum State { FALLING, JUMPING, STANDING, RUNNING }
 }
