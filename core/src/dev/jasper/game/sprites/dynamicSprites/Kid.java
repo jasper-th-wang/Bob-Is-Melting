@@ -217,7 +217,8 @@ public final class Kid extends DynamicEntitySprite {
         // change collision category
         Filter filter = new Filter();
         filter.categoryBits = EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT;
-        filter.maskBits = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.BOB_BIT | EntityCollisionCategory.ENEMY_BIT;
+        filter.maskBits = EntityCollisionCategory.GROUND_BIT
+                | EntityCollisionCategory.BOB_BIT | EntityCollisionCategory.ENEMY_BIT;
         getFixture().setFilterData(filter);
         // add snowball sprite on top of Kid
         setIsCarryingSnowball(true);

@@ -67,10 +67,12 @@ public abstract class DynamicEntitySprite extends Sprite implements Initializabl
     }
 
     @Override
-    public final Fixture getFixture() { return fixture; }
+    public final Fixture getFixture() {
+        return fixture;
+    }
 
     @Override
-    public final void setFixture(Fixture fixture) {
+    public final void setFixture(final Fixture fixture) {
         this.fixture = fixture;
     }
 
@@ -98,7 +100,11 @@ public abstract class DynamicEntitySprite extends Sprite implements Initializabl
 
         matchSpriteRegionToBodyDirection(region);
 
-        stateTimer = currentState == previousState ? getStateTimer() + dt : 0;
+        if (currentState == previousState) {
+            stateTimer = getStateTimer() + dt;
+        } else {
+            stateTimer = 0;
+        }
         previousState = currentState;
         return region;
     }

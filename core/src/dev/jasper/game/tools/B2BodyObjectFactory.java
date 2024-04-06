@@ -43,6 +43,12 @@ public final class B2BodyObjectFactory {
         final TmxMapLoader mapLoader = new TmxMapLoader();
         map = mapLoader.load("mainNew.tmx");
     }
+    /**
+     * Initializes the snowballs spawn spots in the game.
+     *
+     * @param snowballCount The number of snowballs to be spawned in the game.
+     * @return An array of Snowball objects representing the snowballs in the game.
+     */
     public Array<Snowball> initializeSnowballsSpawnSpots(final int snowballCount) {
         final Array<Snowball> snowballs;
         snowballs = new Array<>();
@@ -51,7 +57,16 @@ public final class B2BodyObjectFactory {
         }
         return snowballs;
     }
-    public Snowball createSnowball(Vector2 spawnSpot, Array<Snowball> currentSpawnedSnowballs, int currentIndex) {
+    /**
+     * Creates a new Snowball in the game.
+     *
+     * @param spawnSpot The spawn spot of the Snowball.
+     * @param currentSpawnedSnowballs The current spawned Snowballs in the game.
+     * @param currentIndex The current index of the Snowball.
+     * @return A new Snowball object.
+     */
+    public Snowball createSnowball(final Vector2 spawnSpot,
+                                   final Array<Snowball> currentSpawnedSnowballs, final int currentIndex) {
         final Snowball snowball = Snowball.snowballFactory(atlas, spawnSpot, currentSpawnedSnowballs, currentIndex);
         initializeB2Body(snowball);
         return snowball;
@@ -65,27 +80,45 @@ public final class B2BodyObjectFactory {
         b2Body.setFixture(fixture);
     }
 
+    /**
+     * Creates a new Bear in the game.
+     *
+     * @param positionX The x-coordinate of the Bear's position.
+     * @param positionY The y-coordinate of the Bear's position.
+     * @return A new Bear object.
+     */
     public Bear createBear(final float positionX, final float positionY) {
         final Bear bear = Bear.bearFactory(atlas, positionX, positionY);
         initializeB2Body(bear);
         return bear;
     }
 
+    /**
+     * Creates a new Bob in the game.
+     *
+     * @return A new Bob object.
+     */
     public Bob createBob() {
         final Bob bob = Bob.bobFactory(atlas);
         initializeB2Body(bob);
         return bob;
     }
 
+    /**
+     * Creates a new Kid in the game.
+     *
+     * @return A new Kid object.
+     */
     public Kid createKid() {
         final Kid kid = Kid.kidFactory(atlas);
         initializeB2Body(kid);
-//        kid.setB2body(body);
-//        kid.setFixture(body.);
         return kid;
     }
 
-    public Array<Ground> createGrounds() {
+    /**
+     * Creates the grounds in the game.
+     */
+    public void createGrounds() {
         final Array<Ground> groundBodies = new Array<>();
         for (RectangleMapObject object: getMap().getLayers().get(GROUND_LAYER)
                 .getObjects().getByType(RectangleMapObject.class)) {
@@ -94,16 +127,15 @@ public final class B2BodyObjectFactory {
             initializeB2Body(ground);
             groundBodies.add(ground);
         }
-        return groundBodies;
     }
-
     /**
-     * The TiledMap instance used for the game map.
+     * Returns the TiledMap instance used for the game map.
+     *
+     * @return The TiledMap instance used for the game map.
      */
     public TiledMap getMap() {
         return map;
     }
-
     /**
      * Returns the array of snowball spawn spots in the game.
      *
@@ -122,9 +154,10 @@ public final class B2BodyObjectFactory {
         }
         return snowballSpawnSpots;
     }
-
     /**
-     * The Box2D world used for physics simulation in the game.
+     * Returns the Box2D world used for physics simulation in the game.
+     *
+     * @return The Box2D world used for physics simulation in the game.
      */
     public World getWorld() {
         return world;

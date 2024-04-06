@@ -87,7 +87,6 @@ public final class WorldContactListener implements ContactListener {
         } else {
             theKid = (Kid) fixB.getUserData();
         }
-        // TODO: bug, kid cannot pickup ball when invincible
 
         snowball.collect();
         theKid.collectSnowball();

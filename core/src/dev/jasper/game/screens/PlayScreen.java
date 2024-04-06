@@ -57,7 +57,7 @@ public class PlayScreen implements Screen {
 
         hud = new Hud(game.getBatch());
 
-        this.gameStateManager = new GameStateManager(POSITION_ITERATIONS);
+        this.gameStateManager = new GameStateManager();
         inputHandler = new InputHandler(gameStateManager.getKid());
         renderer = new OrthogonalTiledMapRenderer(gameStateManager.getMap(), 1 / BobIsMelting.PPM);
 
@@ -103,7 +103,7 @@ public class PlayScreen implements Screen {
      */
     public void update(final float dt) {
         // Handle user input first
-        inputHandler.handleInput(dt);
+        inputHandler.handleInput();
 
         hud.update(dt);
         gameStateManager.update(dt);

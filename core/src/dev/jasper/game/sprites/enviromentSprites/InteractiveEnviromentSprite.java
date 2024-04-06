@@ -8,12 +8,27 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import dev.jasper.game.sprites.InitializableB2Body;
 
+
+/**
+ * Represents an interactive environment sprite in the game.
+ * The InteractiveEnviromentSprite class extends the Sprite class and implements the InitializableB2Body interface.
+ * It defines the common characteristics and behaviors of an interactive environment sprite.
+ *
+ * @author Jasper Wang
+ * @version 2024
+ */
 public abstract class InteractiveEnviromentSprite extends Sprite implements InitializableB2Body {
     private final BodyDef bodyDef;
     private final FixtureDef fixtureDef;
     private Body b2body;
     private Fixture fixture;
 
+    /**
+     * Constructs an InteractiveEnviromentSprite with the specified collision category and mask bits.
+     *
+     * @param collisionCategory The collision category of the sprite.
+     * @param collisionMaskBits The collision mask bits of the sprite.
+     */
     public InteractiveEnviromentSprite(final short collisionCategory, final short collisionMaskBits) {
         super();
 
@@ -27,32 +42,32 @@ public abstract class InteractiveEnviromentSprite extends Sprite implements Init
     }
 
     @Override
-    public BodyDef getBodyDef() {
+    public final BodyDef getBodyDef() {
         return bodyDef;
     }
 
     @Override
-    public FixtureDef getFixtureDef() {
+    public final FixtureDef getFixtureDef() {
         return fixtureDef;
     }
 
     @Override
-    public Body getB2body() {
+    public final Body getB2body() {
         return this.b2body;
     }
 
     @Override
-    public Fixture getFixture() {
+    public final Fixture getFixture() {
         return fixture;
     }
 
     @Override
-    public void setFixture(Fixture fixture) {
+    public final void setFixture(final Fixture fixture) {
         this.fixture = fixture;
     }
 
     @Override
-    public void setB2body(Body b2body) {
+    public final void setB2body(final Body b2body) {
         this.b2body = b2body;
     }
 

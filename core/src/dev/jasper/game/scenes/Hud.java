@@ -21,17 +21,14 @@ import dev.jasper.game.BobIsMelting;
  * @author Jasper Wang
  * @version 2024
  */
-public class Hud implements Disposable {
+public final class Hud implements Disposable {
     private static final int SNOWBALL_HEALTH_INCREASE = 10;
     private static final int MAX_HEALTH = 100;
     private static final int TABLE_PAD_TOP = 10;
     private static Integer health;
     private final Stage stage;
-    private final Label timeTitleLabel;
     private final Label timeLabel;
-    private final Label healthTitleLabel;
     private final Label healthLabel;
-    private final Viewport viewport;
     private Integer worldTimer;
     private float timeCount;
 
@@ -44,17 +41,17 @@ public class Hud implements Disposable {
         worldTimer = 0;
         timeCount = 0;
         health = MAX_HEALTH;
-        viewport = new FitViewport(BobIsMelting.V_WIDTH, BobIsMelting.V_HEIGHT, new OrthographicCamera());
+        Viewport viewport = new FitViewport(BobIsMelting.V_WIDTH, BobIsMelting.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
         Table table = new Table();
         table.top();
         table.setFillParent(true);
-        timeTitleLabel = new Label("TIME ELAPSED", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        Label timeTitleLabel = new Label("TIME ELAPSED", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         timeLabel = new Label(String.format("%03d", worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         // Health as a temp name for now
-        healthTitleLabel = new Label("HEALTH", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        Label healthTitleLabel = new Label("HEALTH", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         healthLabel = new Label(String.format("%02d", health), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         table.add(healthTitleLabel).expandX().padTop(TABLE_PAD_TOP);
@@ -93,7 +90,15 @@ public class Hud implements Disposable {
         setHealth(newHealth);
     }
 
-    public void update(float dt) {
+    /**
+     * Updates the time count and health of the HUD.
+     * This method is called periodically to update the time count and health.
+     * If the time count exceeds 1 second, the world timer is incremented and the health is decreased by 2.
+     * The time count is then reset to 0.
+     *
+     * @param dt The time delta, representing the amount of time passed since the last update.
+     */
+    public void update(final float dt) {
         timeCount += dt;
         // When exactly 1 second has passed, increment and update the world timer and corresponding HUD element
         if (timeCount >= 1) {

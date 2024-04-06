@@ -8,26 +8,40 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.utils.Array;
 import dev.jasper.game.BobIsMelting;
 
-public class Bear extends AbstractEnemy {
+/**
+ * Represents a Bear enemy in the game.
+ * The Bear class extends the AbstractEnemy class and defines the specific characteristics of a Bear enemy.
+ *
+ * @author Jasper Wang
+ * @version 2024
+ */
+public final class Bear extends AbstractEnemy {
     private static final int MAX_RUN_VELOCITY = 2;
     private static final float DEFAULT_RUN_VELOCITY = 0.05f;
     private static final float DEFAULT_JUMP_VELOCITY = 3f;
     private static final float CHANCE_TO_JUMP = 0.5F;
     private static final float DECIDE_SPECIAL_MOVEMENT_DURATION = 3f;
+    private static final int BEAR_SPHERE_RADIUS = 7;
     private final float positionX;
     private final float positionY;
-    private final float idleDuration = 3f;
     private Animation<TextureRegion> idleAnimation;
     private Animation<TextureRegion> walkAnimation;
-    private float idleTimer;
 
-    public Bear(final float x, final float y) {
-        super(DEFAULT_RUN_VELOCITY, new Vector2(DEFAULT_RUN_VELOCITY, 0), DEFAULT_JUMP_VELOCITY, CHANCE_TO_JUMP, DECIDE_SPECIAL_MOVEMENT_DURATION, MAX_RUN_VELOCITY);
+    private Bear(final float x, final float y) {
+        super(DEFAULT_RUN_VELOCITY, new Vector2(DEFAULT_RUN_VELOCITY, 0), DEFAULT_JUMP_VELOCITY, CHANCE_TO_JUMP,
+                DECIDE_SPECIAL_MOVEMENT_DURATION, MAX_RUN_VELOCITY);
         this.positionX = x;
         this.positionY = y;
-        this.idleTimer = 0;
     }
 
+    /**
+     * Factory method to create a new Bear.
+     *
+     * @param atlas The TextureAtlas containing the Bear's textures.
+     * @param x The x-coordinate of the Bear's position.
+     * @param y The y-coordinate of the Bear's position.
+     * @return A new Bear.
+     */
     public static Bear bearFactory(final TextureAtlas atlas, final float x, final float y) {
         final Bear bear = new Bear(x, y);
         bear.defineDefaultSprite(atlas);
@@ -37,35 +51,45 @@ public class Bear extends AbstractEnemy {
     }
 
     @Override
-    protected TextureRegion getJumpFrame(float stateTime) {
+    protected TextureRegion getJumpFrame(final float stateTime) {
         return null;
     }
 
     @Override
-    protected TextureRegion getRunFrame(float stateTime) {
+    protected TextureRegion getRunFrame(final float stateTime) {
         return walkAnimation.getKeyFrame(getStateTimer(), true);
     }
 
     @Override
-    protected TextureRegion getIdleFrame(float stateTime) {
+    protected TextureRegion getIdleFrame(final float stateTime) {
         return idleAnimation.getKeyFrame(getStateTimer(), true);
     }
 
     @Override
-    protected void defineDefaultSprite(TextureAtlas atlas) {
+    protected void defineDefaultSprite(final TextureAtlas atlas) {
         setPosition(positionX, positionY);
+        final float spriteBoundWidth = 24 / BobIsMelting.PPM;
+        final float spriteBoundHeight = 24 / BobIsMelting.PPM;
+        final float walkFrameDuration = 0.1f;
+        final float idleFrameDuration = 1f;
+        final int frameCount = 4;
+        final int spriteWidth = 32;
+        final int spriteHeight = 32;
+
         Array<TextureRegion> frames = new Array<>();
-        for(int i = 0; i < 4; i++) {
-            frames.add(new TextureRegion(atlas.findRegion("bear_polar"), i * 32, 32, 32, 32));
-            walkAnimation = new Animation<>(0.1f, frames);
-            setBounds(getX(), getY(), 24 / BobIsMelting.PPM, 24 / BobIsMelting.PPM);
+        for (int i = 0; i < frameCount; i++) {
+            frames.add(new TextureRegion(atlas.findRegion("bear_polar"),
+                    i * spriteWidth, spriteHeight, spriteWidth, spriteHeight));
+            walkAnimation = new Animation<>(walkFrameDuration, frames);
+            setBounds(getX(), getY(), spriteBoundWidth, spriteBoundHeight);
         }
         frames.clear();
 
         for (int i = 0; i < 2; i++) {
-            frames.add(new TextureRegion(atlas.findRegion("bear_polar"), i * 32, 0, 32, 32));
-            idleAnimation = new Animation<>(1f, frames);
-            setBounds(getX(), getY(), 24 / BobIsMelting.PPM, 24 / BobIsMelting.PPM);
+            frames.add(new TextureRegion(atlas.findRegion("bear_polar"), i * spriteWidth, 0,
+                    spriteWidth, spriteHeight));
+            idleAnimation = new Animation<>(idleFrameDuration, frames);
+            setBounds(getX(), getY(), spriteBoundWidth, spriteBoundHeight);
         }
         frames.clear();
     }
@@ -73,7 +97,7 @@ public class Bear extends AbstractEnemy {
     @Override
     protected void defineShape() {
         CircleShape shape = new CircleShape();
-        shape.setRadius(7 / BobIsMelting.PPM);
+        shape.setRadius(BEAR_SPHERE_RADIUS / BobIsMelting.PPM);
         getFixtureDef().shape = shape;
     }
 
@@ -82,6 +106,14 @@ public class Bear extends AbstractEnemy {
         getBodyDef().position.set(getX(), getY());
     }
 
+    /**
+     * Updates the state of the Bear character.
+     * This method is called periodically to update the state of the Bear character in the game.
+     * It increments the state timer and the special movement decision timer,
+     * applies any special movement, and updates the Bear's position.
+     *
+     * @param dt The time delta, representing the amount of time passed since the last update.
+     */
     public void update(final float dt) {
         setStateTimer(getStateTimer() + dt);
         setDecideSpecialMovementTimer(getDecideSpecialMovementTimer() + dt);
@@ -90,7 +122,9 @@ public class Bear extends AbstractEnemy {
 
         run();
 
-        setPosition(getB2body().getPosition().x - getWidth() / 2, getB2body().getPosition().y - getHeight() / 3);
+        final float xPositionOffset = getB2body().getPosition().x - getWidth() / 2;
+        final float yPositionOffset = getB2body().getPosition().y - getHeight() / 3;
+        setPosition(xPositionOffset, yPositionOffset);
         setRegion(getFrame(dt));
     }
 }

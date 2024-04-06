@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import dev.jasper.game.EntityCollisionCategory;
 
 /**
- * The Enemy class serves as an abstract base class that provides a skeletal implementation for the enemies in the game.
+ * The AbstractEnemy class that provides a skeletal implementation for the enemies in the game.
  * It extends the Sprite class from the libGDX library,
  * inheriting its properties and methods for graphical representation.
  *
@@ -14,7 +14,8 @@ import dev.jasper.game.EntityCollisionCategory;
  */
 public abstract class AbstractEnemy extends DynamicEntitySprite {
     private static final short COLLISION_CATEGORY = EntityCollisionCategory.ENEMY_BIT;
-    private static final short MASK_BITS = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.KID_BIT | EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT;
+    private static final short MASK_BITS = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.OBJECT_BIT
+            | EntityCollisionCategory.KID_BIT | EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT;
     private final int maxRunVelocity;
     private final float defaultRunVelocity;
     private final float defaultJumpVelocity;
@@ -25,16 +26,18 @@ public abstract class AbstractEnemy extends DynamicEntitySprite {
     private Vector2 currentVelocity;
 
     /**
-     * Constructs an Enemy instance.
+     * Constructs an AbstractEnemy with the specified parameters.
      *
-     * @param defaultRunVelocity
-     * @param currentVelocity
-     * @param defaultJumpVelocity
-     * @param chanceToJump
-     * @param decideSpecialMovementDuration
-     * @param maxRunVelocity
+     * @param defaultRunVelocity The default running velocity of the enemy.
+     * @param currentVelocity The current velocity of the enemy.
+     * @param defaultJumpVelocity The default jumping velocity of the enemy.
+     * @param chanceToJump The chance for the enemy to jump.
+     * @param decideSpecialMovementDuration The duration to decide the special movement of the enemy.
+     * @param maxRunVelocity The maximum running velocity of the enemy.
      */
-    public AbstractEnemy(float defaultRunVelocity, Vector2 currentVelocity, float defaultJumpVelocity, float chanceToJump, float decideSpecialMovementDuration, int maxRunVelocity) {
+    public AbstractEnemy(final float defaultRunVelocity, final Vector2 currentVelocity,
+                         final float defaultJumpVelocity, final float chanceToJump,
+                         final float decideSpecialMovementDuration, final int maxRunVelocity) {
         super(COLLISION_CATEGORY, MASK_BITS);
 
         this.defaultRunVelocity = defaultRunVelocity;
@@ -52,7 +55,7 @@ public abstract class AbstractEnemy extends DynamicEntitySprite {
         }
     }
 
-    protected int getMaxRunVelocity() {
+    protected final int getMaxRunVelocity() {
         return this.maxRunVelocity;
     }
 
@@ -87,15 +90,15 @@ public abstract class AbstractEnemy extends DynamicEntitySprite {
         }
     }
 
-    protected float getDecideSpecialMovementTimer() {
+    protected final float getDecideSpecialMovementTimer() {
         return decideSpecialMovementTimer;
     }
 
-    protected float getDecideSpecialMovementDuration() {
+    protected final float getDecideSpecialMovementDuration() {
         return this.decideSpecialMovementDuration;
     }
 
-    protected float getChanceToJump() {
+    protected final float getChanceToJump() {
         return this.chanceToJump;
     }
 
@@ -103,7 +106,7 @@ public abstract class AbstractEnemy extends DynamicEntitySprite {
         getB2body().applyLinearImpulse(new Vector2(0, getDefaultJumpVelocity()), getB2body().getWorldCenter(), true);
     }
 
-    protected float getDefaultRunVelocity() {
+    protected final float getDefaultRunVelocity() {
         return this.defaultRunVelocity;
     }
 
@@ -111,11 +114,11 @@ public abstract class AbstractEnemy extends DynamicEntitySprite {
         setCurrentVelocity(new Vector2(0, 0));
     }
 
-    protected float getDefaultJumpVelocity() {
+    protected final float getDefaultJumpVelocity() {
         return this.defaultJumpVelocity;
     }
 
-    protected void setDecideSpecialMovementTimer(float decideSpecialMovementTimer) {
+    protected final void setDecideSpecialMovementTimer(final float decideSpecialMovementTimer) {
         this.decideSpecialMovementTimer = decideSpecialMovementTimer;
     }
 

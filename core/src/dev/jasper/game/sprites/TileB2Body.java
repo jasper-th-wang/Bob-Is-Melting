@@ -8,12 +8,26 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import dev.jasper.game.BobIsMelting;
 
+/**
+ * Represents a tile body in the game.
+ * The TileB2Body class implements the InitializableB2Body interface
+ * and defines the common characteristics and behaviors of a tile body.
+ *
+ * @author Jasper Wang
+ * @version 2024
+ */
 public abstract class TileB2Body implements InitializableB2Body {
     private final BodyDef bodyDef;
     private final FixtureDef fixtureDef;
     private Body b2body;
     private Fixture fixture;
 
+    /**
+     * Constructs a TileB2Body with the specified bounds and collision category.
+     *
+     * @param bounds The bounds of the tile body.
+     * @param collisionCategory The collision category of the tile body.
+     */
     public TileB2Body(final Rectangle bounds, final short collisionCategory) {
         final float positionX = bounds.getX() + bounds.getWidth() / 2;
         final float positionY = bounds.getY() + bounds.getHeight() / 2;
@@ -32,32 +46,32 @@ public abstract class TileB2Body implements InitializableB2Body {
     }
 
     @Override
-    public BodyDef getBodyDef() {
+    public final BodyDef getBodyDef() {
         return bodyDef;
     }
 
     @Override
-    public FixtureDef getFixtureDef() {
+    public final FixtureDef getFixtureDef() {
         return fixtureDef;
     }
 
     @Override
-    public Body getB2body() {
+    public final Body getB2body() {
         return b2body;
     }
 
     @Override
-    public Fixture getFixture() {
+    public final Fixture getFixture() {
         return fixture;
     }
 
     @Override
-    public void setFixture(Fixture fixture) {
+    public final void setFixture(final Fixture fixture) {
         this.fixture = fixture;
     }
 
     @Override
-    public void setB2body(final Body b2body) {
+    public final void setB2body(final Body b2body) {
         this.b2body = b2body;
     }
 
