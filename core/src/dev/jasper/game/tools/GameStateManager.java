@@ -6,36 +6,22 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import dev.jasper.game.sprites.Bob;
-import dev.jasper.game.sprites.Enemy;
+import dev.jasper.game.sprites.enviromentSprites.Bob;
+import dev.jasper.game.sprites.dynamicSprites.Enemy;
 import dev.jasper.game.sprites.Ground;
-import dev.jasper.game.sprites.Kid;
-import dev.jasper.game.sprites.Snowball;
+import dev.jasper.game.sprites.dynamicSprites.Kid;
+import dev.jasper.game.sprites.enviromentSprites.Snowball;
 
 public final class GameStateManager {
     private static final float TIME_STEP = 1 / 60f;
     private static final int VELOCITY_ITERATIONS = 6;
+    private static final int POSITION_ITERATIONS = 2;
     private static final float SNOWBALL_SPAWN_INTERVAL = 3f;
     private static final int MAX_SNOWBALL_COUNT = 5;
-
-    public World getWorld() {
-        return world;
-    }
-
     private final World world;
-
-    public TiledMap getMap() {
-        return map;
-    }
-
     private final TiledMap map;
     private final B2BodyObjectFactory b2BodyObjectFactory;
     private final int positionIteration;
-
-    public Kid getKid() {
-        return kid;
-    }
-
     private final Kid kid;
     private final Bob bob;
     private final Array<Ground> grounds;
@@ -44,7 +30,6 @@ public final class GameStateManager {
     private final Vector2[] snowballSpawnSpots;
     private final Array<Vector2> nextSnowballSpawnSpots;
     private float snowballSpawnTimer;
-
     public GameStateManager(final int positionIterations) {
         this.b2BodyObjectFactory = new B2BodyObjectFactory();
         this.world = b2BodyObjectFactory.getWorld();
@@ -59,15 +44,26 @@ public final class GameStateManager {
         Gdx.app.log("snow", String.valueOf(nextSnowballSpawnSpots.size));
 
         // initialize kid, bob and bear
-        this.grounds = b2BodyObjectFactory.getGrounds();
-        this.kid = b2BodyObjectFactory.getKid();
-        this.bob = b2BodyObjectFactory.getBob();
+        this.grounds = b2BodyObjectFactory.createGrounds();
+        this.kid = b2BodyObjectFactory.createKid();
+        this.bob = b2BodyObjectFactory.createBob();
         // TODO: Might be buggy
         this.enemies = new Array<>();
-        enemies.add(b2BodyObjectFactory.getBear(.32f, .32f));
+        enemies.add(b2BodyObjectFactory.createBear(.32f, .32f));
         currentSpawnedSnowballs = b2BodyObjectFactory.initializeSnowballsSpawnSpots(MAX_SNOWBALL_COUNT);
     }
 
+    public World getWorld() {
+        return world;
+    }
+
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public Kid getKid() {
+        return kid;
+    }
 
     public void spawnSnowballs(final float dt) {
         snowballSpawnTimer += dt;
@@ -80,7 +76,7 @@ public final class GameStateManager {
         for (int i = 0; i < currentSpawnedSnowballs.size; i++) {
             if (currentSpawnedSnowballs.get(i) == null) {
                 final Vector2 spawnSpot = nextSnowballSpawnSpots.pop();
-                currentSpawnedSnowballs.set(i, b2BodyObjectFactory.getSnowball());
+                currentSpawnedSnowballs.set(i, b2BodyObjectFactory.createSnowball(spawnSpot, currentSpawnedSnowballs, i));
 //                nextSnowballSpawnSpots.addLast(spawnSpot);
 
                 if (nextSnowballSpawnSpots.size == 0) {
@@ -93,7 +89,10 @@ public final class GameStateManager {
     }
     public void update(final float dt) {
 
-        world.step(TIME_STEP, VELOCITY_ITERATIONS, positionIteration);
+        Gdx.app.log("Kid", kid.toString());
+        world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+        Gdx.app.log("what", "Hello");
+        Gdx.app.log("Kid", kid.toString());
         kid.update(dt);
         bob.update(dt);
 //        tempBear.update(dt);
@@ -103,7 +102,12 @@ public final class GameStateManager {
             if (snowball == null) {
                 return;
             }
+
             snowball.update(dt);
+
+            if (snowball.isCollected()) {
+                world.destroyBody(snowball.getB2body());
+            }
         });
         spawnSnowballs(dt);
     }

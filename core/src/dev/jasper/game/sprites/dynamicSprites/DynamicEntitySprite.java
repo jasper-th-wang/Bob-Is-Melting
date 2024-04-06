@@ -1,24 +1,54 @@
-package dev.jasper.game.sprites;
+package dev.jasper.game.sprites.dynamicSprites;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import dev.jasper.game.sprites.InitializableB2Body;
 
 public abstract class DynamicEntitySprite extends Sprite implements InitializableB2Body {
 
+    private final BodyDef bodyDef;
+    private final FixtureDef fixtureDef;
     protected Body b2body;
+    protected Fixture fixture;
     protected State currentState;
     protected State previousState;
     // keep track of amount of time for any given state
     protected float stateTimer;
     protected boolean isRunningRight;
-
-    public DynamicEntitySprite(final TextureRegion defaultTextureRegion) {
-        super(defaultTextureRegion);
+    public DynamicEntitySprite(final short collisionCategory, final short collisionMaskBits) {
+        super();
         currentState = State.STANDING;
         previousState = State.STANDING;
         stateTimer = 0;
         isRunningRight = true;
+
+
+        bodyDef = new BodyDef();
+        getBodyDef().type = BodyDef.BodyType.DynamicBody;
+
+        fixtureDef = new FixtureDef();
+        getFixtureDef().filter.categoryBits = collisionCategory;
+        getFixtureDef().filter.maskBits = collisionMaskBits;
+    }
+
+    @Override
+    public void setFixture(Fixture fixture) {
+        this.fixture = fixture;
+    }
+
+    @Override
+    public Body getB2body() {
+        return b2body;
+    }
+
+    @Override
+    public void setB2body(final Body b2body) {
+        this.b2body = b2body;
     }
 
     /**
@@ -38,9 +68,6 @@ public abstract class DynamicEntitySprite extends Sprite implements Initializabl
         }
     }
 
-    public Body getB2body() {
-        return b2body;
-    }
 
     protected TextureRegion getFrame(final float dt) {
         this.currentState = getState();
@@ -85,6 +112,18 @@ public abstract class DynamicEntitySprite extends Sprite implements Initializabl
 
 //    protected abstract TextureRegion getIdleFrame();
     protected abstract TextureRegion getIdleFrame(float stateTime);
+    @Override
+    public BodyDef getBodyDef() {
+        return bodyDef;
+    }
+
+    @Override
+    public FixtureDef getFixtureDef() {
+        return fixtureDef;
+    }
+    protected abstract void defineDefaultSprite(TextureAtlas atlas);
+    protected abstract void defineShape();
+    protected abstract void defineBodyDefPosition();
     public abstract void update(float dt);
     /**
      * Represents the various movement states that the Kid character can be in during the game.

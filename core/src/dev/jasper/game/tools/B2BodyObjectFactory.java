@@ -7,14 +7,15 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import dev.jasper.game.sprites.InitializableB2Body;
-import dev.jasper.game.sprites.Bear;
-import dev.jasper.game.sprites.Bob;
+import dev.jasper.game.sprites.dynamicSprites.Bear;
+import dev.jasper.game.sprites.enviromentSprites.Bob;
 import dev.jasper.game.sprites.Ground;
-import dev.jasper.game.sprites.Kid;
-import dev.jasper.game.sprites.Snowball;
+import dev.jasper.game.sprites.dynamicSprites.Kid;
+import dev.jasper.game.sprites.enviromentSprites.Snowball;
 
 /**
  * The B2WorldCreator class is responsible for creating the physical world in the game.
@@ -56,34 +57,37 @@ public final class B2BodyObjectFactory {
         }
         return snowballs;
     }
-    public Snowball getSnowball() {
-        final Snowball snowball = new Snowball(this, spawnSpot, currentSpawnedSnowballs, i);
+    public Snowball createSnowball(Vector2 spawnSpot, Array<Snowball> currentSpawnedSnowballs, int currentIndex) {
+        final Snowball snowball = Snowball.snowballFactory(atlas, spawnSpot, currentSpawnedSnowballs, currentIndex);
         initializeB2Body(snowball);
         return snowball;
     }
-    public Bear getBear(final float positionX, final float positionY) {
-        final Bear bear = new Bear(this, positionX, positionY);
+    public Bear createBear(final float positionX, final float positionY) {
+        final Bear bear = Bear.bearFactory(atlas, positionX, positionY);
         initializeB2Body(bear);
         return bear;
     }
-    public Bob getBob() {
-        final Bob bob = new Bob(atlas);
+    public Bob createBob() {
+        final Bob bob = Bob.bobFactory(atlas);
         initializeB2Body(bob);
         return bob;
     }
-    public Kid getKid() {
-        final Kid kid = new Kid(atlas);
+    public Kid createKid() {
+        final Kid kid = Kid.kidFactory(atlas);
         initializeB2Body(kid);
+//        kid.setB2body(body);
+//        kid.setFixture(body.);
         return kid;
     }
 
-    public Array<Ground> getGrounds() {
+    public Array<Ground> createGrounds() {
         final Array<Ground> groundBodies = new Array<>();
         for (RectangleMapObject object: getMap().getLayers().get(GROUND_LAYER)
                 .getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
             final Ground ground = new Ground(rect);
             initializeB2Body(ground);
+            groundBodies.add(ground);
         }
         return groundBodies;
     }
@@ -123,7 +127,10 @@ public final class B2BodyObjectFactory {
 
     private void initializeB2Body(final InitializableB2Body b2Body) {
         Body body = world.createBody(b2Body.getBodyDef());
-        body.createFixture(b2Body.getFixtureDef()).setUserData(b2Body);
+        Fixture fixture = body.createFixture(b2Body.getFixtureDef());
+        fixture.setUserData(b2Body);
+        b2Body.setB2body(body);
+        b2Body.setFixture(fixture);
     }
 //    public v
 }

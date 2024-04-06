@@ -15,9 +15,9 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import dev.jasper.game.EntityCollisionCategory;
 import dev.jasper.game.scenes.Hud;
-import dev.jasper.game.sprites.Enemy;
-import dev.jasper.game.sprites.Kid;
-import dev.jasper.game.sprites.Snowball;
+import dev.jasper.game.sprites.dynamicSprites.Enemy;
+import dev.jasper.game.sprites.dynamicSprites.Kid;
+import dev.jasper.game.sprites.enviromentSprites.Snowball;
 
 import static com.badlogic.gdx.Gdx.app;
 
@@ -89,7 +89,8 @@ public final class WorldContactListener implements ContactListener {
         }
         // TODO: bug, kid cannot pickup ball when invincible
 
-        snowball.collect(theKid);
+        snowball.collect();
+        theKid.collectSnowball();
         app.log("Kid", "got snow!");
     }
 

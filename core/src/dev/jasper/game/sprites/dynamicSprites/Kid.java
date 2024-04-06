@@ -1,4 +1,4 @@
-package dev.jasper.game.sprites;
+package dev.jasper.game.sprites.dynamicSprites;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -22,18 +22,38 @@ import dev.jasper.game.EntityCollisionCategory;
  * @version 2024
  */
 public class Kid extends DynamicEntitySprite {
-//    private final World world;
-    private final TextureRegion kidIdle;
-    private final Animation<TextureRegion> kidRun;
-    private final TextureRegion kidJump;
+    protected static final short COLLISION_CATEGORY = EntityCollisionCategory.KID_BIT;
+    protected static final short MASK_BITS = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.SNOWBALL_BIT | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.ENEMY_BIT;
+    private static Kid kidSingleton;
     private final float invincibleToEnemyDuration = 4f;
     private final float flickerInterval = 0.2f;
-//    private Fixture fixture;
+    private TextureRegion kidIdle;
+    private Animation<TextureRegion> kidRun;
+    private TextureRegion kidJump;
     private float invincibleToEnemyTimer;
     private float flickerTimer;
     private boolean isInvincibleToEnemy;
-    private BodyDef bdef;
-    private FixtureDef fdef;
+    private boolean isCarryingSnowball;
+    // TODO: testing
+    private Sprite snowballSprite;
+
+    private Kid() {
+        super(COLLISION_CATEGORY, MASK_BITS);
+        isInvincibleToEnemy = false;
+        isCarryingSnowball = false;
+    }
+
+    public static Kid kidFactory(final TextureAtlas atlas) {
+        if (kidSingleton != null) {
+            return kidSingleton;
+        }
+        kidSingleton = new Kid();
+        kidSingleton.defineDefaultSprite(atlas);
+        kidSingleton.defineBodyDefPosition();
+        kidSingleton.defineShape();
+
+        return kidSingleton;
+    }
 
     public boolean getIsCarryingSnowball() {
         return isCarryingSnowball;
@@ -41,36 +61,6 @@ public class Kid extends DynamicEntitySprite {
 
     public void setIsCarryingSnowball(final boolean carryingSnowball) {
         isCarryingSnowball = carryingSnowball;
-    }
-
-    private boolean isCarryingSnowball;
-    // TODO: testing
-    private Sprite snowballSprite;
-
-    public Kid(final TextureAtlas atlas) {
-        super(atlas.findRegion("Idle (32 x 32)"));
-//        this.world = screen.getWorld();
-        isInvincibleToEnemy = false;
-        isCarryingSnowball = false;
-        Array<TextureRegion> frames = new Array<>();
-        for (int i = 0; i < 4; i++) {
-            frames.add(new TextureRegion(atlas.findRegion("Running (32 x 32)"), i * 32, 0, 32, 32));
-//            228,134,128,32
-        }
-        kidRun = new Animation<>(0.1f, frames);
-        frames.clear();
-
-        kidJump = new TextureRegion(atlas.findRegion("Jumping (32 x 32)"), 0, 0, 32, 32);
-
-        kidIdle = new TextureRegion(atlas.findRegion("Idle (32 x 32)"), 0, 0, 32, 32);
-        setBounds(0, 0, 32 / BobIsMelting.PPM, 32 / BobIsMelting.PPM);
-        setRegion(kidIdle);
-
-        defineKid();
-
-        snowballSprite = new Sprite(new TextureRegion(atlas.findRegion("snowballs"), 0, 0, 16, 16));
-        snowballSprite.setBounds(0, 0, 16 / BobIsMelting.PPM, 14 / BobIsMelting.PPM);
-        snowballSprite.setRegion(snowballSprite);
     }
 
     public boolean getIsInvincibleToEnemy() {
@@ -128,26 +118,6 @@ public class Kid extends DynamicEntitySprite {
         return kidIdle;
     }
 
-    /**
-     * Defines the physical properties of the Kid character in the game world.
-     */
-    public void defineKid() {
-        bdef = new BodyDef();
-        bdef.position.set(16 * 8 / BobIsMelting.PPM, 16*4 / BobIsMelting.PPM);
-        bdef.type = BodyDef.BodyType.DynamicBody;
-//        b2body = world.createBody(bdef);
-
-        fdef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(7 / BobIsMelting.PPM);
-        fdef.filter.categoryBits = EntityCollisionCategory.KID_BIT;
-        fdef.filter.maskBits = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.SNOWBALL_BIT | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.ENEMY_BIT;
-        fdef.shape = shape;
-//        fixture = getB2body().createFixture(fdef);
-//        fixture.setUserData(this);
-
-//        EdgeShape
-    }
 
     public void onEnemyHit() {
         setInvincibleToEnemy();
@@ -196,12 +166,37 @@ public class Kid extends DynamicEntitySprite {
     }
 
     @Override
-    public BodyDef getBodyDef() {
-        return bdef;
+    protected void defineDefaultSprite(TextureAtlas atlas) {
+        kidIdle = new TextureRegion(atlas.findRegion("Idle (32 x 32)"), 0, 0, 32, 32);
+        setBounds(0, 0, 32 / BobIsMelting.PPM, 32 / BobIsMelting.PPM);
+        setRegion(kidIdle);
+
+
+        Array<TextureRegion> frames = new Array<>();
+        for (int i = 0; i < 4; i++) {
+            frames.add(new TextureRegion(atlas.findRegion("Running (32 x 32)"), i * 32, 0, 32, 32));
+//            228,134,128,32
+        }
+        kidRun = new Animation<>(0.1f, frames);
+        frames.clear();
+
+        kidJump = new TextureRegion(atlas.findRegion("Jumping (32 x 32)"), 0, 0, 32, 32);
+
+
+        snowballSprite = new Sprite(new TextureRegion(atlas.findRegion("snowballs"), 0, 0, 16, 16));
+        snowballSprite.setBounds(0, 0, 16 / BobIsMelting.PPM, 14 / BobIsMelting.PPM);
+        snowballSprite.setRegion(snowballSprite);
     }
 
     @Override
-    public FixtureDef getFixtureDef() {
-        return fdef;
+    protected void defineShape() {
+        CircleShape shape = new CircleShape();
+        shape.setRadius(7 / BobIsMelting.PPM);
+        getFixtureDef().shape = shape;
+    }
+
+    @Override
+    protected void defineBodyDefPosition() {
+        getBodyDef().position.set(16 * 8 / BobIsMelting.PPM, 16*4 / BobIsMelting.PPM);
     }
 }

@@ -3,33 +3,14 @@ package dev.jasper.game.tools;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
-import dev.jasper.game.sprites.Kid;
+import dev.jasper.game.sprites.dynamicSprites.Kid;
 
 public final class InputHandler {
+    private static final float INVINCIBLE_JUMP_VELOCITY = 2.2f;
+    private static final float NORMAL_JUMP_VELOCITY = 3.2f;
+    private static final float INVINCIBLE_RUN_VELOCITY = 0.04f;
+    private static final float NORMAL_RUN_VELOCITY = 0.1f;
     private Kid player;
-    /**
-     * The jump velocity for the player character when it is invincible.
-     * This value is used when handling the player's jump input.
-     */
-    protected static final float INVINCIBLE_JUMP_VELOCITY = 2.2f;
-
-    /**
-     * The normal jump velocity for the player character.
-     * This value is used when handling the player's jump input.
-     */
-    protected static final float NORMAL_JUMP_VELOCITY = 3.2f;
-
-    /**
-     * The run velocity for the player character when it is invincible.
-     * This value is used when handling the player's run input.
-     */
-    protected static final float INVINCIBLE_RUN_VELOCITY = 0.04f;
-
-    /**
-     * The normal run velocity for the player character.
-     * This value is used when handling the player's run input.
-     */
-    protected static final float NORMAL_RUN_VELOCITY = 0.1f;
     public InputHandler(Kid player) {
         this.player = player;
     }
