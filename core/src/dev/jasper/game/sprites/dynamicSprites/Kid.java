@@ -32,7 +32,7 @@ public final class Kid extends DynamicEntitySprite {
     private static final int SPAWN_POSITION_Y = 16 * 4;
     private static final float ALPHA_INVINCIBLE = .2f;
     private static final float ALPHA_NORMAL = 1f;
-    protected static final int KID_SHAPE_RADIUS = 7;
+    private static final int KID_SHAPE_RADIUS = 7;
     private static Kid kidSingleton;
     private final float flickerInterval = ALPHA_INVINCIBLE;
     private TextureRegion kidIdle;
@@ -105,11 +105,13 @@ public final class Kid extends DynamicEntitySprite {
 
 
         Array<TextureRegion> frames = new Array<>();
-        for (int i = 0; i < 4; i++) {
+        final int frameCount = 4;
+        for (int i = 0; i < frameCount; i++) {
             frames.add(new TextureRegion(atlas.findRegion("Running (32 x 32)"),
                     i * KID_SPRITE_WIDTH, 0, KID_SPRITE_WIDTH, KID_SPRITE_HEIGHT));
         }
-        kidRun = new Animation<>(0.1f, frames);
+        final float runFrameDuration = 0.1f;
+        kidRun = new Animation<>(runFrameDuration, frames);
         frames.clear();
 
         kidJump = new TextureRegion(atlas.findRegion("Jumping (32 x 32)"),
@@ -161,7 +163,12 @@ public final class Kid extends DynamicEntitySprite {
 
             // Add flicker if hit by enemy
             if (flickerTimer <= 0) {
-                final float newAlpha = this.getColor().a == ALPHA_INVINCIBLE ? ALPHA_NORMAL : ALPHA_INVINCIBLE;
+                final float newAlpha;
+                if (this.getColor().a == ALPHA_INVINCIBLE) {
+                    newAlpha = ALPHA_NORMAL;
+                } else {
+                    newAlpha = ALPHA_INVINCIBLE;
+                }
                 this.setAlpha(newAlpha);
                 flickerTimer = flickerInterval;
             }
@@ -201,6 +208,11 @@ public final class Kid extends DynamicEntitySprite {
         getFixture().setFilterData(filter);
     }
 
+    /**
+     * Handles the actions to be taken when the Kid character collects a snowball.
+     * This method is called when the Kid character collides with a snowball in the game.
+     * It changes the collision category of the Kid character and sets the carrying snowball status to true.
+     */
     public void collectSnowball() {
         // change collision category
         Filter filter = new Filter();
@@ -211,6 +223,11 @@ public final class Kid extends DynamicEntitySprite {
         setIsCarryingSnowball(true);
     }
 
+    /**
+     * Handles the actions to be taken when the Kid character drops off a snowball.
+     * This method is called when the Kid character collides with Bob in the game.
+     * It resets the collision category of the Kid character and sets the carrying snowball status to false.
+     */
     public void dropoffSnowball() {
         // change collision category
         resetCollisionCategory();
