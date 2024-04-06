@@ -22,8 +22,8 @@ import dev.jasper.game.EntityCollisionCategory;
  * @version 2024
  */
 public class Kid extends DynamicEntitySprite {
-    protected static final short COLLISION_CATEGORY = EntityCollisionCategory.KID_BIT;
-    protected static final short MASK_BITS = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.SNOWBALL_BIT | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.ENEMY_BIT;
+    private static final short COLLISION_CATEGORY = EntityCollisionCategory.KID_BIT;
+    private static final short MASK_BITS = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.SNOWBALL_BIT | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.ENEMY_BIT;
     private static Kid kidSingleton;
     private final float invincibleToEnemyDuration = 4f;
     private final float flickerInterval = 0.2f;
@@ -55,16 +55,58 @@ public class Kid extends DynamicEntitySprite {
         return kidSingleton;
     }
 
-    public boolean getIsCarryingSnowball() {
-        return isCarryingSnowball;
-    }
-
-    public void setIsCarryingSnowball(final boolean carryingSnowball) {
-        isCarryingSnowball = carryingSnowball;
-    }
-
     public boolean getIsInvincibleToEnemy() {
         return isInvincibleToEnemy;
+    }
+
+    @Override
+    protected TextureRegion getJumpFrame(final float stateTime) {
+        return kidJump;
+    }
+
+    @Override
+    protected TextureRegion getRunFrame(final float stateTime) {
+        return kidRun.getKeyFrame(getStateTimer(), true);
+    }
+
+    @Override
+    protected TextureRegion getIdleFrame(final float stateTime) {
+        return kidIdle;
+    }
+
+    @Override
+    protected void defineDefaultSprite(TextureAtlas atlas) {
+        kidIdle = new TextureRegion(atlas.findRegion("Idle (32 x 32)"), 0, 0, 32, 32);
+        setBounds(0, 0, 32 / BobIsMelting.PPM, 32 / BobIsMelting.PPM);
+        setRegion(kidIdle);
+
+
+        Array<TextureRegion> frames = new Array<>();
+        for (int i = 0; i < 4; i++) {
+            frames.add(new TextureRegion(atlas.findRegion("Running (32 x 32)"), i * 32, 0, 32, 32));
+//            228,134,128,32
+        }
+        kidRun = new Animation<>(0.1f, frames);
+        frames.clear();
+
+        kidJump = new TextureRegion(atlas.findRegion("Jumping (32 x 32)"), 0, 0, 32, 32);
+
+
+        snowballSprite = new Sprite(new TextureRegion(atlas.findRegion("snowballs"), 0, 0, 16, 16));
+        snowballSprite.setBounds(0, 0, 16 / BobIsMelting.PPM, 14 / BobIsMelting.PPM);
+        snowballSprite.setRegion(snowballSprite);
+    }
+
+    @Override
+    protected void defineShape() {
+        CircleShape shape = new CircleShape();
+        shape.setRadius(7 / BobIsMelting.PPM);
+        getFixtureDef().shape = shape;
+    }
+
+    @Override
+    protected void defineBodyDefPosition() {
+        getBodyDef().position.set(16 * 8 / BobIsMelting.PPM, 16*4 / BobIsMelting.PPM);
     }
 
     /**
@@ -103,21 +145,12 @@ public class Kid extends DynamicEntitySprite {
         }
     }
 
-    @Override
-    protected TextureRegion getJumpFrame(final float stateTime) {
-        return kidJump;
+    private void resetCollisionCategory() {
+        Filter filter = new Filter();
+        filter.categoryBits = EntityCollisionCategory.KID_BIT;
+        filter.maskBits = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.SNOWBALL_BIT | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.ENEMY_BIT;
+        getFixture().setFilterData(filter);
     }
-
-    @Override
-    protected TextureRegion getRunFrame(final float stateTime) {
-        return kidRun.getKeyFrame(stateTimer, true);
-    }
-
-    @Override
-    protected TextureRegion getIdleFrame(final float stateTime) {
-        return kidIdle;
-    }
-
 
     public void onEnemyHit() {
         setInvincibleToEnemy();
@@ -130,26 +163,19 @@ public class Kid extends DynamicEntitySprite {
         Filter filter = new Filter();
         filter.categoryBits = EntityCollisionCategory.KID_INVINCIBLE_BIT;
         filter.maskBits = EntityCollisionCategory.GROUND_BIT;
-        fixture.setFilterData(filter);
+        getFixture().setFilterData(filter);
     }
-
-    private void resetCollisionCategory() {
-        Filter filter = new Filter();
-        filter.categoryBits = EntityCollisionCategory.KID_BIT;
-        filter.maskBits = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.SNOWBALL_BIT | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.ENEMY_BIT;
-        fixture.setFilterData(filter);
-    }
-
 
     public void collectSnowball() {
         // change collision category
         Filter filter = new Filter();
         filter.categoryBits = EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT;
         filter.maskBits = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.BOB_BIT | EntityCollisionCategory.ENEMY_BIT;
-        fixture.setFilterData(filter);
+        getFixture().setFilterData(filter);
         // add snowball sprite on top of Kid
         setIsCarryingSnowball(true);
     }
+
     public void dropoffSnowball() {
         // change collision category
         resetCollisionCategory();
@@ -158,45 +184,18 @@ public class Kid extends DynamicEntitySprite {
     }
 
     @Override
-    public void draw(final Batch batch){
+    public void draw(final Batch batch) {
         super.draw(batch);
         if (getIsCarryingSnowball()) {
             snowballSprite.draw(batch);
         }
     }
 
-    @Override
-    protected void defineDefaultSprite(TextureAtlas atlas) {
-        kidIdle = new TextureRegion(atlas.findRegion("Idle (32 x 32)"), 0, 0, 32, 32);
-        setBounds(0, 0, 32 / BobIsMelting.PPM, 32 / BobIsMelting.PPM);
-        setRegion(kidIdle);
-
-
-        Array<TextureRegion> frames = new Array<>();
-        for (int i = 0; i < 4; i++) {
-            frames.add(new TextureRegion(atlas.findRegion("Running (32 x 32)"), i * 32, 0, 32, 32));
-//            228,134,128,32
-        }
-        kidRun = new Animation<>(0.1f, frames);
-        frames.clear();
-
-        kidJump = new TextureRegion(atlas.findRegion("Jumping (32 x 32)"), 0, 0, 32, 32);
-
-
-        snowballSprite = new Sprite(new TextureRegion(atlas.findRegion("snowballs"), 0, 0, 16, 16));
-        snowballSprite.setBounds(0, 0, 16 / BobIsMelting.PPM, 14 / BobIsMelting.PPM);
-        snowballSprite.setRegion(snowballSprite);
+    public boolean getIsCarryingSnowball() {
+        return isCarryingSnowball;
     }
 
-    @Override
-    protected void defineShape() {
-        CircleShape shape = new CircleShape();
-        shape.setRadius(7 / BobIsMelting.PPM);
-        getFixtureDef().shape = shape;
-    }
-
-    @Override
-    protected void defineBodyDefPosition() {
-        getBodyDef().position.set(16 * 8 / BobIsMelting.PPM, 16*4 / BobIsMelting.PPM);
+    public void setIsCarryingSnowball(final boolean carryingSnowball) {
+        isCarryingSnowball = carryingSnowball;
     }
 }

@@ -9,7 +9,11 @@ public interface InitializableB2Body {
     BodyDef getBodyDef();
 
     FixtureDef getFixtureDef();
+
     Body getB2body();
+    Fixture getFixture();
+
     void setB2body(Body b2body);
+
     void setFixture(Fixture fixture);
 }

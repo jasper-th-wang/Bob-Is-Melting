@@ -21,7 +21,6 @@ public final class GameStateManager {
     private final World world;
     private final TiledMap map;
     private final B2BodyObjectFactory b2BodyObjectFactory;
-    private final int positionIteration;
     private final Kid kid;
     private final Bob bob;
     private final Array<Ground> grounds;
@@ -34,7 +33,6 @@ public final class GameStateManager {
         this.b2BodyObjectFactory = new B2BodyObjectFactory();
         this.world = b2BodyObjectFactory.getWorld();
         this.map = b2BodyObjectFactory.getMap();
-        this.positionIteration = positionIterations;
 
         this.snowballSpawnSpots = b2BodyObjectFactory.getSnowballSpawnSpots();
         this.nextSnowballSpawnSpots = new Array<>();
@@ -65,38 +63,11 @@ public final class GameStateManager {
         return kid;
     }
 
-    public void spawnSnowballs(final float dt) {
-        snowballSpawnTimer += dt;
-        if (snowballSpawnTimer <= SNOWBALL_SPAWN_INTERVAL) {
-            return;
-        }
-        snowballSpawnTimer = 0;
-
-        // make one snowball
-        for (int i = 0; i < currentSpawnedSnowballs.size; i++) {
-            if (currentSpawnedSnowballs.get(i) == null) {
-                final Vector2 spawnSpot = nextSnowballSpawnSpots.pop();
-                currentSpawnedSnowballs.set(i, b2BodyObjectFactory.createSnowball(spawnSpot, currentSpawnedSnowballs, i));
-//                nextSnowballSpawnSpots.addLast(spawnSpot);
-
-                if (nextSnowballSpawnSpots.size == 0) {
-                    nextSnowballSpawnSpots.addAll(snowballSpawnSpots);
-                    nextSnowballSpawnSpots.shuffle();
-                }
-                return;
-            }
-        }
-    }
     public void update(final float dt) {
-
-        Gdx.app.log("Kid", kid.toString());
         world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-        Gdx.app.log("what", "Hello");
-        Gdx.app.log("Kid", kid.toString());
+
         kid.update(dt);
         bob.update(dt);
-//        tempBear.update(dt);
-//        tempSnow.update(dt);
         enemies.forEach(enemy -> enemy.update(dt));
         currentSpawnedSnowballs.forEach(snowball -> {
             if (snowball == null) {
@@ -111,7 +82,30 @@ public final class GameStateManager {
         });
         spawnSnowballs(dt);
     }
-    public void draw(SpriteBatch batch) {
+
+    public void spawnSnowballs(final float dt) {
+        snowballSpawnTimer += dt;
+        if (snowballSpawnTimer <= SNOWBALL_SPAWN_INTERVAL) {
+            return;
+        }
+        snowballSpawnTimer = 0;
+
+        // make one snowball
+        for (int i = 0; i < currentSpawnedSnowballs.size; i++) {
+            if (currentSpawnedSnowballs.get(i) == null) {
+                final Vector2 spawnSpot = nextSnowballSpawnSpots.pop();
+                currentSpawnedSnowballs.set(i, b2BodyObjectFactory.createSnowball(spawnSpot, currentSpawnedSnowballs, i));
+
+                if (nextSnowballSpawnSpots.size == 0) {
+                    nextSnowballSpawnSpots.addAll(snowballSpawnSpots);
+                    nextSnowballSpawnSpots.shuffle();
+                }
+                return;
+            }
+        }
+    }
+
+    public void draw(final SpriteBatch batch) {
         bob.draw(batch);
         // TODO: might be buggy
         enemies.forEach(enemy -> enemy.draw(batch));

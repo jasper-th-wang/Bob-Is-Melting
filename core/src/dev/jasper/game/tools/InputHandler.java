@@ -36,6 +36,18 @@ public final class InputHandler {
         }
     }
 
+    private void handlePlayerJump() {
+        final float jumpVelocity;
+        if (player.getIsInvincibleToEnemy()) {
+            jumpVelocity = INVINCIBLE_JUMP_VELOCITY;
+        } else {
+            jumpVelocity = NORMAL_JUMP_VELOCITY;
+        }
+
+        player.getB2body().applyLinearImpulse(new Vector2(0, jumpVelocity),
+                player.getB2body().getWorldCenter(), true);
+    }
+
     private void handlePlayerRun(final boolean isRunningRight) {
         float speed;
         if (player.getIsInvincibleToEnemy()) {
@@ -49,18 +61,6 @@ public final class InputHandler {
         }
 
         player.getB2body().applyLinearImpulse(new Vector2(speed, 0),
-                player.getB2body().getWorldCenter(), true);
-    }
-
-    private void handlePlayerJump() {
-        final float jumpVelocity;
-        if (player.getIsInvincibleToEnemy()) {
-            jumpVelocity = INVINCIBLE_JUMP_VELOCITY;
-        } else {
-            jumpVelocity = NORMAL_JUMP_VELOCITY;
-        }
-
-        player.getB2body().applyLinearImpulse(new Vector2(0, jumpVelocity),
                 player.getB2body().getWorldCenter(), true);
     }
 }

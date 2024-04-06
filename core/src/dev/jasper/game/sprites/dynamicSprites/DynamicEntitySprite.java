@@ -13,13 +13,13 @@ public abstract class DynamicEntitySprite extends Sprite implements Initializabl
 
     private final BodyDef bodyDef;
     private final FixtureDef fixtureDef;
-    protected Body b2body;
-    protected Fixture fixture;
-    protected State currentState;
-    protected State previousState;
+    private Body b2body;
+    private Fixture fixture;
+    private State currentState;
+    private State previousState;
     // keep track of amount of time for any given state
-    protected float stateTimer;
-    protected boolean isRunningRight;
+    private float stateTimer;
+    private boolean isRunningRight;
     public DynamicEntitySprite(final short collisionCategory, final short collisionMaskBits) {
         super();
         currentState = State.STANDING;
@@ -37,8 +37,13 @@ public abstract class DynamicEntitySprite extends Sprite implements Initializabl
     }
 
     @Override
-    public void setFixture(Fixture fixture) {
-        this.fixture = fixture;
+    public BodyDef getBodyDef() {
+        return bodyDef;
+    }
+
+    @Override
+    public FixtureDef getFixtureDef() {
+        return fixtureDef;
     }
 
     @Override
@@ -47,27 +52,17 @@ public abstract class DynamicEntitySprite extends Sprite implements Initializabl
     }
 
     @Override
+    public Fixture getFixture() { return fixture; }
+
+    @Override
+    public void setFixture(Fixture fixture) {
+        this.fixture = fixture;
+    }
+
+    @Override
     public void setB2body(final Body b2body) {
         this.b2body = b2body;
     }
-
-    /**
-     * Determines the current state of the Kid character based on its linear velocity.
-     *
-     * @return The current state of the Kid character.
-     */
-    public State getState() {
-        if (getB2body().getLinearVelocity().y > 0) {
-            return State.JUMPING;
-        } else if (getB2body().getLinearVelocity().y < 0) {
-            return State.FALLING;
-        } else if (getB2body().getLinearVelocity().x != 0) {
-            return State.RUNNING;
-        } else {
-            return State.STANDING;
-        }
-    }
-
 
     protected TextureRegion getFrame(final float dt) {
         this.currentState = getState();
@@ -99,32 +94,53 @@ public abstract class DynamicEntitySprite extends Sprite implements Initializabl
             isRunningRight = true;
         }
 
-        stateTimer = currentState == previousState ? stateTimer + dt : 0;
+        stateTimer = currentState == previousState ? getStateTimer() + dt : 0;
         previousState = currentState;
         return region;
     }
 
-//    protected abstract TextureRegion getJumpFrame();
+    /**
+     * Determines the current state of the Kid character based on its linear velocity.
+     *
+     * @return The current state of the Kid character.
+     */
+    public State getState() {
+        if (getB2body().getLinearVelocity().y > 0) {
+            return State.JUMPING;
+        } else if (getB2body().getLinearVelocity().y < 0) {
+            return State.FALLING;
+        } else if (getB2body().getLinearVelocity().x != 0) {
+            return State.RUNNING;
+        } else {
+            return State.STANDING;
+        }
+    }
+
+    //    protected abstract TextureRegion getJumpFrame();
     protected abstract TextureRegion getJumpFrame(float stateTime);
 
-//    protected abstract TextureRegion getRunFrame();
+    //    protected abstract TextureRegion getRunFrame();
     protected abstract TextureRegion getRunFrame(float stateTime);
 
-//    protected abstract TextureRegion getIdleFrame();
+    //    protected abstract TextureRegion getIdleFrame();
     protected abstract TextureRegion getIdleFrame(float stateTime);
-    @Override
-    public BodyDef getBodyDef() {
-        return bodyDef;
+
+    protected float getStateTimer() {
+        return stateTimer;
     }
 
-    @Override
-    public FixtureDef getFixtureDef() {
-        return fixtureDef;
+    protected void setStateTimer(final float stateTimer) {
+        this.stateTimer = stateTimer;
     }
+
     protected abstract void defineDefaultSprite(TextureAtlas atlas);
+
     protected abstract void defineShape();
+
     protected abstract void defineBodyDefPosition();
+
     public abstract void update(float dt);
+
     /**
      * Represents the various movement states that the Kid character can be in during the game.
      */

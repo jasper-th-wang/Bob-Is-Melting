@@ -68,44 +68,6 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
     }
 
-    /**
-     * Takes in a delta time to update the game world's state.
-     * @param dt - delta time
-     */
-    public void update(final float dt) {
-        // Handle user input first
-        inputHandler.handleInput(dt);
-
-        hud.update(dt);
-        gameStateManager.update(dt);
-
-        // Avoid camera go over boundary
-        MapProperties prop = gameStateManager.getMap().getProperties();
-        int mapWidth = prop.get("width", Integer.class);
-        int tilePixelWidth = prop.get("tilewidth", Integer.class);
-        float mapPixelWidth = mapWidth * tilePixelWidth / BobIsMelting.PPM;
-
-        // The right boundary of the map (x + width)
-        final float cameraHalfWidth = gamePort.getCamera().viewportWidth * .5f;
-
-        gameCam.position.x = gameStateManager.getKid().getB2body().getPosition().x;
-        gameCam.position.x = MathUtils.clamp(gameCam.position.x,
-                cameraHalfWidth + tilePixelWidth / BobIsMelting.PPM,
-                mapPixelWidth - cameraHalfWidth - tilePixelWidth / BobIsMelting.PPM);
-
-        // Update our gameCam with correct coordinates after changes
-        gameCam.update();
-        // Tell the renderer to draw only what our camera can see in our game world.
-        renderer.setView(gameCam);
-    }
-
-//    /**
-//     * Returns the TextureAtlas instance used in the game.
-//     * @return atlas - the TextureAtlas instance
-//     */
-//    public TextureAtlas getAtlas() {
-//        return atlas;
-//    }
     @Override
     public void show() {
 
@@ -139,6 +101,36 @@ public class PlayScreen implements Screen {
         hud.getStage().draw();
     }
 
+    /**
+     * Takes in a delta time to update the game world's state.
+     * @param dt - delta time
+     */
+    public void update(final float dt) {
+        // Handle user input first
+        inputHandler.handleInput(dt);
+
+        hud.update(dt);
+        gameStateManager.update(dt);
+
+        // Avoid camera go over boundary
+        MapProperties prop = gameStateManager.getMap().getProperties();
+        int mapWidth = prop.get("width", Integer.class);
+        int tilePixelWidth = prop.get("tilewidth", Integer.class);
+        float mapPixelWidth = mapWidth * tilePixelWidth / BobIsMelting.PPM;
+
+        // The right boundary of the map (x + width)
+        final float cameraHalfWidth = gamePort.getCamera().viewportWidth * .5f;
+
+        gameCam.position.x = gameStateManager.getKid().getB2body().getPosition().x;
+        gameCam.position.x = MathUtils.clamp(gameCam.position.x,
+                cameraHalfWidth + tilePixelWidth / BobIsMelting.PPM,
+                mapPixelWidth - cameraHalfWidth - tilePixelWidth / BobIsMelting.PPM);
+
+        // Update our gameCam with correct coordinates after changes
+        gameCam.update();
+        // Tell the renderer to draw only what our camera can see in our game world.
+        renderer.setView(gameCam);
+    }
 
     /**
      * Resizes the game viewport based on the new width and height.

@@ -3,10 +3,7 @@ package dev.jasper.game.sprites.dynamicSprites;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.World;
 import dev.jasper.game.EntityCollisionCategory;
-import dev.jasper.game.screens.PlayScreen;
 
 /**
  * The Enemy class serves as an abstract base class that provides a skeletal implementation for the enemies in the game.
@@ -17,25 +14,20 @@ import dev.jasper.game.screens.PlayScreen;
  * @version 2024
  */
 public abstract class Enemy extends DynamicEntitySprite {
-    protected static final short COLLISION_CATEGORY = EntityCollisionCategory.ENEMY_BIT;
-    protected static final short MASK_BITS = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.KID_BIT | EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT;
-    protected final int maxRunVelocity;
-    protected final float defaultRunVelocity;
-    protected final float defaultJumpVelocity;
-    protected final float chanceToJump;
-    protected final float decideSpecialMovementDuration;
+    private static final short COLLISION_CATEGORY = EntityCollisionCategory.ENEMY_BIT;
+    private static final short MASK_BITS = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.KID_BIT | EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT;
+    private final int maxRunVelocity;
+    private final float defaultRunVelocity;
+    private final float defaultJumpVelocity;
+    private final float chanceToJump;
+    private final float decideSpecialMovementDuration;
 
-//    protected World world;
-//    protected PlayScreen screen;
-//    protected Body b2body;
-    protected float decideSpecialMovementTimer;
-//    protected State currentState;
-//    protected State previousState;
-//    protected float stateTime;
-//    protected boolean isRunningRight;
-    protected Vector2 currentVelocity;
+    private float decideSpecialMovementTimer;
+    private Vector2 currentVelocity;
+
     /**
      * Constructs an Enemy instance.
+     *
      * @param defaultRunVelocity
      * @param currentVelocity
      * @param defaultJumpVelocity
@@ -45,26 +37,14 @@ public abstract class Enemy extends DynamicEntitySprite {
      */
     public Enemy(float defaultRunVelocity, Vector2 currentVelocity, float defaultJumpVelocity, float chanceToJump, float decideSpecialMovementDuration, int maxRunVelocity) {
         super(COLLISION_CATEGORY, MASK_BITS);
-//        this.world = screenInstance.getWorld();
-//        this.screen = screenInstance;
-//        defineEnemy();
 
         this.defaultRunVelocity = defaultRunVelocity;
         this.currentVelocity = currentVelocity;
         this.defaultJumpVelocity = defaultJumpVelocity;
         this.chanceToJump = chanceToJump;
-        decideSpecialMovementTimer = 0;
+        this.decideSpecialMovementTimer = 0;
         this.decideSpecialMovementDuration = decideSpecialMovementDuration;
         this.maxRunVelocity = maxRunVelocity;
-    }
-
-    private void jump() {
-        b2body.applyLinearImpulse(new Vector2(0, getDefaultJumpVelocity()), b2body.getWorldCenter(), true);
-        Gdx.app.log("Enemy", "jump!");
-    }
-
-    private void idle() {
-        setCurrentVelocity(new Vector2(0, 0));
     }
 
     protected final void run() {
@@ -73,47 +53,13 @@ public abstract class Enemy extends DynamicEntitySprite {
         }
     }
 
-    protected final void applySpecialMovement() {
-        if (decideSpecialMovementTimer >= getDecideSpecialMovementDuration()) {
-            if (MathUtils.randomBoolean(getChanceToJump())) {
-                jump();
-                setCurrentVelocity(new Vector2(getDefaultRunVelocity(), 0));
-            } else {
-                idle();
-            }
-            decideSpecialMovementTimer = 0;
-        }
-    }
-
-//    /**
-//     * Defines the physical properties of the Enemy character in the game world.
-//     */
-//    protected abstract void defineEnemy();
-
-    /**
-     * Reverses the enemy's velocity in the x and/or y direction.
-     * @param x - if true, reverse the x-component of the velocity
-     * @param y - if true, reverse the y-component of the velocity
-     */
-    public void reverseVelocity(final boolean x, final boolean y) {
-        if (x) {
-            getCurrentVelocity().x = -getCurrentVelocity().x;
-        }
-        if (y) {
-            getCurrentVelocity().y = -getCurrentVelocity().y;
-        }
-    }
-
-    /**
-     * Returns the enemy's Body instance.
-     * @return b2body - the Body instance
-     */
-    public Body getB2body() {
-        return b2body;
+    protected int getMaxRunVelocity() {
+        return this.maxRunVelocity;
     }
 
     /**
      * Returns the enemy's velocity.
+     *
      * @return velocity - the velocity
      */
     public Vector2 getCurrentVelocity() {
@@ -130,6 +76,65 @@ public abstract class Enemy extends DynamicEntitySprite {
         this.currentVelocity = newVelocity;
     }
 
+    protected final void applySpecialMovement() {
+        if (getDecideSpecialMovementTimer() >= getDecideSpecialMovementDuration()) {
+            if (MathUtils.randomBoolean(getChanceToJump())) {
+                jump();
+                setCurrentVelocity(new Vector2(getDefaultRunVelocity(), 0));
+            } else {
+                idle();
+            }
+            setDecideSpecialMovementTimer(0);
+        }
+    }
+
+    protected float getDecideSpecialMovementTimer() {
+        return decideSpecialMovementTimer;
+    }
+
+    protected float getDecideSpecialMovementDuration() {
+        return this.decideSpecialMovementDuration;
+    }
+
+    protected float getChanceToJump() {
+        return this.chanceToJump;
+    }
+
+    private void jump() {
+        getB2body().applyLinearImpulse(new Vector2(0, getDefaultJumpVelocity()), getB2body().getWorldCenter(), true);
+    }
+
+    protected float getDefaultRunVelocity() {
+        return this.defaultRunVelocity;
+    }
+
+    private void idle() {
+        setCurrentVelocity(new Vector2(0, 0));
+    }
+
+    protected float getDefaultJumpVelocity() {
+        return this.defaultJumpVelocity;
+    }
+
+    protected void setDecideSpecialMovementTimer(float decideSpecialMovementTimer) {
+        this.decideSpecialMovementTimer = decideSpecialMovementTimer;
+    }
+
+    /**
+     * Reverses the enemy's velocity in the x and/or y direction.
+     *
+     * @param x - if true, reverse the x-component of the velocity
+     * @param y - if true, reverse the y-component of the velocity
+     */
+    public void reverseVelocity(final boolean x, final boolean y) {
+        if (x) {
+            getCurrentVelocity().x = -getCurrentVelocity().x;
+        }
+        if (y) {
+            getCurrentVelocity().y = -getCurrentVelocity().y;
+        }
+    }
+
     /**
      * Determines the current state of the Kid character based on its linear velocity.
      *
@@ -143,30 +148,4 @@ public abstract class Enemy extends DynamicEntitySprite {
             return State.STANDING;
         }
     }
-    protected float getDefaultRunVelocity() {
-        return this.defaultRunVelocity;
-    }
-
-    protected float getDefaultJumpVelocity() {
-        return this.defaultJumpVelocity;
-    }
-
-    protected float getChanceToJump() {
-        return this.chanceToJump;
-    }
-
-    protected float getDecideSpecialMovementDuration() {
-        return this.decideSpecialMovementDuration;
-    }
-
-    protected int getMaxRunVelocity() {
-        return this.maxRunVelocity;
-    }
-
-//    /**
-//     * The State enum represents the possible states of an Enemy.
-//     * STANDING: The enemy is standing still.
-//     * RUNNING: The enemy is running.
-//     */
-//    public enum State { STANDING, RUNNING }
 }

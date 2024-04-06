@@ -22,55 +22,17 @@ import dev.jasper.game.BobIsMelting;
  * @version 2024
  */
 public class Hud implements Disposable {
-    /**
-     * The health increase when a snowball is added.
-     */
     private static final int SNOWBALL_HEALTH_INCREASE = 10;
-    /**
-     * The maximum health that the HUD can have.
-     */
     private static final int MAX_HEALTH = 100;
-
-    /**
-     * The padding at the top of the table in the HUD.
-     */
     private static final int TABLE_PAD_TOP = 10;
-    /**
-     * The health of the HUD in integer format.
-     */
     private static Integer health;
-    /**
-     * The Stage instance used for the HUD.
-     */
     private final Stage stage;
-    /**
-     * The Label instance used for displaying the title of the time elapsed.
-     */
     private final Label timeTitleLabel;
-    /**
-     * The Label instance used for displaying the time elapsed.
-     */
     private final Label timeLabel;
-    /**
-     * The Label instance used for displaying the title of the health.
-     */
     private final Label healthTitleLabel;
-    /**
-     * The Label instance used for displaying the health.
-     */
     private final Label healthLabel;
-    /**
-     * The Viewport instance used for the HUD.
-     * This is a standalone camera and viewport to have the HUD render independently.
-     */
     private final Viewport viewport;
-    /**
-     * The world timer in integer format.
-     */
     private Integer worldTimer;
-    /**
-     * The time count in float format.
-     */
     private float timeCount;
 
     /**
@@ -102,7 +64,6 @@ public class Hud implements Disposable {
         table.add(healthLabel).expandX();
         table.add(timeLabel).expandX();
         getStage().addActor(table);
-
     }
 
     /**
@@ -132,7 +93,7 @@ public class Hud implements Disposable {
         setHealth(newHealth);
     }
 
-    public void update(float dt){
+    public void update(float dt) {
         timeCount += dt;
         // When exactly 1 second has passed, increment and update the world timer and corresponding HUD element
         if (timeCount >= 1) {

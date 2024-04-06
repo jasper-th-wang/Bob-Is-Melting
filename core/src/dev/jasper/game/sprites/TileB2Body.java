@@ -11,21 +11,8 @@ import dev.jasper.game.BobIsMelting;
 public abstract class TileB2Body implements InitializableB2Body {
     private final BodyDef bodyDef;
     private final FixtureDef fixtureDef;
-    protected Body b2body;
-    protected Fixture fixture;
-    @Override
-    public void setB2body(final Body b2body) {
-        this.b2body = b2body;
-    }
-
-    @Override
-    public void setFixture(Fixture fixture) {
-        this.fixture = fixture;
-    }
-    @Override
-    public Body getB2body() {
-        return b2body;
-    }
+    private Body b2body;
+    private Fixture fixture;
 
     public TileB2Body(final Rectangle bounds, final short collisionCategory) {
         final float positionX = bounds.getX() + bounds.getWidth() / 2;
@@ -52,6 +39,26 @@ public abstract class TileB2Body implements InitializableB2Body {
     @Override
     public FixtureDef getFixtureDef() {
         return fixtureDef;
+    }
+
+    @Override
+    public Body getB2body() {
+        return b2body;
+    }
+
+    @Override
+    public Fixture getFixture() {
+        return fixture;
+    }
+
+    @Override
+    public void setFixture(Fixture fixture) {
+        this.fixture = fixture;
+    }
+
+    @Override
+    public void setB2body(final Body b2body) {
+        this.b2body = b2body;
     }
 
 }

@@ -14,8 +14,8 @@ import dev.jasper.game.sprites.InitializableB2Body;
 public abstract class InteractiveEnviromentSprite extends Sprite implements InitializableB2Body {
     private final BodyDef bodyDef;
     private final FixtureDef fixtureDef;
-    protected Body b2body;
-    protected Fixture fixture;
+    private Body b2body;
+    private Fixture fixture;
 
     public InteractiveEnviromentSprite(final short collisionCategory, final short collisionMaskBits) {
         super();
@@ -29,9 +29,6 @@ public abstract class InteractiveEnviromentSprite extends Sprite implements Init
 
     }
 
-    protected abstract void defineDefaultSprite(TextureAtlas atlas);
-    protected abstract void defineShape();
-    protected abstract void defineBodyDefPosition();
     @Override
     public BodyDef getBodyDef() {
         return bodyDef;
@@ -41,17 +38,30 @@ public abstract class InteractiveEnviromentSprite extends Sprite implements Init
     public FixtureDef getFixtureDef() {
         return fixtureDef;
     }
+
     @Override
     public Body getB2body() {
         return this.b2body;
     }
+
     @Override
-    public void setB2body(Body b2body) {
-        this.b2body = b2body;
+    public Fixture getFixture() {
+        return fixture;
     }
 
     @Override
     public void setFixture(Fixture fixture) {
         this.fixture = fixture;
     }
+
+    @Override
+    public void setB2body(Body b2body) {
+        this.b2body = b2body;
+    }
+
+    protected abstract void defineDefaultSprite(TextureAtlas atlas);
+
+    protected abstract void defineShape();
+
+    protected abstract void defineBodyDefPosition();
 }

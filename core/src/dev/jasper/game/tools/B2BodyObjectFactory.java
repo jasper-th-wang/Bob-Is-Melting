@@ -25,18 +25,12 @@ import dev.jasper.game.sprites.enviromentSprites.Snowball;
  * @version 2024
  */
 public final class B2BodyObjectFactory {
+    private static final int GRAVITY_Y = -10;
+    private static final int SNOWBALL_SPAWN_LAYER = 6;
+    private static final int GROUND_LAYER = 5;
     private final World world;
-
     private final TiledMap map;
     private final TextureAtlas atlas;
-
-    private static final int GRAVITY_Y = -10;
-
-    private static final int SNOWBALL_SPAWN_LAYER = 6;
-
-    private static final int GROUND_LAYER = 5;
-//    private final Array<Ground> groundBodies;
-//    private final Vector2[] snowballSpawnSpots;
 
     /**
      * Constructs a B2WorldCreator instance.
@@ -62,16 +56,27 @@ public final class B2BodyObjectFactory {
         initializeB2Body(snowball);
         return snowball;
     }
+
+    private void initializeB2Body(final InitializableB2Body b2Body) {
+        Body body = world.createBody(b2Body.getBodyDef());
+        Fixture fixture = body.createFixture(b2Body.getFixtureDef());
+        fixture.setUserData(b2Body);
+        b2Body.setB2body(body);
+        b2Body.setFixture(fixture);
+    }
+
     public Bear createBear(final float positionX, final float positionY) {
         final Bear bear = Bear.bearFactory(atlas, positionX, positionY);
         initializeB2Body(bear);
         return bear;
     }
+
     public Bob createBob() {
         final Bob bob = Bob.bobFactory(atlas);
         initializeB2Body(bob);
         return bob;
     }
+
     public Kid createKid() {
         final Kid kid = Kid.kidFactory(atlas);
         initializeB2Body(kid);
@@ -90,6 +95,13 @@ public final class B2BodyObjectFactory {
             groundBodies.add(ground);
         }
         return groundBodies;
+    }
+
+    /**
+     * The TiledMap instance used for the game map.
+     */
+    public TiledMap getMap() {
+        return map;
     }
 
     /**
@@ -112,25 +124,9 @@ public final class B2BodyObjectFactory {
     }
 
     /**
-     * The TiledMap instance used for the game map.
-     */
-    public TiledMap getMap() {
-        return map;
-    }
-
-    /**
      * The Box2D world used for physics simulation in the game.
      */
     public World getWorld() {
         return world;
     }
-
-    private void initializeB2Body(final InitializableB2Body b2Body) {
-        Body body = world.createBody(b2Body.getBodyDef());
-        Fixture fixture = body.createFixture(b2Body.getFixtureDef());
-        fixture.setUserData(b2Body);
-        b2Body.setB2body(body);
-        b2Body.setFixture(fixture);
-    }
-//    public v
 }
