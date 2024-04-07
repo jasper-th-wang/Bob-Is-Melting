@@ -51,14 +51,14 @@ public final class Kid extends DynamicEntitySprite {
     }
 
     /**
-     * Factory method for creating a singleton instance of the Kid class.
+     * Create a singleton instance of the Kid class.
      * This method ensures that only one instance of the Kid class is created throughout the application.
      * If an instance already exists, it returns the existing instance. Otherwise, it creates a new instance.
      *
      * @param atlas The TextureAtlas object that contains the textures for the Kid character.
      * @return The singleton instance of the Kid class.
      */
-    public static Kid kidFactory(final TextureAtlas atlas) {
+    public static Kid getInstance(final TextureAtlas atlas) {
         if (kidSingleton != null) {
             return kidSingleton;
         }

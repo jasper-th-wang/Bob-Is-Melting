@@ -99,7 +99,7 @@ public final class B2BodyObjectFactory {
      * @return A new Bob object.
      */
     public Bob createBob() {
-        final Bob bob = Bob.bobFactory(atlas);
+        final Bob bob = Bob.getInstance(atlas);
         initializeB2Body(bob);
         return bob;
     }
@@ -110,7 +110,7 @@ public final class B2BodyObjectFactory {
      * @return A new Kid object.
      */
     public Kid createKid() {
-        final Kid kid = Kid.kidFactory(atlas);
+        final Kid kid = Kid.getInstance(atlas);
         initializeB2Body(kid);
         return kid;
     }

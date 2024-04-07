@@ -39,13 +39,13 @@ public final class Bob extends InteractiveEnviromentSprite {
     }
 
     /**
-     * Factory method to create a new Bob.
+     * Create a new Bob.
      * This method implements the Singleton pattern to ensure that there is only one instance of Bob in the game.
      *
      * @param atlas The TextureAtlas containing the Bob's textures.
      * @return The single instance of Bob.
      */
-    public static Bob bobFactory(final TextureAtlas atlas) {
+    public static Bob getInstance(final TextureAtlas atlas) {
         if (bobSingleton != null) {
             return bobSingleton;
         }
