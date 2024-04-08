@@ -16,7 +16,8 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import dev.jasper.game.EntityCollisionCategory;
 import dev.jasper.game.scenes.Hud;
 import dev.jasper.game.sprites.dynamicSprites.AbstractEnemy;
-import dev.jasper.game.sprites.dynamicSprites.Kid;
+import dev.jasper.game.sprites.dynamicSprites.InteractableWithEnemy;
+import dev.jasper.game.sprites.dynamicSprites.SnowballCarrier;
 import dev.jasper.game.sprites.enviromentSprites.Snowball;
 
 import static com.badlogic.gdx.Gdx.app;
@@ -57,19 +58,18 @@ public final class WorldContactListener implements ContactListener {
                 break;
         }
 
-
     }
 
     private static void handleKidBobCollision(final Fixture fixA, final Fixture fixB) {
-        Kid theKidWithSnowball;
+        SnowballCarrier snowballCarrier;
 
         if (fixA.getFilterData().categoryBits == EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT) {
-            theKidWithSnowball = (Kid) fixA.getUserData();
+            snowballCarrier = (SnowballCarrier) fixA.getUserData();
         } else  {
-            theKidWithSnowball = (Kid) fixB.getUserData();
+            snowballCarrier = (SnowballCarrier) fixB.getUserData();
         }
 
-        theKidWithSnowball.dropoffSnowball();
+        snowballCarrier.dropoffSnowball();
         Hud.addSnowball();
         app.log("Kid", "drop the snow!");
     }
@@ -81,11 +81,11 @@ public final class WorldContactListener implements ContactListener {
         } else {
             snowball = (Snowball) fixB.getUserData();
         }
-        Kid theKid;
+        SnowballCarrier theKid;
         if (fixA.getFilterData().categoryBits != EntityCollisionCategory.SNOWBALL_BIT) {
-            theKid = (Kid) fixA.getUserData();
+            theKid = (SnowballCarrier) fixA.getUserData();
         } else {
-            theKid = (Kid) fixB.getUserData();
+            theKid = (SnowballCarrier) fixB.getUserData();
         }
 
         snowball.collect();
@@ -94,15 +94,17 @@ public final class WorldContactListener implements ContactListener {
     }
 
     private static void handleKidEnemyCollision(final Fixture fixA, final Fixture fixB) {
-        Kid kid;
+        InteractableWithEnemy interactableWithEnemy;
+        SnowballCarrier snowballCarrier;
         if (fixA.getFilterData().categoryBits != EntityCollisionCategory.ENEMY_BIT) {
-            kid = (Kid) fixA.getUserData();
+            interactableWithEnemy = (InteractableWithEnemy) fixA.getUserData();
+            snowballCarrier = (SnowballCarrier) fixA.getUserData();
         } else {
-            kid = (Kid) fixB.getUserData();
+            interactableWithEnemy = (InteractableWithEnemy) fixB.getUserData();
+            snowballCarrier = (SnowballCarrier) fixB.getUserData();
         }
-        kid.onEnemyHit();
-
-        kid.setIsCarryingSnowball(false);
+        interactableWithEnemy.onEnemyHit();
+        snowballCarrier.setIsCarryingSnowball(false);
         Gdx.app.log("Kid", "Hit");
     }
 

@@ -76,4 +76,9 @@ public abstract class InteractiveEnviromentSprite extends Sprite implements Init
     protected abstract void defineShape();
 
     protected abstract void defineBodyDefPosition();
+    /**
+     * Updates the state of the dynamic entity sprite.
+     * This method should be overridden in subclasses to provide specific update logic.
+     */
+    public abstract void update();
 }

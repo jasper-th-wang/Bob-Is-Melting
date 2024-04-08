@@ -19,7 +19,7 @@ import dev.jasper.game.EntityCollisionCategory;
  * @author Jasper Wang
  * @version 2024
  */
-public final class Kid extends DynamicEntitySprite {
+public final class Kid extends DynamicEntitySprite implements SnowballCarrier, InteractableWithEnemy {
     private static final short COLLISION_CATEGORY = EntityCollisionCategory.KID_BIT;
     private static final short MASK_BITS = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.SNOWBALL_BIT
             | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.ENEMY_BIT;
@@ -194,6 +194,7 @@ public final class Kid extends DynamicEntitySprite {
      * This method is called when the Kid character collides with an enemy in the game.
      * It sets the Kid character to be invincible to enemies, preventing further effect from enemy collisions.
      */
+    @Override
     public void onEnemyHit() {
         setInvincibleToEnemy();
         isInvincibleToEnemy = true;
@@ -213,6 +214,7 @@ public final class Kid extends DynamicEntitySprite {
      * This method is called when the Kid character collides with a snowball in the game.
      * It changes the collision category of the Kid character and sets the carrying snowball status to true.
      */
+    @Override
     public void collectSnowball() {
         // change collision category
         Filter filter = new Filter();
@@ -229,6 +231,7 @@ public final class Kid extends DynamicEntitySprite {
      * This method is called when the Kid character collides with Bob in the game.
      * It resets the collision category of the Kid character and sets the carrying snowball status to false.
      */
+    @Override
     public void dropoffSnowball() {
         // change collision category
         resetCollisionCategory();
@@ -250,6 +253,7 @@ public final class Kid extends DynamicEntitySprite {
      *
      * @return boolean - true if the Kid character is carrying a snowball, false otherwise.
      */
+    @Override
     public boolean getIsCarryingSnowball() {
         return isCarryingSnowball;
     }
@@ -260,6 +264,7 @@ public final class Kid extends DynamicEntitySprite {
      *
      * @param carryingSnowball - the new carrying snowball status of the Kid character.
      */
+    @Override
     public void setIsCarryingSnowball(final boolean carryingSnowball) {
         isCarryingSnowball = carryingSnowball;
     }
