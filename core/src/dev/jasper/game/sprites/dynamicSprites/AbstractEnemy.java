@@ -12,7 +12,7 @@ import dev.jasper.game.EntityCollisionCategory;
  * @author Jasper Wang
  * @version 2024
  */
-public abstract class AbstractEnemy extends DynamicEntitySprite {
+public abstract class AbstractEnemy extends DynamicB2BodySprite {
     private static final short COLLISION_CATEGORY = EntityCollisionCategory.ENEMY_BIT;
     private static final short MASK_BITS = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.OBJECT_BIT
             | EntityCollisionCategory.KID_BIT | EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT;

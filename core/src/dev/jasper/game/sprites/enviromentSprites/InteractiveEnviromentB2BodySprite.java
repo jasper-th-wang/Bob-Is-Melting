@@ -17,7 +17,7 @@ import dev.jasper.game.sprites.InitializableB2Body;
  * @author Jasper Wang
  * @version 2024
  */
-public abstract class InteractiveEnviromentSprite extends Sprite implements InitializableB2Body {
+public abstract class InteractiveEnviromentB2BodySprite extends Sprite implements InitializableB2Body {
     private final BodyDef bodyDef;
     private final FixtureDef fixtureDef;
     private Body b2body;
@@ -29,7 +29,7 @@ public abstract class InteractiveEnviromentSprite extends Sprite implements Init
      * @param collisionCategory The collision category of the sprite.
      * @param collisionMaskBits The collision mask bits of the sprite.
      */
-    public InteractiveEnviromentSprite(final short collisionCategory, final short collisionMaskBits) {
+    public InteractiveEnviromentB2BodySprite(final short collisionCategory, final short collisionMaskBits) {
         super();
 
         bodyDef = new BodyDef();

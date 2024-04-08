@@ -15,7 +15,7 @@ import dev.jasper.game.EntityCollisionCategory;
  * @author Jasper Wang
  * @version 2024
  */
-public final class Bob extends InteractiveEnviromentSprite {
+public final class Bob extends InteractiveEnviromentB2BodySprite {
 
     private static final short COLLISION_CATEGORY = EntityCollisionCategory.BOB_BIT;
     private static final short MASK_BITS = EntityCollisionCategory.KID_BIT

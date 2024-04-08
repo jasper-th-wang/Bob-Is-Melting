@@ -19,7 +19,7 @@ import dev.jasper.game.EntityCollisionCategory;
  * @author Jasper Wang
  * @version 2024
  */
-public final class Kid extends DynamicEntitySprite implements SnowballCarrier, InteractableWithEnemy {
+public final class Kid extends DynamicB2BodySprite implements SnowballCarrier, InteractableWithEnemy {
     private static final short COLLISION_CATEGORY = EntityCollisionCategory.KID_BIT;
     private static final short MASK_BITS = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.SNOWBALL_BIT
             | EntityCollisionCategory.OBJECT_BIT | EntityCollisionCategory.ENEMY_BIT;

@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import dev.jasper.game.sprites.dynamicSprites.AbstractEnemy;
 import dev.jasper.game.sprites.dynamicSprites.Kid;
-import dev.jasper.game.sprites.enviromentSprites.InteractiveEnviromentSprite;
+import dev.jasper.game.sprites.enviromentSprites.InteractiveEnviromentB2BodySprite;
 import dev.jasper.game.sprites.enviromentSprites.Snowball;
 
 /**
@@ -29,7 +29,7 @@ public final class GameStateManager {
     private final TiledMap map;
     private final B2BodyObjectFactory b2BodyObjectFactory;
     private final Kid kid;
-    private final InteractiveEnviromentSprite bob;
+    private final InteractiveEnviromentB2BodySprite bob;
     private final Array<AbstractEnemy> enemies;
     private final Array<Snowball> currentSpawnedSnowballs;
     private final Vector2[] snowballSpawnSpots;

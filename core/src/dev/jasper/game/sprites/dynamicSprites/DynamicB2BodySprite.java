@@ -18,7 +18,7 @@ import dev.jasper.game.sprites.InitializableB2Body;
  * @author Jasper Wang
  * @version 2024
  */
-public abstract class DynamicEntitySprite extends Sprite implements InitializableB2Body {
+public abstract class DynamicB2BodySprite extends Sprite implements InitializableB2Body {
 
     private final BodyDef bodyDef;
     private final FixtureDef fixtureDef;
@@ -35,7 +35,7 @@ public abstract class DynamicEntitySprite extends Sprite implements Initializabl
      * @param collisionCategory The category of the collision.
      * @param collisionMaskBits The mask bits of the collision.
      */
-    public DynamicEntitySprite(final short collisionCategory, final short collisionMaskBits) {
+    public DynamicB2BodySprite(final short collisionCategory, final short collisionMaskBits) {
         super();
         currentState = State.STANDING;
         previousState = State.STANDING;
