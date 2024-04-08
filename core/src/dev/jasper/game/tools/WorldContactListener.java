@@ -16,7 +16,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import dev.jasper.game.EntityCollisionCategory;
 import dev.jasper.game.scenes.Hud;
 import dev.jasper.game.sprites.dynamicSprites.AbstractEnemy;
-import dev.jasper.game.sprites.dynamicSprites.InteractableWithEnemy;
+import dev.jasper.game.sprites.dynamicSprites.AbstractPlayer;
 import dev.jasper.game.sprites.dynamicSprites.SnowballCarrier;
 import dev.jasper.game.sprites.enviromentSprites.Snowball;
 
@@ -94,17 +94,14 @@ public final class WorldContactListener implements ContactListener {
     }
 
     private static void handleKidEnemyCollision(final Fixture fixA, final Fixture fixB) {
-        InteractableWithEnemy interactableWithEnemy;
-        SnowballCarrier snowballCarrier;
+        AbstractPlayer abstractPlayer;
         if (fixA.getFilterData().categoryBits != EntityCollisionCategory.ENEMY_BIT) {
-            interactableWithEnemy = (InteractableWithEnemy) fixA.getUserData();
-            snowballCarrier = (SnowballCarrier) fixA.getUserData();
+            abstractPlayer = (AbstractPlayer) fixA.getUserData();
         } else {
-            interactableWithEnemy = (InteractableWithEnemy) fixB.getUserData();
-            snowballCarrier = (SnowballCarrier) fixB.getUserData();
+            abstractPlayer = (AbstractPlayer) fixB.getUserData();
         }
-        interactableWithEnemy.onEnemyHit();
-        snowballCarrier.setIsCarryingSnowball(false);
+        abstractPlayer.onEnemyHit();
+        abstractPlayer.setIsCarryingSnowball(false);
         Gdx.app.log("Kid", "Hit");
     }
 

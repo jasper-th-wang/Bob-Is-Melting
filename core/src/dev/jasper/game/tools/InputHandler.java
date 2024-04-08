@@ -3,6 +3,7 @@ package dev.jasper.game.tools;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import dev.jasper.game.sprites.dynamicSprites.AbstractPlayer;
 import dev.jasper.game.sprites.dynamicSprites.Kid;
 
 /**
@@ -18,13 +19,13 @@ public final class InputHandler {
     private static final float INVINCIBLE_RUN_VELOCITY = 0.04f;
     private static final float NORMAL_RUN_VELOCITY = 0.1f;
     private static final int ABSOLUTE_HORIZONTAL_VELOCITY = 2;
-    private final Kid player;
+    private final AbstractPlayer player;
     /**
      * Constructs an InputHandler instance.
      *
      * @param player The player character in the game.
      */
-    public InputHandler(final Kid player) {
+    public InputHandler(final AbstractPlayer player) {
         this.player = player;
     }
 
