@@ -17,7 +17,7 @@ public abstract class AbstractEnemy extends DynamicB2BodySprite {
     private static final short COLLISION_CATEGORY = EntityCollisionCategory.ENEMY_BIT;
     private static final short MASK_BITS = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.OBJECT_BIT
             | EntityCollisionCategory.KID_BIT | EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT;
-    private final int maxRunVelocity;
+    private final float maxRunVelocity;
     private final float defaultRunVelocity;
     private final float defaultJumpVelocity;
     private final float chanceToJump;
@@ -38,7 +38,7 @@ public abstract class AbstractEnemy extends DynamicB2BodySprite {
      */
     public AbstractEnemy(final float defaultRunVelocity, final Vector2 currentVelocity,
                          final float defaultJumpVelocity, final float chanceToJump,
-                         final float decideSpecialMovementDuration, final int maxRunVelocity) {
+                         final float decideSpecialMovementDuration, final float maxRunVelocity) {
         super(COLLISION_CATEGORY, MASK_BITS);
 
         this.defaultRunVelocity = defaultRunVelocity;
@@ -50,14 +50,19 @@ public abstract class AbstractEnemy extends DynamicB2BodySprite {
         this.maxRunVelocity = maxRunVelocity;
     }
 
-    protected final void run() {
-        if (Math.abs(getB2body().getLinearVelocity().x) <= getMaxRunVelocity()) {
-            getB2body().applyLinearImpulse(getCurrentVelocity(), getB2body().getWorldCenter(), true);
+    /**
+     * Reverses the enemy's velocity in the x and/or y direction.
+     *
+     * @param x - if true, reverse the x-component of the velocity
+     * @param y - if true, reverse the y-component of the velocity
+     */
+    public void reverseVelocity(final boolean x, final boolean y) {
+        if (x) {
+            getCurrentVelocity().x = -getCurrentVelocity().x;
         }
-    }
-
-    protected final int getMaxRunVelocity() {
-        return this.maxRunVelocity;
+        if (y) {
+            getCurrentVelocity().y = -getCurrentVelocity().y;
+        }
     }
 
     /**
@@ -79,6 +84,46 @@ public abstract class AbstractEnemy extends DynamicB2BodySprite {
         this.currentVelocity = newVelocity;
     }
 
+    /**
+     * Determines the current state of the Kid character based on its linear velocity.
+     *
+     * @return The current state of the Kid character.
+     */
+    @Override
+    public State getState() {
+        if (getB2body().getLinearVelocity().x != 0) {
+            return State.RUNNING;
+        } else {
+            return State.STANDING;
+        }
+    }
+
+    /**
+     * Updates the state of the enemy sprite and body.
+     * This method is called periodically to update the state of the enemy in the game.
+     * It increments the state timer and the special movement decision timer,
+     * applies any special movement, and updates the enemy's position.
+     *
+     * @param dt The time delta, representing the amount of time passed since the last update.
+     */
+    public void update(final float dt) {
+        setStateTimer(getStateTimer() + dt);
+        setDecideSpecialMovementTimer(getDecideSpecialMovementTimer() + dt);
+
+        applySpecialMovement();
+
+        run();
+
+        final float xPositionOffset = getB2body().getPosition().x - getWidth() / 2;
+        final float yPositionOffset = getB2body().getPosition().y - getHeight() / 3;
+        setPosition(xPositionOffset, yPositionOffset);
+        setRegion(getFrame(dt));
+    }
+
+    protected final float getDecideSpecialMovementTimer() {
+        return decideSpecialMovementTimer;
+    }
+
     protected final void applySpecialMovement() {
         if (getDecideSpecialMovementTimer() >= getDecideSpecialMovementDuration()) {
             if (MathUtils.randomBoolean(getChanceToJump())) {
@@ -91,8 +136,10 @@ public abstract class AbstractEnemy extends DynamicB2BodySprite {
         }
     }
 
-    protected final float getDecideSpecialMovementTimer() {
-        return decideSpecialMovementTimer;
+    protected final void run() {
+        if (Math.abs(getB2body().getLinearVelocity().x) <= getMaxRunVelocity()) {
+            getB2body().applyLinearImpulse(getCurrentVelocity(), getB2body().getWorldCenter(), true);
+        }
     }
 
     protected final float getDecideSpecialMovementDuration() {
@@ -115,61 +162,15 @@ public abstract class AbstractEnemy extends DynamicB2BodySprite {
         setCurrentVelocity(new Vector2(0, 0));
     }
 
+    protected final float getMaxRunVelocity() {
+        return this.maxRunVelocity;
+    }
+
     protected final float getDefaultJumpVelocity() {
         return this.defaultJumpVelocity;
     }
 
     protected final void setDecideSpecialMovementTimer(final float decideSpecialMovementTimer) {
         this.decideSpecialMovementTimer = decideSpecialMovementTimer;
-    }
-
-    /**
-     * Reverses the enemy's velocity in the x and/or y direction.
-     *
-     * @param x - if true, reverse the x-component of the velocity
-     * @param y - if true, reverse the y-component of the velocity
-     */
-    public void reverseVelocity(final boolean x, final boolean y) {
-        if (x) {
-            getCurrentVelocity().x = -getCurrentVelocity().x;
-        }
-        if (y) {
-            getCurrentVelocity().y = -getCurrentVelocity().y;
-        }
-    }
-
-    /**
-     * Determines the current state of the Kid character based on its linear velocity.
-     *
-     * @return The current state of the Kid character.
-     */
-    @Override
-    public State getState() {
-        if (getB2body().getLinearVelocity().x != 0) {
-            return State.RUNNING;
-        } else {
-            return State.STANDING;
-        }
-    }
-    /**
-     * Updates the state of the enemy sprite and body.
-     * This method is called periodically to update the state of the enemy in the game.
-     * It increments the state timer and the special movement decision timer,
-     * applies any special movement, and updates the enemy's position.
-     *
-     * @param dt The time delta, representing the amount of time passed since the last update.
-     */
-    public void update(final float dt) {
-        setStateTimer(getStateTimer() + dt);
-        setDecideSpecialMovementTimer(getDecideSpecialMovementTimer() + dt);
-
-        applySpecialMovement();
-
-        run();
-
-        final float xPositionOffset = getB2body().getPosition().x - getWidth() / 2;
-        final float yPositionOffset = getB2body().getPosition().y - getHeight() / 3;
-        setPosition(xPositionOffset, yPositionOffset);
-        setRegion(getFrame(dt));
     }
 }

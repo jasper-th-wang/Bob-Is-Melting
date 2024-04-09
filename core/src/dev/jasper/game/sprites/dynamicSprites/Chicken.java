@@ -9,11 +9,11 @@ import com.badlogic.gdx.utils.Array;
 import dev.jasper.game.BobIsMelting;
 
 public final class Chicken extends AbstractEnemy {
-    private static final int MAX_RUN_VELOCITY = 2;
-    private static final float DEFAULT_RUN_VELOCITY = 0.05f;
-    private static final float DEFAULT_JUMP_VELOCITY = 3f;
-    private static final float CHANCE_TO_JUMP = 0.9F;
-    private static final float DECIDE_SPECIAL_MOVEMENT_DURATION = 1f;
+    private static final float MAX_RUN_VELOCITY = 1;
+    private static final float DEFAULT_RUN_VELOCITY = 0.035f;
+    private static final float DEFAULT_JUMP_VELOCITY = 1f;
+    private static final float CHANCE_TO_JUMP = 0.7F;
+    private static final float DECIDE_SPECIAL_MOVEMENT_DURATION = 2f;
     private static final int CHICKEN_SPHERE_RADIUS = 7;
     private final float positionX;
     private final float positionY;
