@@ -56,7 +56,8 @@ public final class GameStateManager {
         this.kid = b2BodyObjectFactory.createKid();
         this.bob = b2BodyObjectFactory.createBob();
         this.enemies = new Array<>();
-        enemies.add(b2BodyObjectFactory.createBear(.32f, .32f));
+        enemies.add(b2BodyObjectFactory.createEnemy("bear",.32f, .32f));
+        enemies.add(b2BodyObjectFactory.createEnemy("chicken",1.92f, .32f));
         currentSpawnedSnowballs = b2BodyObjectFactory.initializeSnowballsSpawnSpots(MAX_SNOWBALL_COUNT);
     }
 

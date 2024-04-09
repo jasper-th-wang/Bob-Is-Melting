@@ -12,7 +12,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import dev.jasper.game.sprites.Ground;
 import dev.jasper.game.sprites.InitializableB2Body;
+import dev.jasper.game.sprites.dynamicSprites.AbstractEnemy;
 import dev.jasper.game.sprites.dynamicSprites.Bear;
+import dev.jasper.game.sprites.dynamicSprites.Chicken;
 import dev.jasper.game.sprites.dynamicSprites.Kid;
 import dev.jasper.game.sprites.enviromentSprites.Bob;
 import dev.jasper.game.sprites.enviromentSprites.Snowball;
@@ -87,10 +89,21 @@ public final class B2BodyObjectFactory {
      * @param positionY The y-coordinate of the Bear's position.
      * @return A new Bear object.
      */
-    public Bear createBear(final float positionX, final float positionY) {
-        final Bear bear = Bear.enemyFactory(atlas, positionX, positionY);
-        initializeB2Body(bear);
-        return bear;
+    public AbstractEnemy createEnemy(final String enemyType, final float positionX, final float positionY) {
+        AbstractEnemy enemy = null;
+        switch (enemyType) {
+            case "bear":
+                enemy = Bear.enemyFactory(atlas, positionX, positionY);
+                break;
+            case "chicken":
+                enemy = Chicken.enemyFactory(atlas, positionX, positionY);
+                break;
+            default:
+                throw new IllegalArgumentException("No enemy type found named: " + enemyType);
+        }
+
+        initializeB2Body(enemy);
+        return enemy;
     }
 
     /**
