@@ -26,7 +26,7 @@ import dev.jasper.game.sprites.enviromentSprites.Snowball;
  * @author Jasper Wang
  * @version 2024
  */
-public final class B2BodyObjectFactory {
+public final class B2BodyObjectFactory  {
     private static final int GRAVITY_Y = -10;
     private static final int SNOWBALL_SPAWN_LAYER = 6;
     private static final int GROUND_LAYER = 5;
@@ -90,7 +90,7 @@ public final class B2BodyObjectFactory {
      * @return A new Bear object.
      */
     public AbstractEnemy createEnemy(final String enemyType, final float positionX, final float positionY) {
-        AbstractEnemy enemy = null;
+        AbstractEnemy enemy;
         switch (enemyType) {
             case "bear":
                 enemy = Bear.enemyFactory(atlas, positionX, positionY);

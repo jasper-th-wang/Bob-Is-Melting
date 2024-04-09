@@ -1,6 +1,5 @@
 package dev.jasper.game.sprites.dynamicSprites;
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import dev.jasper.game.EntityCollisionCategory;
