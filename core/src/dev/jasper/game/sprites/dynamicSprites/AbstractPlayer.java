@@ -10,7 +10,7 @@ package dev.jasper.game.sprites.dynamicSprites;
  * @author Jasper Wang
  * @version 2024
  */
-public abstract class AbstractPlayer extends DynamicB2BodySprite implements SnowballCarrier, InteractableWithEnemy{
+public abstract class AbstractPlayer extends DynamicB2BodySprite implements SnowballCarrier, InteractableWithEnemy {
     /**
      * Constructor for the AbstractPlayer class.
      * It initializes the player with the given collision category and mask bits.

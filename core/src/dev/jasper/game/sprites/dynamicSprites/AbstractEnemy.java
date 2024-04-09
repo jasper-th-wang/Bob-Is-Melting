@@ -1,5 +1,6 @@
 package dev.jasper.game.sprites.dynamicSprites;
 
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import dev.jasper.game.EntityCollisionCategory;
@@ -149,5 +150,26 @@ public abstract class AbstractEnemy extends DynamicB2BodySprite {
         } else {
             return State.STANDING;
         }
+    }
+    /**
+     * Updates the state of the enemy sprite and body.
+     * This method is called periodically to update the state of the enemy in the game.
+     * It increments the state timer and the special movement decision timer,
+     * applies any special movement, and updates the enemy's position.
+     *
+     * @param dt The time delta, representing the amount of time passed since the last update.
+     */
+    public void update(final float dt) {
+        setStateTimer(getStateTimer() + dt);
+        setDecideSpecialMovementTimer(getDecideSpecialMovementTimer() + dt);
+
+        applySpecialMovement();
+
+        run();
+
+        final float xPositionOffset = getB2body().getPosition().x - getWidth() / 2;
+        final float yPositionOffset = getB2body().getPosition().y - getHeight() / 3;
+        setPosition(xPositionOffset, yPositionOffset);
+        setRegion(getFrame(dt));
     }
 }

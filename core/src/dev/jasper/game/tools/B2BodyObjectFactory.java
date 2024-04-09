@@ -88,7 +88,7 @@ public final class B2BodyObjectFactory {
      * @return A new Bear object.
      */
     public Bear createBear(final float positionX, final float positionY) {
-        final Bear bear = Bear.bearFactory(atlas, positionX, positionY);
+        final Bear bear = Bear.enemyFactory(atlas, positionX, positionY);
         initializeB2Body(bear);
         return bear;
     }
