@@ -45,6 +45,7 @@ public class PlayScreen implements Screen {
      */
     public PlayScreen(final BobIsMelting gameInstance) {
         this.game = gameInstance;
+        this.gameStateManager = gameInstance.getGameStateManager();
 
         // Set up game camera
         gameCam = new OrthographicCamera();
@@ -55,9 +56,9 @@ public class PlayScreen implements Screen {
         gameCam.position.set(gamePort.getWorldWidth() / POSITION_ITERATIONS,
                 gamePort.getWorldHeight() / POSITION_ITERATIONS, 0);
 
-        hud = new Hud(game.getBatch());
+        hud = new Hud(gameStateManager, game.getBatch());
 
-        this.gameStateManager = new GameStateManager();
+//        this.gameStateManager = new GameStateManager();
         inputHandler = new InputHandler(gameStateManager.getKid());
         renderer = new OrthogonalTiledMapRenderer(gameStateManager.getMap(), 1 / BobIsMelting.PPM);
 

@@ -30,6 +30,11 @@ import static com.badlogic.gdx.Gdx.app;
  * @version 2024
  */
 public final class WorldContactListener implements ContactListener {
+    private final GameStateManager gameStateManager;
+    public WorldContactListener(final GameStateManager gameStateManager) {
+        this.gameStateManager = gameStateManager;
+    }
+
     /**
      * This method is called when two fixtures start to collide.
      * @param contact The contact information about the collision.
@@ -61,7 +66,7 @@ public final class WorldContactListener implements ContactListener {
 
     }
 
-    private static void handleKidBobCollision(final Fixture fixA, final Fixture fixB) {
+    private void handleKidBobCollision(final Fixture fixA, final Fixture fixB) {
         SnowballCarrier snowballCarrier;
 
         if (fixA.getFilterData().categoryBits == EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT) {
@@ -71,11 +76,11 @@ public final class WorldContactListener implements ContactListener {
         }
 
         snowballCarrier.dropoffSnowball();
-        Hud.addSnowball();
+        gameStateManager.addSnowball();
         app.log("Kid", "drop the snow!");
     }
 
-    private static void handleKidSnowballCollision(final Fixture fixA, final Fixture fixB) {
+    private void handleKidSnowballCollision(final Fixture fixA, final Fixture fixB) {
         Snowball snowball;
         if (fixA.getFilterData().categoryBits == EntityCollisionCategory.SNOWBALL_BIT) {
             snowball = (Snowball) fixA.getUserData();
@@ -94,7 +99,7 @@ public final class WorldContactListener implements ContactListener {
         app.log("Kid", "got snow!");
     }
 
-    private static void handleKidEnemyCollision(final Fixture fixA, final Fixture fixB) {
+    private void handleKidEnemyCollision(final Fixture fixA, final Fixture fixB) {
         AbstractPlayer abstractPlayer;
         if (fixA.getFilterData().categoryBits != EntityCollisionCategory.ENEMY_BIT) {
             abstractPlayer = (AbstractPlayer) fixA.getUserData();
@@ -106,7 +111,7 @@ public final class WorldContactListener implements ContactListener {
         Gdx.app.log("Kid", "Hit");
     }
 
-    private static void handleEnemyGroundCollision(final Fixture fixA, final Fixture fixB) {
+    private void handleEnemyGroundCollision(final Fixture fixA, final Fixture fixB) {
         AbstractEnemy enemy;
         if (fixA.getFilterData().categoryBits == EntityCollisionCategory.ENEMY_BIT) {
             enemy = (AbstractEnemy) fixA.getUserData();

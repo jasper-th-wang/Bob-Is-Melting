@@ -29,7 +29,6 @@ import dev.jasper.game.sprites.enviromentSprites.Snowball;
  * @version 2024
  */
 public final class B2BodyObjectFactory  {
-    private static final int GRAVITY_Y = -10;
     private static final int SNOWBALL_SPAWN_LAYER = 6;
     private static final int GROUND_LAYER = 5;
     private static final int ENEMY_BOUNDARY_LAYER = 7;
@@ -41,10 +40,9 @@ public final class B2BodyObjectFactory  {
      * Constructs a B2WorldCreator instance.
      * It creates the non-character bodies and fixtures in the game world.
      */
-    public B2BodyObjectFactory() {
-        this.world = new World(new Vector2(0, GRAVITY_Y), true);
+    public B2BodyObjectFactory(final World world) {
+        this.world = world;
         this.atlas = new TextureAtlas("Characters.atlas");
-        world.setContactListener(new WorldContactListener());
         final TmxMapLoader mapLoader = new TmxMapLoader();
         map = mapLoader.load("mainNew.tmx");
         initializeTileB2Bodies(GROUND_LAYER);
@@ -137,11 +135,9 @@ public final class B2BodyObjectFactory  {
      * Creates the grounds in the game.
      */
     private void initializeTileB2Bodies(final int layerNumber) {
-//        final Array<TileB2Body> tileB2Bodies = new Array<>();
         for (RectangleMapObject object: getMap().getLayers().get(layerNumber)
                 .getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
-            // this part is the problem
             TileB2Body tileB2Body;
             if (layerNumber == GROUND_LAYER) {
                 tileB2Body = new Ground(rect);
@@ -149,7 +145,6 @@ public final class B2BodyObjectFactory  {
                 tileB2Body = new EnemyBoundary(rect);
             }
             initializeB2Body(tileB2Body);
-//            tileB2Bodies.add(tileB2Body);
         }
     }
     /**
@@ -177,13 +172,5 @@ public final class B2BodyObjectFactory  {
             snowballSpawnSpots[i] = new Vector2(rect.getX(), rect.getY());
         }
         return snowballSpawnSpots;
-    }
-    /**
-     * Returns the Box2D world used for physics simulation in the game.
-     *
-     * @return The Box2D world used for physics simulation in the game.
-     */
-    public World getWorld() {
-        return world;
     }
 }

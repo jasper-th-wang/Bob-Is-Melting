@@ -3,6 +3,7 @@ package dev.jasper.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dev.jasper.game.screens.PlayScreen;
+import dev.jasper.game.tools.GameStateManager;
 
 /**
  * Main game loop.
@@ -29,6 +30,16 @@ public final class BobIsMelting extends Game {
      * This is used in the game to draw 2D bitmaps that can be composed into complex scenes.
      */
     private SpriteBatch batch;
+    private GameStateManager gameStateManager;
+
+    /**
+     * Returns the GameStateManager instance used in the game.
+     *
+     * @return the GameStateManager instance used in the game.
+     */
+    public GameStateManager getGameStateManager() {
+        return gameStateManager;
+    }
 
     /**
      * Initializes the game. This is called when the game is first created.
@@ -36,15 +47,8 @@ public final class BobIsMelting extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
+        gameStateManager = new GameStateManager();
         setScreen(new PlayScreen(this));
-    }
-
-    /**
-     * Renders the game. This is called every frame.
-     */
-    @Override
-    public void render() {
-        super.render();
     }
 
     /**
@@ -53,6 +57,14 @@ public final class BobIsMelting extends Game {
     @Override
     public void dispose() {
         getBatch().dispose();
+    }
+
+    /**
+     * Renders the game. This is called every frame.
+     */
+    @Override
+    public void render() {
+        super.render();
     }
 
     /**

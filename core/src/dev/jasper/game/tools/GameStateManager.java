@@ -24,7 +24,30 @@ public final class GameStateManager {
     private static final int VELOCITY_ITERATIONS = 6;
     private static final int POSITION_ITERATIONS = 2;
     private static final float SNOWBALL_SPAWN_INTERVAL = 3f;
+    private static final int SNOWBALL_HEALTH_INCREASE = 10;
     private static final int MAX_SNOWBALL_COUNT = 5;
+    private static final int MAX_HEALTH = 100;
+
+    public Integer getWorldTimer() {
+        return worldTimer;
+    }
+
+    private Integer worldTimer;
+    private float timeCount;
+
+    public Integer getBobsHealth() {
+        return bobsHealth;
+    }
+
+    public void setBobsHealth(Integer bobsHealth) {
+        this.bobsHealth = bobsHealth;
+    }
+    public void addSnowball() {
+        final int newHealth = Math.min(getBobsHealth() + SNOWBALL_HEALTH_INCREASE, MAX_HEALTH);
+        setBobsHealth(newHealth);
+    }
+
+    private Integer bobsHealth;
     private final World world;
     private final TiledMap map;
     private final B2BodyObjectFactory b2BodyObjectFactory;
@@ -35,14 +58,21 @@ public final class GameStateManager {
     private final Vector2[] snowballSpawnSpots;
     private final Array<Vector2> nextSnowballSpawnSpots;
     private float snowballSpawnTimer;
+    private static final int GRAVITY_Y = -10;
+
     /**
      * Constructs a GameStateManager instance.
      * It creates the game world, the characters, the ground, and initializes the snowballs.
      */
     public GameStateManager() {
-        this.b2BodyObjectFactory = new B2BodyObjectFactory();
-        this.world = b2BodyObjectFactory.getWorld();
+        this.world = new World(new Vector2(0, GRAVITY_Y), true);
+        this.b2BodyObjectFactory = new B2BodyObjectFactory(world);
+        worldTimer = 0;
+        timeCount = 0;
+        WorldContactListener worldContactListener = new WorldContactListener(this);
+        world.setContactListener(worldContactListener);
         this.map = b2BodyObjectFactory.getMap();
+        this.bobsHealth = MAX_HEALTH;
 
         this.snowballSpawnSpots = b2BodyObjectFactory.getSnowballSpawnSpots();
         this.nextSnowballSpawnSpots = new Array<>();
@@ -52,8 +82,6 @@ public final class GameStateManager {
         Gdx.app.log("snow", String.valueOf(nextSnowballSpawnSpots.size));
 
         // initialize game states by instantiating b2d bodies
-//        b2BodyObjectFactory.initializeTileB2Bodies("GROUND_LAYER");
-//        b2BodyObjectFactory.initializeTileB2Bodies("");
         this.kid = b2BodyObjectFactory.createKid();
         this.bob = b2BodyObjectFactory.createBob();
         this.enemies = new Array<>();
@@ -104,6 +132,14 @@ public final class GameStateManager {
      */
     public void update(final float dt) {
         world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+
+        timeCount += dt;
+        // When exactly 1 second has passed, increment and update the world timer and corresponding HUD element
+        if (timeCount >= 1) {
+            worldTimer++;
+            setBobsHealth(getBobsHealth() - 2);
+            timeCount = 0;
+        }
 
         kid.update(dt);
         bob.update();
