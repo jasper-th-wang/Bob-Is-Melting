@@ -15,7 +15,7 @@ import dev.jasper.game.EntityCollisionCategory;
 public abstract class AbstractEnemy extends DynamicB2BodySprite {
     private static final short COLLISION_CATEGORY = EntityCollisionCategory.ENEMY_BIT;
     private static final short MASK_BITS = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.OBJECT_BIT
-            | EntityCollisionCategory.KID_BIT | EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT;
+            | EntityCollisionCategory.KID_BIT | EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT | EntityCollisionCategory.ENEMY_BOUNDARY_BIT;
     private final float maxRunVelocity;
     private final float defaultRunVelocity;
     private final float defaultJumpVelocity;
@@ -124,6 +124,10 @@ public abstract class AbstractEnemy extends DynamicB2BodySprite {
     }
 
     protected final void applySpecialMovement() {
+//        // Half the time the enemy will not apply special movemen
+//        if (MathUtils.randomBoolean(.5f)) {
+//            return;
+//        }
         if (getDecideSpecialMovementTimer() >= getDecideSpecialMovementDuration()) {
             if (MathUtils.randomBoolean(getChanceToJump())) {
                 jump();

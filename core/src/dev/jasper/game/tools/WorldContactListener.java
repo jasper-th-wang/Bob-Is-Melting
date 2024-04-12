@@ -42,6 +42,7 @@ public final class WorldContactListener implements ContactListener {
 
         switch (cDef) {
             case EntityCollisionCategory.ENEMY_BIT | EntityCollisionCategory.GROUND_BIT:
+            case EntityCollisionCategory.ENEMY_BIT | EntityCollisionCategory.ENEMY_BOUNDARY_BIT:
                 handleEnemyGroundCollision(fixA, fixB);
                 break;
             case EntityCollisionCategory.KID_BIT | EntityCollisionCategory.ENEMY_BIT:

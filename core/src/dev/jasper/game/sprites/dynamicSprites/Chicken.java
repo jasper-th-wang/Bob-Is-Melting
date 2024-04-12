@@ -3,6 +3,7 @@ package dev.jasper.game.sprites.dynamicSprites;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.utils.Array;
@@ -13,16 +14,17 @@ public final class Chicken extends AbstractEnemy {
     private static final float DEFAULT_RUN_VELOCITY = 0.035f;
     private static final float DEFAULT_JUMP_VELOCITY = 1f;
     private static final float CHANCE_TO_JUMP = 0.7F;
-    private static final float DECIDE_SPECIAL_MOVEMENT_DURATION = 2f;
+    private static final float MAX_DECIDE_SPECIAL_MOVEMENT_DURATION = 4f;
+    private static final float MIN_DECIDE_SPECIAL_MOVEMENT_DURATION = 2f;
     private static final int CHICKEN_SPHERE_RADIUS = 7;
     private final float positionX;
     private final float positionY;
     private Animation<TextureRegion> idleAnimation;
     private Animation<TextureRegion> walkAnimation;
 
-    private Chicken(final float x, final float y) {
+    private Chicken(final float x, final float y, final float specialMovementDuration) {
         super(DEFAULT_RUN_VELOCITY, new Vector2(DEFAULT_RUN_VELOCITY, 0), DEFAULT_JUMP_VELOCITY, CHANCE_TO_JUMP,
-                DECIDE_SPECIAL_MOVEMENT_DURATION, MAX_RUN_VELOCITY);
+                specialMovementDuration, MAX_RUN_VELOCITY);
         this.positionX = x;
         this.positionY = y;
     }
@@ -36,7 +38,8 @@ public final class Chicken extends AbstractEnemy {
      * @return A new Bear.
      */
     public static Chicken enemyFactory(final TextureAtlas atlas, final float x, final float y) {
-        final Chicken chicken = new Chicken(x, y);
+        final float specialMovementDuration = MathUtils.random(MAX_DECIDE_SPECIAL_MOVEMENT_DURATION) + MIN_DECIDE_SPECIAL_MOVEMENT_DURATION;
+        final Chicken chicken = new Chicken(x, y, specialMovementDuration);
         chicken.defineDefaultSprite(atlas);
         chicken.defineBodyDefPosition();
         chicken.defineShape();

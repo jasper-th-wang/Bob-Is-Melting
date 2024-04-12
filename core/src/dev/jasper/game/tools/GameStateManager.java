@@ -59,7 +59,10 @@ public final class GameStateManager {
         this.enemies = new Array<>();
         try {
             enemies.add(b2BodyObjectFactory.createEnemy("bear",.32f, .32f));
-            enemies.add(b2BodyObjectFactory.createEnemy("chicken",1.92f, .32f));
+            enemies.add(b2BodyObjectFactory.createEnemy("bear",3.52f, .48f));
+            enemies.add(b2BodyObjectFactory.createEnemy("bear",1.6f, .48f));
+            enemies.add(b2BodyObjectFactory.createEnemy("chicken",2.56f, 1.28f));
+            enemies.add(b2BodyObjectFactory.createEnemy("chicken",.32f, 1.28f));
         } catch (IllegalArgumentException e) {
             System.out.println(e + " Fail to initialize enemies.");
         }
