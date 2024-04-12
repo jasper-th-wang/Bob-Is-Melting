@@ -63,7 +63,7 @@ public final class Chicken extends AbstractEnemy {
         setPosition(positionX, positionY);
         final float spriteBoundWidth = 24 / BobIsMelting.PPM;
         final float spriteBoundHeight = 24 / BobIsMelting.PPM;
-        final float walkFrameDuration = 0.1f;
+        final float walkFrameDuration = 0.3f;
         final float idleFrameDuration = 1f;
         final int walkFrameCount = 6;
         final int spriteWidth = 32;

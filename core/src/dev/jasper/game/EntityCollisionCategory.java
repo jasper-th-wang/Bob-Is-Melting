@@ -22,9 +22,9 @@ public final class EntityCollisionCategory {
      */
     public static final short SNOWBALL_BIT = 4;
     /**
-     * Bit value representing destroyed objects in the game's physics engine.
+     * Bit value representing the boundary of enemies in the game's physics engine.
      */
-    public static final short DESTROYED_BIT = 8;
+    public static final short ENEMY_BOUNDARY_BIT = 8;
     /**
      * Bit value representing generic objects in the game's physics engine.
      */

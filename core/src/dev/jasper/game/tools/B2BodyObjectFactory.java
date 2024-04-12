@@ -10,8 +10,10 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import dev.jasper.game.sprites.EnemyBoundary;
 import dev.jasper.game.sprites.Ground;
 import dev.jasper.game.sprites.InitializableB2Body;
+import dev.jasper.game.sprites.TileB2Body;
 import dev.jasper.game.sprites.dynamicSprites.AbstractEnemy;
 import dev.jasper.game.sprites.dynamicSprites.Bear;
 import dev.jasper.game.sprites.dynamicSprites.Chicken;
@@ -30,6 +32,7 @@ public final class B2BodyObjectFactory  {
     private static final int GRAVITY_Y = -10;
     private static final int SNOWBALL_SPAWN_LAYER = 6;
     private static final int GROUND_LAYER = 5;
+    private static final int ENEMY_BOUNDARY_LAYER = 7;
     private final World world;
     private final TiledMap map;
     private final TextureAtlas atlas;
@@ -44,6 +47,8 @@ public final class B2BodyObjectFactory  {
         world.setContactListener(new WorldContactListener());
         final TmxMapLoader mapLoader = new TmxMapLoader();
         map = mapLoader.load("mainNew.tmx");
+        initializeTileB2Bodies(GROUND_LAYER);
+        initializeTileB2Bodies(ENEMY_BOUNDARY_LAYER);
     }
     /**
      * Initializes the snowballs spawn spots in the game.
@@ -131,14 +136,20 @@ public final class B2BodyObjectFactory  {
     /**
      * Creates the grounds in the game.
      */
-    public void createGrounds() {
-        final Array<Ground> groundBodies = new Array<>();
-        for (RectangleMapObject object: getMap().getLayers().get(GROUND_LAYER)
+    private void initializeTileB2Bodies(final int layerNumber) {
+//        final Array<TileB2Body> tileB2Bodies = new Array<>();
+        for (RectangleMapObject object: getMap().getLayers().get(layerNumber)
                 .getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
-            final Ground ground = new Ground(rect);
-            initializeB2Body(ground);
-            groundBodies.add(ground);
+            // this part is the problem
+            TileB2Body tileB2Body;
+            if (layerNumber == GROUND_LAYER) {
+                tileB2Body = new Ground(rect);
+            } else {
+                tileB2Body = new EnemyBoundary(rect);
+            }
+            initializeB2Body(tileB2Body);
+//            tileB2Bodies.add(tileB2Body);
         }
     }
     /**

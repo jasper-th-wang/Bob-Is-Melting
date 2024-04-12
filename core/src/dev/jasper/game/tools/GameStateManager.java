@@ -52,7 +52,8 @@ public final class GameStateManager {
         Gdx.app.log("snow", String.valueOf(nextSnowballSpawnSpots.size));
 
         // initialize game states by instantiating b2d bodies
-        b2BodyObjectFactory.createGrounds();
+//        b2BodyObjectFactory.initializeTileB2Bodies("GROUND_LAYER");
+//        b2BodyObjectFactory.initializeTileB2Bodies("");
         this.kid = b2BodyObjectFactory.createKid();
         this.bob = b2BodyObjectFactory.createBob();
         this.enemies = new Array<>();
