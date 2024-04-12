@@ -14,7 +14,7 @@ public final class Chicken extends AbstractEnemy {
     private static final float DEFAULT_RUN_VELOCITY = 0.035f;
     private static final float DEFAULT_JUMP_VELOCITY = 1f;
     private static final float CHANCE_TO_JUMP = 0.7F;
-    private static final float MAX_DECIDE_SPECIAL_MOVEMENT_DURATION = 4f;
+    private static final float MAX_DECIDE_SPECIAL_MOVEMENT_DURATION = 8f;
     private static final float MIN_DECIDE_SPECIAL_MOVEMENT_DURATION = 2f;
     private static final int CHICKEN_SPHERE_RADIUS = 7;
     private final float positionX;

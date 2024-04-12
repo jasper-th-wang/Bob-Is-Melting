@@ -21,8 +21,8 @@ public final class Bear extends AbstractEnemy {
     private static final float DEFAULT_RUN_VELOCITY = 0.05f;
     private static final float DEFAULT_JUMP_VELOCITY = 3f;
     private static final float CHANCE_TO_JUMP = 0.5F;
-    private static final float MAX_DECIDE_SPECIAL_MOVEMENT_DURATION = 4f;
-    private static final float MIN_DECIDE_SPECIAL_MOVEMENT_DURATION = 1f;
+    private static final float MAX_DECIDE_SPECIAL_MOVEMENT_DURATION = 10f;
+    private static final float MIN_DECIDE_SPECIAL_MOVEMENT_DURATION = 3f;
     private static final int BEAR_SPHERE_RADIUS = 7;
     private final float positionX;
     private final float positionY;
