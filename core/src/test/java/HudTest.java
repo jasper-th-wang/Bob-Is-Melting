@@ -1,8 +1,3 @@
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import dev.jasper.game.scenes.Hud;
-
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 //
 //public class HudTest {
 //

@@ -15,7 +15,8 @@ import dev.jasper.game.EntityCollisionCategory;
 public abstract class AbstractEnemy extends DynamicB2BodySprite {
     private static final short COLLISION_CATEGORY = EntityCollisionCategory.ENEMY_BIT;
     private static final short MASK_BITS = EntityCollisionCategory.GROUND_BIT | EntityCollisionCategory.OBJECT_BIT
-            | EntityCollisionCategory.KID_BIT | EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT | EntityCollisionCategory.ENEMY_BOUNDARY_BIT;
+            | EntityCollisionCategory.KID_BIT | EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT
+            | EntityCollisionCategory.ENEMY_BOUNDARY_BIT;
     private final float maxRunVelocity;
     private final float defaultRunVelocity;
     private final float defaultJumpVelocity;
@@ -28,12 +29,12 @@ public abstract class AbstractEnemy extends DynamicB2BodySprite {
     /**
      * Constructs an AbstractEnemy with the specified parameters.
      *
-     * @param defaultRunVelocity The default running velocity of the enemy.
-     * @param currentVelocity The current velocity of the enemy.
-     * @param defaultJumpVelocity The default jumping velocity of the enemy.
-     * @param chanceToJump The chance for the enemy to jump.
+     * @param defaultRunVelocity            The default running velocity of the enemy.
+     * @param currentVelocity               The current velocity of the enemy.
+     * @param defaultJumpVelocity           The default jumping velocity of the enemy.
+     * @param chanceToJump                  The chance for the enemy to jump.
      * @param decideSpecialMovementDuration The duration to decide the special movement of the enemy.
-     * @param maxRunVelocity The maximum running velocity of the enemy.
+     * @param maxRunVelocity                The maximum running velocity of the enemy.
      */
     public AbstractEnemy(final float defaultRunVelocity, final Vector2 currentVelocity,
                          final float defaultJumpVelocity, final float chanceToJump,

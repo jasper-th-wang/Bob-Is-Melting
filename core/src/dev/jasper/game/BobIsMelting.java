@@ -76,6 +76,11 @@ public final class BobIsMelting extends Game {
     public SpriteBatch getBatch() {
         return batch;
     }
+
+    /**
+     * Starts a new game.
+     * This method resets the GameStateManager instance and sets the screen to a new PlayScreen instance.
+     */
     public void startNewGame() {
         gameStateManager = new GameStateManager();
         setScreen(new PlayScreen(this));

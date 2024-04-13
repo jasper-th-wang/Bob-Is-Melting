@@ -30,9 +30,10 @@ public final class Hud implements Disposable {
     private final GameStateManager gameStateManager;
 
     /**
-     * Constructs a Hud instance.
+     * Constructs a Hud instance with the specified GameStateManager and SpriteBatch.
      *
-     * @param sb - the SpriteBatch instance used for drawing
+     * @param gameStateManager The GameStateManager instance used to manage the game state.
+     * @param sb               The SpriteBatch instance used for drawing.
      */
     public Hud(final GameStateManager gameStateManager, final SpriteBatch sb) {
         this.gameStateManager = gameStateManager;
@@ -43,11 +44,13 @@ public final class Hud implements Disposable {
         table.top();
         table.setFillParent(true);
         Label timeTitleLabel = new Label("TIME ELAPSED", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        timeLabel = new Label(String.format("%03d", gameStateManager.getWorldTimer()), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        timeLabel = new Label(String.format("%03d", gameStateManager.getWorldTimer()),
+                new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         // Health as a temp name for now
         Label healthTitleLabel = new Label("BOB'S HEALTH", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        healthLabel = new Label(String.format("%02d", gameStateManager.getBobsHealth()), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        healthLabel = new Label(String.format("%02d", gameStateManager.getBobsHealth()),
+                new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         table.add(healthTitleLabel).expandX().padTop(TABLE_PAD_TOP);
         table.add(timeTitleLabel).expandX().padTop(TABLE_PAD_TOP);
@@ -56,6 +59,15 @@ public final class Hud implements Disposable {
         table.add(healthLabel).expandX();
         table.add(timeLabel).expandX();
         getStage().addActor(table);
+    }
+
+    /**
+     * Returns the Stage instance used in the HUD.
+     *
+     * @return stage - the Stage instance
+     */
+    public Stage getStage() {
+        return stage;
     }
 
     /**
@@ -77,14 +89,5 @@ public final class Hud implements Disposable {
     @Override
     public void dispose() {
         getStage().dispose();
-    }
-
-    /**
-     * Returns the Stage instance used in the HUD.
-     *
-     * @return stage - the Stage instance
-     */
-    public Stage getStage() {
-        return stage;
     }
 }

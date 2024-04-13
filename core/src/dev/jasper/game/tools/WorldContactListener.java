@@ -14,7 +14,6 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import dev.jasper.game.EntityCollisionCategory;
-import dev.jasper.game.scenes.Hud;
 import dev.jasper.game.sprites.dynamicSprites.AbstractEnemy;
 import dev.jasper.game.sprites.dynamicSprites.AbstractPlayer;
 import dev.jasper.game.sprites.dynamicSprites.SnowballCarrier;
@@ -31,12 +30,19 @@ import static com.badlogic.gdx.Gdx.app;
  */
 public final class WorldContactListener implements ContactListener {
     private final GameStateManager gameStateManager;
+
+    /**
+     * Constructs a WorldContactListener instance with the specified GameStateManager.
+     *
+     * @param gameStateManager The GameStateManager instance used to manage the game state.
+     */
     public WorldContactListener(final GameStateManager gameStateManager) {
         this.gameStateManager = gameStateManager;
     }
 
     /**
      * This method is called when two fixtures start to collide.
+     *
      * @param contact The contact information about the collision.
      */
     @Override
@@ -66,18 +72,27 @@ public final class WorldContactListener implements ContactListener {
 
     }
 
-    private void handleKidBobCollision(final Fixture fixA, final Fixture fixB) {
-        SnowballCarrier snowballCarrier;
-
-        if (fixA.getFilterData().categoryBits == EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT) {
-            snowballCarrier = (SnowballCarrier) fixA.getUserData();
-        } else  {
-            snowballCarrier = (SnowballCarrier) fixB.getUserData();
+    private void handleEnemyGroundCollision(final Fixture fixA, final Fixture fixB) {
+        AbstractEnemy enemy;
+        if (fixA.getFilterData().categoryBits == EntityCollisionCategory.ENEMY_BIT) {
+            enemy = (AbstractEnemy) fixA.getUserData();
+        } else {
+            enemy = (AbstractEnemy) fixB.getUserData();
         }
+        final boolean toReverseVelocity = MathUtils.randomBoolean(0.8F);
+        enemy.reverseVelocity(toReverseVelocity, false);
+    }
 
-        snowballCarrier.dropoffSnowball();
-        gameStateManager.addSnowball();
-        app.log("Kid", "drop the snow!");
+    private void handleKidEnemyCollision(final Fixture fixA, final Fixture fixB) {
+        AbstractPlayer abstractPlayer;
+        if (fixA.getFilterData().categoryBits != EntityCollisionCategory.ENEMY_BIT) {
+            abstractPlayer = (AbstractPlayer) fixA.getUserData();
+        } else {
+            abstractPlayer = (AbstractPlayer) fixB.getUserData();
+        }
+        abstractPlayer.onEnemyHit();
+        abstractPlayer.setIsCarryingSnowball(false);
+        Gdx.app.log("Kid", "Hit");
     }
 
     private void handleKidSnowballCollision(final Fixture fixA, final Fixture fixB) {
@@ -99,27 +114,18 @@ public final class WorldContactListener implements ContactListener {
         app.log("Kid", "got snow!");
     }
 
-    private void handleKidEnemyCollision(final Fixture fixA, final Fixture fixB) {
-        AbstractPlayer abstractPlayer;
-        if (fixA.getFilterData().categoryBits != EntityCollisionCategory.ENEMY_BIT) {
-            abstractPlayer = (AbstractPlayer) fixA.getUserData();
-        } else {
-            abstractPlayer = (AbstractPlayer) fixB.getUserData();
-        }
-        abstractPlayer.onEnemyHit();
-        abstractPlayer.setIsCarryingSnowball(false);
-        Gdx.app.log("Kid", "Hit");
-    }
+    private void handleKidBobCollision(final Fixture fixA, final Fixture fixB) {
+        SnowballCarrier snowballCarrier;
 
-    private void handleEnemyGroundCollision(final Fixture fixA, final Fixture fixB) {
-        AbstractEnemy enemy;
-        if (fixA.getFilterData().categoryBits == EntityCollisionCategory.ENEMY_BIT) {
-            enemy = (AbstractEnemy) fixA.getUserData();
+        if (fixA.getFilterData().categoryBits == EntityCollisionCategory.KID_CARRY_SNOWBALL_BIT) {
+            snowballCarrier = (SnowballCarrier) fixA.getUserData();
         } else {
-            enemy = (AbstractEnemy) fixB.getUserData();
+            snowballCarrier = (SnowballCarrier) fixB.getUserData();
         }
-        final boolean toReverseVelocity = MathUtils.randomBoolean(0.8F);
-        enemy.reverseVelocity(toReverseVelocity, false);
+
+        snowballCarrier.dropoffSnowball();
+        gameStateManager.addSnowball();
+        app.log("Kid", "drop the snow!");
     }
 
     @Override

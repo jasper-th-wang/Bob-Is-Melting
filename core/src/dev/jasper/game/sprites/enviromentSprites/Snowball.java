@@ -45,9 +45,9 @@ public final class Snowball extends InteractiveEnviromentB2BodySprite {
     /**
      * Factory method to create a new Snowball.
      *
-     * @param atlas The TextureAtlas containing the Snowball's textures.
-     * @param position The position of the Snowball.
-     * @param snowballsRef A reference to the Array of Snowballs.
+     * @param atlas             The TextureAtlas containing the Snowball's textures.
+     * @param position          The position of the Snowball.
+     * @param snowballsRef      A reference to the Array of Snowballs.
      * @param snowballsRefIndex The index of this Snowball in the Array.
      * @return A new Snowball.
      */
@@ -86,23 +86,6 @@ public final class Snowball extends InteractiveEnviromentB2BodySprite {
     }
 
     /**
-     * Checks if the Snowball has been collected.
-     *
-     * @return True if the Snowball has been collected, false otherwise.
-     */
-    public boolean isCollected() {
-        return collected;
-    }
-
-
-    /**
-     * Marks the Snowball to be collected.
-     */
-    public void collect() {
-        toCollect = true;
-    }
-
-    /**
      * Updates the state of the Snowball.
      * This method is called periodically to update the state of the Snowball in the game.
      */
@@ -111,6 +94,22 @@ public final class Snowball extends InteractiveEnviromentB2BodySprite {
             snowballsRef.set(snowballsRefIndex, null);
             collected = true;
         }
+    }
+
+    /**
+     * Checks if the Snowball has been collected.
+     *
+     * @return True if the Snowball has been collected, false otherwise.
+     */
+    public boolean isCollected() {
+        return collected;
+    }
+
+    /**
+     * Marks the Snowball to be collected.
+     */
+    public void collect() {
+        toCollect = true;
     }
 
     @Override

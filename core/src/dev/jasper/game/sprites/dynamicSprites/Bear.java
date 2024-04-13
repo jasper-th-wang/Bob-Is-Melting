@@ -40,12 +40,13 @@ public final class Bear extends AbstractEnemy {
      * Factory method to create a new Bear.
      *
      * @param atlas The TextureAtlas containing the Bear's textures.
-     * @param x The x-coordinate of the Bear's position.
-     * @param y The y-coordinate of the Bear's position.
+     * @param x     The x-coordinate of the Bear's position.
+     * @param y     The y-coordinate of the Bear's position.
      * @return A new Bear.
      */
     public static Bear enemyFactory(final TextureAtlas atlas, final float x, final float y) {
-        final float specialMovementDuration = MathUtils.random(MAX_DECIDE_SPECIAL_MOVEMENT_DURATION) + MIN_DECIDE_SPECIAL_MOVEMENT_DURATION;
+        final float specialMovementDuration = MathUtils.random(MAX_DECIDE_SPECIAL_MOVEMENT_DURATION)
+                + MIN_DECIDE_SPECIAL_MOVEMENT_DURATION;
         final Bear bear = new Bear(x, y, specialMovementDuration);
         bear.defineDefaultSprite(atlas);
         bear.defineBodyDefPosition();

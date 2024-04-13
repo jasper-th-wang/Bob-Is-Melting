@@ -16,7 +16,7 @@ public abstract class AbstractPlayer extends DynamicB2BodySprite implements Snow
      * It initializes the player with the given collision category and mask bits.
      *
      * @param collisionCategory The collision category of the player.
-     * @param maskBits The mask bits of the player.
+     * @param maskBits          The mask bits of the player.
      */
     public AbstractPlayer(final short collisionCategory, final short maskBits) {
         super(collisionCategory, maskBits);

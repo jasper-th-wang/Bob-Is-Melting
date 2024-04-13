@@ -15,6 +15,7 @@ public final class Ground extends TileB2Body {
 
     /**
      * Constructs a Ground instance.
+     *
      * @param bounds - the bounds of the ground
      */
     public Ground(final Rectangle bounds) {

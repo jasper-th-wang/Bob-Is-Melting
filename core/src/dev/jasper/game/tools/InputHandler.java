@@ -20,6 +20,7 @@ public final class InputHandler {
     private static final float NORMAL_RUN_VELOCITY = 0.1f;
     private static final int ABSOLUTE_HORIZONTAL_VELOCITY = 2;
     private final AbstractPlayer player;
+
     /**
      * Constructs an InputHandler instance.
      *

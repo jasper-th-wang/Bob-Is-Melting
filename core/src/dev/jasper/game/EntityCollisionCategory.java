@@ -45,6 +45,7 @@ public final class EntityCollisionCategory {
      * Bit value representing the state of the kid character carrying a snowball in the game's physics engine.
      */
     public static final short KID_CARRY_SNOWBALL_BIT = 256;
+
     private EntityCollisionCategory() {
         throw new UnsupportedOperationException("Utility class");
     }

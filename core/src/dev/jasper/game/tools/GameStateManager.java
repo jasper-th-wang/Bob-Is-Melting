@@ -25,6 +25,7 @@ public final class GameStateManager {
     private static final int POSITION_ITERATIONS = 2;
     private static final float SNOWBALL_SPAWN_INTERVAL = 3f;
     private static final int SNOWBALL_HEALTH_INCREASE = 10;
+    private static final int HEALTH_DECREASE_PER_SECOND = 4;
     private static final int MAX_SNOWBALL_COUNT = 5;
     private static final int MAX_HEALTH = 100;
     private static final int GRAVITY_Y = -10;
@@ -41,6 +42,7 @@ public final class GameStateManager {
     private float timeCount;
     private Integer bobsHealth;
     private float snowballSpawnTimer;
+
     /**
      * Constructs a GameStateManager instance.
      * It creates the game world, the characters, the ground, and initializes the snowballs.
@@ -67,28 +69,52 @@ public final class GameStateManager {
         this.bob = b2BodyObjectFactory.createBob();
         this.enemies = new Array<>();
         try {
-//            enemies.add(b2BodyObjectFactory.createEnemy("bear",.32f, .32f));
-            enemies.add(b2BodyObjectFactory.createEnemy("bear",3.52f, .48f));
+            final float positionX = 3.52f;
+            final float positionY = .48f;
+            enemies.add(b2BodyObjectFactory.createEnemy("bear", positionX, positionY));
         } catch (IllegalArgumentException e) {
             System.out.println(e + " Fail to initialize enemies.");
         }
         currentSpawnedSnowballs = b2BodyObjectFactory.initializeSnowballsSpawnSpots(MAX_SNOWBALL_COUNT);
     }
 
+    /**
+     * Returns the current world timer.
+     * The world timer is a counter that increments every second
+     * and is used to track the total time elapsed in the game.
+     *
+     * @return The current world timer.
+     */
     public Integer getWorldTimer() {
         return worldTimer;
     }
 
+    /**
+     * Increases Bob's health by the value of SNOWBALL_HEALTH_INCREASE, up to a maximum of MAX_HEALTH.
+     * This method is typically called when a snowball is collected in the game.
+     */
     public void addSnowball() {
         final int newHealth = Math.min(getBobsHealth() + SNOWBALL_HEALTH_INCREASE, MAX_HEALTH);
         setBobsHealth(newHealth);
     }
 
+    /**
+     * Returns the current health of Bob.
+     * Bob's health decreases over time and when he is hit by enemies, and increases when he collects snowballs.
+     *
+     * @return The current health of Bob.
+     */
     public Integer getBobsHealth() {
         return bobsHealth;
     }
 
-    public void setBobsHealth(Integer bobsHealth) {
+    /**
+     * Sets the current health of Bob.
+     * This method is used to update Bob's health during the game.
+     *
+     * @param bobsHealth The new health value for Bob.
+     */
+    public void setBobsHealth(final Integer bobsHealth) {
         this.bobsHealth = bobsHealth;
     }
 
@@ -132,7 +158,7 @@ public final class GameStateManager {
         // When exactly 1 second has passed, increment and update the world timer and corresponding HUD element
         if (timeCount >= 1) {
             worldTimer++;
-            setBobsHealth(getBobsHealth() - 2);
+            setBobsHealth(getBobsHealth() - HEALTH_DECREASE_PER_SECOND);
             adjustDifficulty(worldTimer);
             timeCount = 0;
         }
@@ -161,16 +187,24 @@ public final class GameStateManager {
         final int difficulty4 = 40;
         switch (time) {
             case difficulty1:
-                enemies.add(b2BodyObjectFactory.createEnemy("bear",.32f, .32f));
+                final float positionX1 = .32f;
+                final float positionY1 = .32f;
+                enemies.add(b2BodyObjectFactory.createEnemy("bear", positionX1, positionY1));
                 break;
             case difficulty2:
-                enemies.add(b2BodyObjectFactory.createEnemy("bear",1.6f, .48f));
+                final float positionX2 = 1.6f;
+                final float positionY2 = .48f;
+                enemies.add(b2BodyObjectFactory.createEnemy("bear", positionX2, positionY2));
                 break;
             case difficulty3:
-                enemies.add(b2BodyObjectFactory.createEnemy("chicken",2.56f, 1.28f));
+                final float positionX3 = 2.56f;
+                final float positionY3 = 1.28f;
+                enemies.add(b2BodyObjectFactory.createEnemy("chicken", positionX3, positionY3));
                 break;
             case difficulty4:
-                enemies.add(b2BodyObjectFactory.createEnemy("chicken",.32f, 1.28f));
+                final float positionX4 = .32f;
+                final float positionY4 = 1.28f;
+                enemies.add(b2BodyObjectFactory.createEnemy("chicken", positionX4, positionY4));
                 break;
             default:
                 break;
@@ -223,6 +257,7 @@ public final class GameStateManager {
         });
         kid.draw(batch);
     }
+
     /**
      * Disposes of the resources used by the game.
      * This method is called when the game is closed to free up resources.
@@ -231,6 +266,7 @@ public final class GameStateManager {
         map.dispose();
         world.dispose();
     }
+
     /**
      * Checks if the game is over.
      *

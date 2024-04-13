@@ -28,6 +28,7 @@ public abstract class DynamicB2BodySprite extends Sprite implements Initializabl
     private State previousState;
     private float stateTimer;
     private boolean isRunningRight;
+
     /**
      * Constructor for the DynamicEntitySprite class.
      * Initializes the body and fixture definitions, and sets the initial state to STANDING.
@@ -173,5 +174,5 @@ public abstract class DynamicB2BodySprite extends Sprite implements Initializabl
     /**
      * Represents the various movement states that a Dynamic Entity can be in during the game.
      */
-    public enum State { FALLING, JUMPING, STANDING, RUNNING }
+    public enum State {FALLING, JUMPING, STANDING, RUNNING}
 }

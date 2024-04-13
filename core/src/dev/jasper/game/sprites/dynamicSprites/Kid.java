@@ -240,14 +240,6 @@ public final class Kid extends AbstractPlayer {
         setIsCarryingSnowball(false);
     }
 
-    @Override
-    public void draw(final Batch batch) {
-        super.draw(batch);
-        if (getIsCarryingSnowball()) {
-            snowballSprite.draw(batch);
-        }
-    }
-
     /**
      * Returns the carrying snowball status of the Kid character.
      * This method is used to check if the Kid character is currently carrying a snowball.
@@ -268,5 +260,13 @@ public final class Kid extends AbstractPlayer {
     @Override
     public void setIsCarryingSnowball(final boolean carryingSnowball) {
         isCarryingSnowball = carryingSnowball;
+    }
+
+    @Override
+    public void draw(final Batch batch) {
+        super.draw(batch);
+        if (getIsCarryingSnowball()) {
+            snowballSprite.draw(batch);
+        }
     }
 }

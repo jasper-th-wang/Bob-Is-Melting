@@ -13,12 +13,28 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.jasper.game.BobIsMelting;
 
-public class GameOverScreen implements Screen {
-    private Viewport viewport;
-    private Stage stage;
+/**
+ * The GameOverScreen class represents the game over screen in the game.
+ * It implements the Screen interface from the libGDX library.
+ * This screen is displayed when the player loses the game.
+ *
+ * @author Jasper Wang
+ * @version 2024
+ */
+public final class GameOverScreen implements Screen {
+    private static final int TABLE_PAD_TOP = 10;
+    private final Viewport viewport;
+    private final Stage stage;
 
-    private BobIsMelting game;
-    public GameOverScreen(final BobIsMelting game){
+    private final BobIsMelting game;
+
+    /**
+     * Constructs a GameOverScreen with the specified game.
+     * It initializes the viewport and stage, and sets up the game over screen layout.
+     *
+     * @param game The game instance.
+     */
+    public GameOverScreen(final BobIsMelting game) {
         this.game = game;
         viewport = new FitViewport(BobIsMelting.V_WIDTH, BobIsMelting.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.getBatch());
@@ -34,17 +50,18 @@ public class GameOverScreen implements Screen {
 
         table.add(gameOverLabel).expandX();
         table.row();
-        table.add(playAgainLabel).expandX().padTop(10f);
+        table.add(playAgainLabel).expandX().padTop(TABLE_PAD_TOP);
 
         stage.addActor(table);
     }
+
     @Override
     public void show() {
 
     }
 
     @Override
-    public void render(float delta) {
+    public void render(final float delta) {
         if (Gdx.input.justTouched()) {
             game.startNewGame();
             dispose();
@@ -55,7 +72,7 @@ public class GameOverScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(final int width, final int height) {
 
     }
 

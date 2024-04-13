@@ -35,7 +35,6 @@ public final class Bob extends InteractiveEnviromentB2BodySprite {
 
     private Bob() {
         super(COLLISION_CATEGORY, MASK_BITS);
-        // TODO: add other textures
     }
 
     /**

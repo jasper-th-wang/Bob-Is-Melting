@@ -2,15 +2,18 @@ package dev.jasper.game.sprites.dynamicSprites;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
-import dev.jasper.game.tools.B2BodyObjectFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class BearTest {
     // Bear can be created with a TextureAtlas, x and y coordinates
     private Bear bear;
     private TextureAtlas atlas;
+
     @BeforeEach
     void setUp() {
         this.atlas = new TextureAtlas("Characters.atlas");

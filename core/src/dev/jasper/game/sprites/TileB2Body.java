@@ -25,7 +25,7 @@ public abstract class TileB2Body implements InitializableB2Body {
     /**
      * Constructs a TileB2Body with the specified bounds and collision category.
      *
-     * @param bounds The bounds of the tile body.
+     * @param bounds            The bounds of the tile body.
      * @param collisionCategory The collision category of the tile body.
      */
     public TileB2Body(final Rectangle bounds, final short collisionCategory) {

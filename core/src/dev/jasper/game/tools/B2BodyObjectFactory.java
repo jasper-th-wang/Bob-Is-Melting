@@ -28,7 +28,7 @@ import dev.jasper.game.sprites.enviromentSprites.Snowball;
  * @author Jasper Wang
  * @version 2024
  */
-public final class B2BodyObjectFactory  {
+public final class B2BodyObjectFactory {
     private static final int SNOWBALL_SPAWN_LAYER = 6;
     private static final int GROUND_LAYER = 5;
     private static final int ENEMY_BOUNDARY_LAYER = 7;
@@ -37,8 +37,10 @@ public final class B2BodyObjectFactory  {
     private final TextureAtlas atlas;
 
     /**
-     * Constructs a B2WorldCreator instance.
-     * It creates the non-character bodies and fixtures in the game world.
+     * Constructs a B2BodyObjectFactory instance.
+     * It sets the world for the game and initializes the non-character bodies and fixtures in the game world.
+     *
+     * @param world The World object representing the physical world in the game.
      */
     public B2BodyObjectFactory(final World world) {
         this.world = world;
@@ -48,6 +50,45 @@ public final class B2BodyObjectFactory  {
         initializeTileB2Bodies(GROUND_LAYER);
         initializeTileB2Bodies(ENEMY_BOUNDARY_LAYER);
     }
+
+    /**
+     * Initializes the TileB2Body objects in the game.
+     * This method is used to create the physical bodies for the tiles in the game world.
+     * The layerNumber parameter determines which layer of the TiledMap is used to create the bodies.
+     *
+     * @param layerNumber The layer number in the TiledMap from which the bodies are created.
+     */
+    private void initializeTileB2Bodies(final int layerNumber) {
+        for (RectangleMapObject object : getMap().getLayers().get(layerNumber)
+                .getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = object.getRectangle();
+            TileB2Body tileB2Body;
+            if (layerNumber == GROUND_LAYER) {
+                tileB2Body = new Ground(rect);
+            } else {
+                tileB2Body = new EnemyBoundary(rect);
+            }
+            initializeB2Body(tileB2Body);
+        }
+    }
+
+    /**
+     * Returns the TiledMap instance used for the game map.
+     *
+     * @return The TiledMap instance used for the game map.
+     */
+    public TiledMap getMap() {
+        return map;
+    }
+
+    private void initializeB2Body(final InitializableB2Body b2Body) {
+        Body body = world.createBody(b2Body.getBodyDef());
+        Fixture fixture = body.createFixture(b2Body.getFixtureDef());
+        fixture.setUserData(b2Body);
+        b2Body.setB2body(body);
+        b2Body.setFixture(fixture);
+    }
+
     /**
      * Initializes the snowballs spawn spots in the game.
      *
@@ -62,12 +103,13 @@ public final class B2BodyObjectFactory  {
         }
         return snowballs;
     }
+
     /**
      * Creates a new Snowball in the game.
      *
-     * @param spawnSpot The spawn spot of the Snowball.
+     * @param spawnSpot               The spawn spot of the Snowball.
      * @param currentSpawnedSnowballs The current spawned Snowballs in the game.
-     * @param currentIndex The current index of the Snowball.
+     * @param currentIndex            The current index of the Snowball.
      * @return A new Snowball object.
      */
     public Snowball createSnowball(final Vector2 spawnSpot,
@@ -77,20 +119,14 @@ public final class B2BodyObjectFactory  {
         return snowball;
     }
 
-    private void initializeB2Body(final InitializableB2Body b2Body) {
-        Body body = world.createBody(b2Body.getBodyDef());
-        Fixture fixture = body.createFixture(b2Body.getFixtureDef());
-        fixture.setUserData(b2Body);
-        b2Body.setB2body(body);
-        b2Body.setFixture(fixture);
-    }
-
     /**
-     * Creates a new Bear in the game.
+     * Creates a new enemy in the game based on the provided enemy type.
      *
-     * @param positionX The x-coordinate of the Bear's position.
-     * @param positionY The y-coordinate of the Bear's position.
-     * @return A new Bear object.
+     * @param enemyType The type of the enemy to be created. This is a string that can be "bear" or "chicken".
+     * @param positionX The x-coordinate of the enemy's initial position.
+     * @param positionY The y-coordinate of the enemy's initial position.
+     * @return A new AbstractEnemy object representing the created enemy.
+     * @throws IllegalArgumentException If the provided enemy type is not recognized.
      */
     public AbstractEnemy createEnemy(final String enemyType, final float positionX, final float positionY) {
         AbstractEnemy enemy;
@@ -131,30 +167,6 @@ public final class B2BodyObjectFactory  {
         return kid;
     }
 
-    /**
-     * Creates the grounds in the game.
-     */
-    private void initializeTileB2Bodies(final int layerNumber) {
-        for (RectangleMapObject object: getMap().getLayers().get(layerNumber)
-                .getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = object.getRectangle();
-            TileB2Body tileB2Body;
-            if (layerNumber == GROUND_LAYER) {
-                tileB2Body = new Ground(rect);
-            } else {
-                tileB2Body = new EnemyBoundary(rect);
-            }
-            initializeB2Body(tileB2Body);
-        }
-    }
-    /**
-     * Returns the TiledMap instance used for the game map.
-     *
-     * @return The TiledMap instance used for the game map.
-     */
-    public TiledMap getMap() {
-        return map;
-    }
     /**
      * Returns the array of snowball spawn spots in the game.
      *

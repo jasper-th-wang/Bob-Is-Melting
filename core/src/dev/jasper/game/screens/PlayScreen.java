@@ -41,6 +41,7 @@ public class PlayScreen implements Screen {
 
     /**
      * Constructs a PlayScreen instance.
+     *
      * @param gameInstance - the main game instance
      */
     public PlayScreen(final BobIsMelting gameInstance) {
@@ -72,6 +73,7 @@ public class PlayScreen implements Screen {
 
     /**
      * Renders the game world and its components.
+     *
      * @param delta - the time difference between the current and the last frame
      */
     @Override
@@ -105,6 +107,7 @@ public class PlayScreen implements Screen {
 
     /**
      * Takes in a delta time to update the game world's state.
+     *
      * @param dt - delta time
      */
     public void update(final float dt) {
@@ -136,7 +139,8 @@ public class PlayScreen implements Screen {
 
     /**
      * Resizes the game viewport based on the new width and height.
-     * @param width - the new width
+     *
+     * @param width  - the new width
      * @param height - the new height
      */
     @Override

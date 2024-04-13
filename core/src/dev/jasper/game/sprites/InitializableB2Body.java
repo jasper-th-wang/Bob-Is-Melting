@@ -37,18 +37,18 @@ public interface InitializableB2Body {
     Body getB2body();
 
     /**
-     * Returns the Fixture of the Box2D body.
-     *
-     * @return The Fixture of the Box2D body.
-     */
-    Fixture getFixture();
-
-    /**
      * Sets the Body of the Box2D body.
      *
      * @param b2body The new Body of the Box2D body.
      */
     void setB2body(Body b2body);
+
+    /**
+     * Returns the Fixture of the Box2D body.
+     *
+     * @return The Fixture of the Box2D body.
+     */
+    Fixture getFixture();
 
     /**
      * Sets the Fixture of the Box2D body.
