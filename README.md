@@ -1,25 +1,23 @@
-<div align="center">
-<h1 align="center">
+<div style="text-align:center">
+<h1 style="text-align:center">
 <br>Bob Is Melting</h1>
-<p align="center">
+<p style="text-align:center">
 <img src="https://img.shields.io/badge/java-%23ED8B00.svg?style=flat-square&logo=openjdk&logoColor=white" alt="java" />
 </p>
 </div>
 
 ---
 
-## 📖 Table of Contents
-- [📖 Table of Contents](#-table-of-contents)
-- [📍 Overview](#-overview)
-- [🚀 Getting Started](#-getting-started)
-    - [🔧 Installation](#-installation)
-    - [🤖 Running ](#-running-)
----
-
 
 ## 📍 Overview
 
 Bob is Melting is a 2D platformer game with an objective centered around preventing Bob the Snowman, from fully melting away. You will be hopping around a map where snowballs just pop up out of nowhere. Scooping up these snowballs is key because Bob's got a bit of a melting problem—his health ticks down bit by bit, just like a real snowman on a sunny day. Your job is to bring those snowballs back to Bob to patch him up and keep the melt at bay.
+
+---
+
+## 🚶 Movements
+
+Use the arrow keys: Up, Down, Left, and Right to move in the respective directions.
 
 ---
 
