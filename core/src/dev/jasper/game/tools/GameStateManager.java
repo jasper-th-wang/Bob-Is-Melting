@@ -25,7 +25,6 @@ public final class GameStateManager {
     private static final int POSITION_ITERATIONS = 2;
     private static final float SNOWBALL_SPAWN_INTERVAL = 3f;
     private static final int SNOWBALL_HEALTH_INCREASE = 10;
-    private static final int HEALTH_DECREASE_PER_SECOND = 4;
     private static final int MAX_SNOWBALL_COUNT = 5;
     private static final int MAX_HEALTH = 100;
     private static final int GRAVITY_Y = -10;
@@ -38,11 +37,11 @@ public final class GameStateManager {
     private final Array<Snowball> currentSpawnedSnowballs;
     private final Vector2[] snowballSpawnSpots;
     private final Array<Vector2> nextSnowballSpawnSpots;
+    private int healthDecreasePerSecond;
     private Integer worldTimer;
     private float timeCount;
     private Integer bobsHealth;
     private float snowballSpawnTimer;
-
     /**
      * Constructs a GameStateManager instance.
      * It creates the game world, the characters, the ground, and initializes the snowballs.
@@ -65,6 +64,7 @@ public final class GameStateManager {
         Gdx.app.log("snow", String.valueOf(nextSnowballSpawnSpots.size));
 
         // initialize game states by instantiating b2d bodies
+        this.healthDecreasePerSecond = 2;
         this.kid = b2BodyObjectFactory.createKid();
         this.bob = b2BodyObjectFactory.createBob();
         this.enemies = new Array<>();
@@ -158,8 +158,8 @@ public final class GameStateManager {
         // When exactly 1 second has passed, increment and update the world timer and corresponding HUD element
         if (timeCount >= 1) {
             worldTimer++;
-            setBobsHealth(getBobsHealth() - HEALTH_DECREASE_PER_SECOND);
-            adjustDifficulty(worldTimer);
+            setBobsHealth(getBobsHealth() - getHealthDecreasePerSecond());
+            adjustDifficultyToTime(worldTimer);
             timeCount = 0;
         }
 
@@ -180,31 +180,33 @@ public final class GameStateManager {
         spawnSnowballs(dt);
     }
 
-    private void adjustDifficulty(final int time) {
-        final int difficulty1 = 10;
-        final int difficulty2 = 20;
-        final int difficulty3 = 30;
-        final int difficulty4 = 40;
+    private int getHealthDecreasePerSecond() {
+        return healthDecreasePerSecond;
+    }
+
+    private void setHealthDecreasePerSecond(final int healthDecreasePerSecond) {
+        this.healthDecreasePerSecond = healthDecreasePerSecond;
+    }
+
+    private void adjustDifficultyToTime(final int time) {
         switch (time) {
-            case difficulty1:
-                final float positionX1 = .32f;
-                final float positionY1 = .32f;
-                enemies.add(b2BodyObjectFactory.createEnemy("bear", positionX1, positionY1));
+            case Difficulty.DIFFICULTY_1_TIME:
+                enemies.add(b2BodyObjectFactory.createEnemy("bear", Difficulty.ENEMY_SPAWN_POSITION_X1,
+                        Difficulty.ENEMY_SPAWN_POSITION_Y1));
                 break;
-            case difficulty2:
-                final float positionX2 = 1.6f;
-                final float positionY2 = .48f;
-                enemies.add(b2BodyObjectFactory.createEnemy("bear", positionX2, positionY2));
+            case Difficulty.DIFFICULTY_2_TIME:
+                enemies.add(b2BodyObjectFactory.createEnemy("bear", Difficulty.ENEMY_SPAWN_POSITION_X2,
+                        Difficulty.ENEMY_SPAWN_POSITION_Y2));
+                setHealthDecreasePerSecond(Difficulty.HEALTH_DECREASE_PER_SECOND_2);
                 break;
-            case difficulty3:
-                final float positionX3 = 2.56f;
-                final float positionY3 = 1.28f;
-                enemies.add(b2BodyObjectFactory.createEnemy("chicken", positionX3, positionY3));
+            case Difficulty.DIFFICULTY_3_TIME:
+                enemies.add(b2BodyObjectFactory.createEnemy("chicken", Difficulty.ENEMY_SPAWN_POSITION_X3,
+                        Difficulty.ENEMY_SPAWN_POSITION_Y3));
                 break;
-            case difficulty4:
-                final float positionX4 = .32f;
-                final float positionY4 = 1.28f;
-                enemies.add(b2BodyObjectFactory.createEnemy("chicken", positionX4, positionY4));
+            case Difficulty.DIFFICULTY_4_TIME:
+                enemies.add(b2BodyObjectFactory.createEnemy("chicken", Difficulty.ENEMY_SPAWN_POSITION_X4,
+                        Difficulty.ENEMY_SPAWN_POSITION_Y4));
+                setHealthDecreasePerSecond(Difficulty.HEALTH_DECREASE_PER_SECOND_4);
                 break;
             default:
                 break;
@@ -274,5 +276,23 @@ public final class GameStateManager {
      */
     public boolean isGameOver() {
         return bobsHealth < 0;
+    }
+
+    private static final class Difficulty {
+        private static final float ENEMY_SPAWN_POSITION_X1 = .32f;
+        private static final float ENEMY_SPAWN_POSITION_Y1 = .32f;
+        private static final float ENEMY_SPAWN_POSITION_X2 = 1.6f;
+        private static final float ENEMY_SPAWN_POSITION_Y2 = .48f;
+        private static final float ENEMY_SPAWN_POSITION_X3 = 2.56f;
+        private static final float ENEMY_SPAWN_POSITION_Y3 = 1.28f;
+        private static final float ENEMY_SPAWN_POSITION_X4 = .32f;
+        private static final float ENEMY_SPAWN_POSITION_Y4 = 1.28f;
+        private static final int DIFFICULTY_1_TIME = 10;
+        private static final int DIFFICULTY_2_TIME = 20;
+        private static final int DIFFICULTY_3_TIME = 30;
+        private static final int DIFFICULTY_4_TIME = 40;
+        private static final int HEALTH_DECREASE_PER_SECOND_2 = 3;
+        private static final int HEALTH_DECREASE_PER_SECOND_4 = 4;
+
     }
 }

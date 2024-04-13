@@ -88,7 +88,7 @@ public class PlayScreen implements Screen {
         renderer.render();
 
         // Render Box2DDebugLines
-        b2dr.render(gameStateManager.getWorld(), gameCam.combined);
+//        b2dr.render(gameStateManager.getWorld(), gameCam.combined);
 
         game.getBatch().setProjectionMatrix(gameCam.combined);
         game.getBatch().begin();

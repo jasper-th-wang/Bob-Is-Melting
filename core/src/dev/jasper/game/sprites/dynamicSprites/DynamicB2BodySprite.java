@@ -174,5 +174,5 @@ public abstract class DynamicB2BodySprite extends Sprite implements Initializabl
     /**
      * Represents the various movement states that a Dynamic Entity can be in during the game.
      */
-    public enum State {FALLING, JUMPING, STANDING, RUNNING}
+    public enum State { FALLING, JUMPING, STANDING, RUNNING }
 }
