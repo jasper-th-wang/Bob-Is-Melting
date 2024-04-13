@@ -27,27 +27,7 @@ public final class GameStateManager {
     private static final int SNOWBALL_HEALTH_INCREASE = 10;
     private static final int MAX_SNOWBALL_COUNT = 5;
     private static final int MAX_HEALTH = 100;
-
-    public Integer getWorldTimer() {
-        return worldTimer;
-    }
-
-    private Integer worldTimer;
-    private float timeCount;
-
-    public Integer getBobsHealth() {
-        return bobsHealth;
-    }
-
-    public void setBobsHealth(Integer bobsHealth) {
-        this.bobsHealth = bobsHealth;
-    }
-    public void addSnowball() {
-        final int newHealth = Math.min(getBobsHealth() + SNOWBALL_HEALTH_INCREASE, MAX_HEALTH);
-        setBobsHealth(newHealth);
-    }
-
-    private Integer bobsHealth;
+    private static final int GRAVITY_Y = -10;
     private final World world;
     private final TiledMap map;
     private final B2BodyObjectFactory b2BodyObjectFactory;
@@ -57,9 +37,10 @@ public final class GameStateManager {
     private final Array<Snowball> currentSpawnedSnowballs;
     private final Vector2[] snowballSpawnSpots;
     private final Array<Vector2> nextSnowballSpawnSpots;
+    private Integer worldTimer;
+    private float timeCount;
+    private Integer bobsHealth;
     private float snowballSpawnTimer;
-    private static final int GRAVITY_Y = -10;
-
     /**
      * Constructs a GameStateManager instance.
      * It creates the game world, the characters, the ground, and initializes the snowballs.
@@ -92,6 +73,23 @@ public final class GameStateManager {
             System.out.println(e + " Fail to initialize enemies.");
         }
         currentSpawnedSnowballs = b2BodyObjectFactory.initializeSnowballsSpawnSpots(MAX_SNOWBALL_COUNT);
+    }
+
+    public Integer getWorldTimer() {
+        return worldTimer;
+    }
+
+    public void addSnowball() {
+        final int newHealth = Math.min(getBobsHealth() + SNOWBALL_HEALTH_INCREASE, MAX_HEALTH);
+        setBobsHealth(newHealth);
+    }
+
+    public Integer getBobsHealth() {
+        return bobsHealth;
+    }
+
+    public void setBobsHealth(Integer bobsHealth) {
+        this.bobsHealth = bobsHealth;
     }
 
     /**
@@ -157,17 +155,21 @@ public final class GameStateManager {
     }
 
     private void adjustDifficulty(final int time) {
+        final int difficulty1 = 10;
+        final int difficulty2 = 20;
+        final int difficulty3 = 30;
+        final int difficulty4 = 40;
         switch (time) {
-            case 10:
+            case difficulty1:
                 enemies.add(b2BodyObjectFactory.createEnemy("bear",.32f, .32f));
                 break;
-            case 20:
+            case difficulty2:
                 enemies.add(b2BodyObjectFactory.createEnemy("bear",1.6f, .48f));
                 break;
-            case 30:
+            case difficulty3:
                 enemies.add(b2BodyObjectFactory.createEnemy("chicken",2.56f, 1.28f));
                 break;
-            case 40:
+            case difficulty4:
                 enemies.add(b2BodyObjectFactory.createEnemy("chicken",.32f, 1.28f));
                 break;
             default:
@@ -228,5 +230,13 @@ public final class GameStateManager {
     public void dispose() {
         map.dispose();
         world.dispose();
+    }
+    /**
+     * Checks if the game is over.
+     *
+     * @return true if Bob's health is less than 0, false otherwise.
+     */
+    public boolean isGameOver() {
+        return bobsHealth < 0;
     }
 }

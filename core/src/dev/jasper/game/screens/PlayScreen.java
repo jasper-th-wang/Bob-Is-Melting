@@ -96,6 +96,11 @@ public class PlayScreen implements Screen {
         // Set our batch to draw what the HUD camera sees
         game.getBatch().setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.getStage().draw();
+
+        if (gameStateManager.isGameOver()) {
+            game.setScreen(new GameOverScreen(game));
+            dispose();
+        }
     }
 
     /**

@@ -76,5 +76,9 @@ public final class BobIsMelting extends Game {
     public SpriteBatch getBatch() {
         return batch;
     }
+    public void startNewGame() {
+        gameStateManager = new GameStateManager();
+        setScreen(new PlayScreen(this));
+    }
 
 }
