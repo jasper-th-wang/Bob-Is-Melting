@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.jasper.game.BobIsMelting;
+import dev.jasper.game.tools.GameStateManager;
 
 /**
  * The GameOverScreen class represents the game over screen in the game.
@@ -23,7 +24,6 @@ import dev.jasper.game.BobIsMelting;
  */
 public final class GameOverScreen implements Screen {
     private static final int TABLE_PAD_TOP = 10;
-    private final Viewport viewport;
     private final Stage stage;
 
     private final BobIsMelting game;
@@ -36,7 +36,7 @@ public final class GameOverScreen implements Screen {
      */
     public GameOverScreen(final BobIsMelting game) {
         this.game = game;
-        viewport = new FitViewport(BobIsMelting.V_WIDTH, BobIsMelting.V_HEIGHT, new OrthographicCamera());
+        Viewport viewport = new FitViewport(BobIsMelting.V_WIDTH, BobIsMelting.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.getBatch());
 
         Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
@@ -45,10 +45,16 @@ public final class GameOverScreen implements Screen {
         table.center();
         table.setFillParent(true);
 
-        Label gameOverLabel = new Label("GAME OVER", font);
+        GameStateManager gameStateManager = game.getGameStateManager();
+        final int timeElapsed = gameStateManager.getWorldTimer();
+        Label gameOverLabel = new Label("Bob's a puddle now!", font);
+        String timeElapsedMessage = String.format("Bob lasted %d seconds before melting away", timeElapsed);
+        Label timeElapsedLabel = new Label(timeElapsedMessage, font);
         Label playAgainLabel = new Label("Click to Play Again", font);
 
         table.add(gameOverLabel).expandX();
+        table.row();
+        table.add(timeElapsedLabel).expandX();
         table.row();
         table.add(playAgainLabel).expandX().padTop(TABLE_PAD_TOP);
 
