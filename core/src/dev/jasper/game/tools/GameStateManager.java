@@ -86,11 +86,8 @@ public final class GameStateManager {
         this.bob = b2BodyObjectFactory.createBob();
         this.enemies = new Array<>();
         try {
-            enemies.add(b2BodyObjectFactory.createEnemy("bear",.32f, .32f));
+//            enemies.add(b2BodyObjectFactory.createEnemy("bear",.32f, .32f));
             enemies.add(b2BodyObjectFactory.createEnemy("bear",3.52f, .48f));
-            enemies.add(b2BodyObjectFactory.createEnemy("bear",1.6f, .48f));
-            enemies.add(b2BodyObjectFactory.createEnemy("chicken",2.56f, 1.28f));
-            enemies.add(b2BodyObjectFactory.createEnemy("chicken",.32f, 1.28f));
         } catch (IllegalArgumentException e) {
             System.out.println(e + " Fail to initialize enemies.");
         }
@@ -138,6 +135,7 @@ public final class GameStateManager {
         if (timeCount >= 1) {
             worldTimer++;
             setBobsHealth(getBobsHealth() - 2);
+            adjustDifficulty(worldTimer);
             timeCount = 0;
         }
 
@@ -156,6 +154,25 @@ public final class GameStateManager {
             }
         });
         spawnSnowballs(dt);
+    }
+
+    private void adjustDifficulty(final int time) {
+        switch (time) {
+            case 10:
+                enemies.add(b2BodyObjectFactory.createEnemy("bear",.32f, .32f));
+                break;
+            case 20:
+                enemies.add(b2BodyObjectFactory.createEnemy("bear",1.6f, .48f));
+                break;
+            case 30:
+                enemies.add(b2BodyObjectFactory.createEnemy("chicken",2.56f, 1.28f));
+                break;
+            case 40:
+                enemies.add(b2BodyObjectFactory.createEnemy("chicken",.32f, 1.28f));
+                break;
+            default:
+                break;
+        }
     }
 
     /**
