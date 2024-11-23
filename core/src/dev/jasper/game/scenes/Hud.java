@@ -1,5 +1,6 @@
 package dev.jasper.game.scenes;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.jasper.game.BobIsMelting;
+import dev.jasper.game.tools.FormatUtils;
 import dev.jasper.game.tools.GameStateManager;
 
 
@@ -44,12 +46,18 @@ public final class Hud implements Disposable {
         table.top();
         table.setFillParent(true);
         Label timeTitleLabel = new Label("TIME ELAPSED", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        timeLabel = new Label(String.format("%03d", gameStateManager.getWorldTimer()),
+        Gdx.app.log("Testing!", gameStateManager.getWorldTimer().toString());
+        Gdx.app.log("Testing!", gameStateManager.getBobsHealth().toString());
+//        timeLabel = new Label(String.format("%03d", gameStateManager.getWorldTimer()),
+//                new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        timeLabel = new Label(FormatUtils.formatToDigits(3, gameStateManager.getWorldTimer()),
                 new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         // Health as a temp name for now
         Label healthTitleLabel = new Label("BOB'S HEALTH", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        healthLabel = new Label(String.format("%02d", gameStateManager.getBobsHealth()),
+//        healthLabel = new Label(String.format("%02d", gameStateManager.getBobsHealth()),
+//                new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        healthLabel = new Label(FormatUtils.formatToDigits(2, gameStateManager.getBobsHealth()),
                 new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         table.add(healthTitleLabel).expandX().padTop(TABLE_PAD_TOP);
@@ -79,8 +87,10 @@ public final class Hud implements Disposable {
      * @param dt The time delta, representing the amount of time passed since the last update.
      */
     public void update(final float dt) {
-        timeLabel.setText(String.format("%03d", gameStateManager.getWorldTimer()));
-        healthLabel.setText(String.format("%02d", gameStateManager.getBobsHealth()));
+//        timeLabel.setText(String.format("%03d", gameStateManager.getWorldTimer()));
+//        healthLabel.setText(String.format("%02d", gameStateManager.getBobsHealth()));
+        timeLabel.setText(FormatUtils.formatToDigits(3, gameStateManager.getWorldTimer()));
+        healthLabel.setText(FormatUtils.formatToDigits(2, gameStateManager.getBobsHealth()));
     }
 
     /**
