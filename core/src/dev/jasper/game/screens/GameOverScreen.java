@@ -48,7 +48,7 @@ public final class GameOverScreen implements Screen {
         GameStateManager gameStateManager = game.getGameStateManager();
         final int timeElapsed = gameStateManager.getWorldTimer();
         Label gameOverLabel = new Label("Bob's a puddle now!", font);
-        String timeElapsedMessage = String.format("Bob lasted %d seconds before melting away", timeElapsed);
+        String timeElapsedMessage = "Bob lasted " + timeElapsed + " seconds before melting away";
         Label timeElapsedLabel = new Label(timeElapsedMessage, font);
         Label playAgainLabel = new Label("Click to Play Again", font);
 
