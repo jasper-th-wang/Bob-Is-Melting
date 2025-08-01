@@ -20,7 +20,7 @@ public final class BobIsMelting extends Game {
     /**
      * Virtual height of game.
      */
-    public static final int V_HEIGHT = 208;
+    public static final int V_HEIGHT = 200;
     /**
      * Pixel for meter units to scale the render.
      */
