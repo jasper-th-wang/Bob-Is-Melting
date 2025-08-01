@@ -20,7 +20,16 @@ Please ensure you have the following dependencies installed on your system:
 
 ### Running
 
+To run desktop version
+
 ```sh
 ./gradlew desktop:run
 ```
 
+To run html version
+
+```sh
+./gradlew ./gradlew html:superdev
+```
+
+and navigate to http://127.0.0.1:8080/
