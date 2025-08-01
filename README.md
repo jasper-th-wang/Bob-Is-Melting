@@ -33,3 +33,11 @@ To run html version
 ```
 
 and navigate to http://127.0.0.1:8080/
+
+### Packaging
+
+To create distributabe html build
+
+```sh
+./gradlew html:dist
+```
